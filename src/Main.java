@@ -18,7 +18,7 @@ public class Main {
             HelloParser anasint = new HelloParser(tokens, new sintesis());*/
             /* Comenzar el análisis llamando al axioma de la gramáticaAtención,
             sustituye "AxiomaDeLaGramatica" por el nombre del axioma de tu gramática*/
-            anasint.r();
+            anasint.prg();
         } catch (org.antlr.v4.runtime.RecognitionException e) { //Fallo al reconocer la entrada
             System.err.println("REC " + e.getMessage());
         } catch (IOException e) { //Fallo de entrada/salida

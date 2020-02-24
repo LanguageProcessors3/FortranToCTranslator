@@ -1,6 +1,2 @@
+!Comentario test
 'comilla doble " dentro'
-"comilla simple ' dentro"
-'comilla simple '' dentro'
-"comilla doble "" dentro"
-'comilla doble " y simple '' dentro'
-"comilla simple ' y doble "" dentro"

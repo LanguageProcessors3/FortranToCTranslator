@@ -17,7 +17,11 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1XbpFYUd80ZbvmBiAQlnPz1kA1d" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -27,7 +31,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/antlr-4.7.2-complete.jar!/" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -73,6 +77,11 @@
       <workItem from="1581329120753" duration="1577000" />
       <workItem from="1581548585278" duration="4476000" />
       <workItem from="1581623825523" duration="156000" />
+      <workItem from="1582107944651" duration="1564000" />
+      <workItem from="1582112615321" duration="273000" />
+      <workItem from="1582137543143" duration="2359000" />
+      <workItem from="1582218732902" duration="162000" />
+      <workItem from="1582532486517" duration="5900000" />
     </task>
     <servers />
   </component>
@@ -88,29 +97,37 @@
       <screen x="0" y="0" width="1920" height="1020" />
     </state>
     <state x="338" y="194" width="1224" height="628" key="FileChooserDialogImpl/0.0.1920.1020@0.0.1920.1020" timestamp="1581325485099" />
-    <state width="1862" height="102" key="GridCell.Tab.0.bottom" timestamp="1581553061579">
+    <state width="1862" height="229" key="GridCell.Tab.0.bottom" timestamp="1582534365026">
       <screen x="0" y="0" width="1920" height="1020" />
     </state>
-    <state width="1862" height="102" key="GridCell.Tab.0.bottom/0.0.1920.1020@0.0.1920.1020" timestamp="1581553061579" />
-    <state width="1862" height="102" key="GridCell.Tab.0.center" timestamp="1581553061578">
+    <state width="1862" height="229" key="GridCell.Tab.0.bottom/0.0.1920.1020@0.0.1920.1020" timestamp="1582534365026" />
+    <state width="1862" height="229" key="GridCell.Tab.0.center" timestamp="1582534365024">
       <screen x="0" y="0" width="1920" height="1020" />
     </state>
-    <state width="1862" height="102" key="GridCell.Tab.0.center/0.0.1920.1020@0.0.1920.1020" timestamp="1581553061578" />
-    <state width="1862" height="102" key="GridCell.Tab.0.left" timestamp="1581553061577">
+    <state width="1862" height="229" key="GridCell.Tab.0.center/0.0.1920.1020@0.0.1920.1020" timestamp="1582534365024" />
+    <state width="1862" height="229" key="GridCell.Tab.0.left" timestamp="1582534365023">
       <screen x="0" y="0" width="1920" height="1020" />
     </state>
-    <state width="1862" height="102" key="GridCell.Tab.0.left/0.0.1920.1020@0.0.1920.1020" timestamp="1581553061577" />
-    <state width="1862" height="102" key="GridCell.Tab.0.right" timestamp="1581553061579">
+    <state width="1862" height="229" key="GridCell.Tab.0.left/0.0.1920.1020@0.0.1920.1020" timestamp="1582534365023" />
+    <state width="1862" height="229" key="GridCell.Tab.0.right" timestamp="1582534365025">
       <screen x="0" y="0" width="1920" height="1020" />
     </state>
-    <state width="1862" height="102" key="GridCell.Tab.0.right/0.0.1920.1020@0.0.1920.1020" timestamp="1581553061579" />
+    <state width="1862" height="229" key="GridCell.Tab.0.right/0.0.1920.1020@0.0.1920.1020" timestamp="1582534365025" />
     <state x="315" y="0" width="1280" height="1018" key="SettingsEditor" timestamp="1581324574584">
       <screen x="0" y="0" width="1920" height="1020" />
     </state>
     <state x="315" y="0" width="1280" height="1018" key="SettingsEditor/0.0.1920.1020@0.0.1920.1020" timestamp="1581324574584" />
-    <state x="479" y="298" key="com.intellij.ide.util.TipDialog" timestamp="1581623826770">
+    <state x="479" y="298" key="com.intellij.ide.util.TipDialog" timestamp="1582218855873">
       <screen x="0" y="0" width="1920" height="1020" />
     </state>
-    <state x="479" y="298" key="com.intellij.ide.util.TipDialog/0.0.1920.1020@0.0.1920.1020" timestamp="1581623826770" />
+    <state x="479" y="298" key="com.intellij.ide.util.TipDialog/0.0.1920.1020@0.0.1920.1020" timestamp="1582218855873" />
+    <state x="0" y="0" width="967" height="1020" key="find.popup" timestamp="1582533192111">
+      <screen x="0" y="0" width="1920" height="1020" />
+    </state>
+    <state x="0" y="0" width="967" height="1020" key="find.popup/0.0.1920.1020@0.0.1920.1020" timestamp="1582533192111" />
+    <state x="0" y="20" width="1910" height="975" key="new project wizard" timestamp="1582218893420">
+      <screen x="0" y="0" width="1920" height="1020" />
+    </state>
+    <state x="0" y="20" width="1910" height="975" key="new project wizard/0.0.1920.1020@0.0.1920.1020" timestamp="1582218893420" />
   </component>
 </project>
