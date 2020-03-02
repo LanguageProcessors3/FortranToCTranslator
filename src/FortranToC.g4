@@ -2,6 +2,7 @@ grammar FortranToC ;
 
 // Token combination rules in parser
 // Main
+
 prg : 'PROGRAM' IDENT ';' dcllist cabecera sent sentlist 'END'
     'PROGRAM' IDENT subproglist ;
 
@@ -16,8 +17,9 @@ decsubprog : decproc decsubprog | decfun decsubprog | ;
 sentlist: sent sentlist | ;
 
 // VAR and CONST Declaration area
+
 dcl : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';'
-    defcte | tipo '::' varlist ';' defvar ; // LLK
+    defcte | tipo '::' varlist ';' defvar ; // LL1
 
 defcte : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';'
     defcte
@@ -33,7 +35,7 @@ tipo : 'INTEGER' | 'REAL' | 'CHARACTER' charlength ;
 
 charlength : '(' NUM_INT_CONST ')' | ;
 
-varlist : IDENT init | IDENT init ',' varlist ; // LLK
+varlist : IDENT init | IDENT init ',' varlist ; // LLK -> ANTLR produces LL1 checking the longest production first
 
 init : '=' simpvalue | ;
 
@@ -45,7 +47,7 @@ decproc : 'SUBROUTINE' IDENT formal_paramlist
 
 formal_paramlist : | '(' nomparamlist ')' ;
 
-nomparamlist : IDENT | IDENT ',' nomparamlist ; // LLK
+nomparamlist : IDENT | IDENT ',' nomparamlist ; // LL1
 
 dec_s_paramlist : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';'
     dec_s_paramlist
@@ -99,6 +101,7 @@ codfun : 'FUNCTION' IDENT '(' nomparamlist ')'
     'END' 'FUNCTION' IDENT ;
 
 // Token Recognition in lexer
+
 IDENT : ALPHA(ALPHA | '_' | DIGIT)* ;
 
 NUM_INT_CONST : '-'?DIGIT+ ;
@@ -106,23 +109,13 @@ NUM_INT_CONST : '-'?DIGIT+ ;
 NUM_REAL_CONST : '-'?DIGIT+(('.'DIGIT+)?[Ee]'-'? | '.')DIGIT+ ;
 
 STRING_CONST : ('"'(ALPHA | DIGIT | PUNCTUATION | SIGNS)+'"' | '\''(ALPHA | DIGIT | PUNCTUATION | SIGNS)+'\'')+ ;
-/*{ Processing in Translator
-    if (getText().charAt(0) == '"') {
-        setText(getText().replaceAll("\"\"","\""));
-    }
-    else { // first char is '\''
-        setText(getText().replaceAll("\'\'","\'"));
-    }
-
-    setText(getText().substring(1, getText().length()-1));
-    System.out.println(getText());
-};*/
 
 COMMENT : '!'(ALPHA | DIGIT | PUNCTUATION | SIGNS)+ -> skip ;
 
 S : SCAPES+ -> skip ;
 
 // Fragmets
+
 fragment
 ALPHA : [a-zA-Z] ;
 fragment
