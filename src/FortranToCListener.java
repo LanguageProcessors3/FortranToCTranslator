@@ -237,6 +237,46 @@ public interface FortranToCListener extends ParseTreeListener {
 	 */
 	void exitSent(FortranToCParser.SentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link FortranToCParser#doval}.
+	 * @param ctx the parse tree
+	 */
+	void enterDoval(FortranToCParser.DovalContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FortranToCParser#doval}.
+	 * @param ctx the parse tree
+	 */
+	void exitDoval(FortranToCParser.DovalContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FortranToCParser#casos}.
+	 * @param ctx the parse tree
+	 */
+	void enterCasos(FortranToCParser.CasosContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FortranToCParser#casos}.
+	 * @param ctx the parse tree
+	 */
+	void exitCasos(FortranToCParser.CasosContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FortranToCParser#etiquetas}.
+	 * @param ctx the parse tree
+	 */
+	void enterEtiquetas(FortranToCParser.EtiquetasContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FortranToCParser#etiquetas}.
+	 * @param ctx the parse tree
+	 */
+	void exitEtiquetas(FortranToCParser.EtiquetasContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FortranToCParser#listaetiqetas}.
+	 * @param ctx the parse tree
+	 */
+	void enterListaetiqetas(FortranToCParser.ListaetiqetasContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FortranToCParser#listaetiqetas}.
+	 * @param ctx the parse tree
+	 */
+	void exitListaetiqetas(FortranToCParser.ListaetiqetasContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link FortranToCParser#exp}.
 	 * @param ctx the parse tree
 	 */
@@ -346,4 +386,44 @@ public interface FortranToCListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCodfun(FortranToCParser.CodfunContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FortranToCParser#expcond}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpcond(FortranToCParser.ExpcondContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FortranToCParser#expcond}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpcond(FortranToCParser.ExpcondContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FortranToCParser#oplog}.
+	 * @param ctx the parse tree
+	 */
+	void enterOplog(FortranToCParser.OplogContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FortranToCParser#oplog}.
+	 * @param ctx the parse tree
+	 */
+	void exitOplog(FortranToCParser.OplogContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FortranToCParser#factorcond}.
+	 * @param ctx the parse tree
+	 */
+	void enterFactorcond(FortranToCParser.FactorcondContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FortranToCParser#factorcond}.
+	 * @param ctx the parse tree
+	 */
+	void exitFactorcond(FortranToCParser.FactorcondContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FortranToCParser#opcomp}.
+	 * @param ctx the parse tree
+	 */
+	void enterOpcomp(FortranToCParser.OpcompContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FortranToCParser#opcomp}.
+	 * @param ctx the parse tree
+	 */
+	void exitOpcomp(FortranToCParser.OpcompContext ctx);
 }

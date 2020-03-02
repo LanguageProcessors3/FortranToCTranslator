@@ -27,7 +27,7 @@ defcte : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';'
 
 ctelist : ',' IDENT '=' simpvalue ctelist | ;
 
-simpvalue : NUM_INT_CONST | NUM_REAL_CONST | STRING_CONST ;
+simpvalue : NUM_INT_CONST | NUM_REAL_CONST | STRING_CONST | NUM_INT_CONST_B | NUM_INT_CONST_O | NUM_INT_CONST_H ; // Optional included
 
 defvar : tipo '::' varlist ';' defvar | ;
 
@@ -66,7 +66,29 @@ dec_f_paramlist : tipo ',' 'INTENT' '(' 'IN' ')' IDENT ';'
 
 // Statement area
 
-sent : IDENT '=' exp ';' | proc_call ';' ;
+// Optional part added to sent
+sent : IDENT '=' exp ';' | proc_call ';'
+    | 'IF' '(' expcond ')' sent
+    | 'IF' '(' expcond ')' 'THEN' sentlist 'ENDIF'
+    | 'IF' '(' expcond ')' 'THEN' sentlist 'ELSE' sentlist 'ENDIF'
+    | 'DO' 'WHILE' '(' expcond ')' sentlist 'ENDDO'
+    | 'DO' IDENT '=' doval ',' doval ',' doval sentlist 'ENDDO'
+    | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT' ;
+
+doval : NUM_INT_CONST | IDENT ; // Optional included
+
+casos : 'CASE' '(' etiquetas ')' sentlist casos // Optional included
+    | 'CASE' 'DEFAULT' sentlist
+    | ;
+
+etiquetas : simpvalue listaetiqetas // Optional included
+    | simpvalue ':' simpvalue
+    | ':' simpvalue
+    | simpvalue ':' ;
+
+listaetiqetas : ',' simpvalue | ; // Optional included
+
+// Optional finished
 
 exp : factor expAux ;
 
@@ -100,6 +122,18 @@ codfun : 'FUNCTION' IDENT '(' nomparamlist ')'
     IDENT '=' exp ';'
     'END' 'FUNCTION' IDENT ;
 
+// Optional parser implementation
+// Flow control statements
+
+expcond : expcond oplog expcond | factorcond ;
+
+oplog : '.OR.' | '.AND.' | '.EQV.' | '.NEQV.' ;
+
+factorcond : exp opcomp exp | '(' expcond ')' | '.NOT.' factorcond | '.TRUE.' | '.FALSE.' ;
+
+opcomp : '<' | '>' | '<=' | '>=' | '==' | '/=' ;
+
+
 // Token Recognition in lexer
 
 IDENT : ALPHA(ALPHA | '_' | DIGIT)* ;
@@ -113,6 +147,14 @@ STRING_CONST : ('"'(ALPHA | DIGIT | PUNCTUATION | SIGNS)+'"' | '\''(ALPHA | DIGI
 COMMENT : '!'(ALPHA | DIGIT | PUNCTUATION | SIGNS)+ -> skip ;
 
 S : SCAPES+ -> skip ;
+
+// Optional lexer implementation
+
+NUM_INT_CONST_B : 'b\''[01]+'\'' ;
+
+NUM_INT_CONST_O : 'o\''[0-7]+'\'' ;
+
+NUM_INT_CONST_H : 'z\''[0-9A-F]+'\'' ;
 
 // Fragmets
 
