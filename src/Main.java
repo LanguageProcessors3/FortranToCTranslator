@@ -10,8 +10,9 @@ public class Main {
             FortranToCLexer analex = new FortranToCLexer(input);
             // Identificar al analizador léxico como fuente de tokens para el sintactico
             CommonTokenStream tokens = new CommonTokenStream(analex);
-            // Crear el objeto correspondiente al analizador sintáctico
-            FortranToCParser anasint = new FortranToCParser(tokens);
+            // Crear el objeto correspondiente al analizador sintáctico con sus datos
+            Synthesis synthesisHandler = new Synthesis();
+            FortranToCParser anasint = new FortranToCParser(tokens, synthesisHandler);
             /* Si se quiere pasar al analizador algún objeto externo con el que trabajar,
             este deberá ser de una clase del mismo paqueteAquí se le llama "sintesis",
             pero puede ser cualquier nombre.
@@ -19,6 +20,8 @@ public class Main {
             /* Comenzar el análisis llamando al axioma de la gramáticaAtención,
             sustituye "AxiomaDeLaGramatica" por el nombre del axioma de tu gramática*/
             anasint.prg();
+            // Para obtener un resumen
+            // synthesisHandler.resume();
         } catch (org.antlr.v4.runtime.RecognitionException e) { //Fallo al reconocer la entrada
             System.err.println("REC " + e.getMessage());
         } catch (IOException e) { //Fallo de entrada/salida

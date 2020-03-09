@@ -1,5 +1,18 @@
 grammar FortranToC ;
 
+// Classes for builing the output with traslator
+@parser::members {
+    // Object declaration
+    private Synthesis synthesisHandler;
+
+    // Get the object as a parameter from the constructor
+    public FortranToCParser (TokenStream input, Synthesis info) {
+        this(input);
+        synthesisHandler = info;
+    }
+
+}
+
 // Token combination rules in parser
 // Main
 
@@ -17,6 +30,8 @@ decsubprog : decproc decsubprog | decfun decsubprog | ;
 sentlist: sent sentlist | ;
 
 // VAR and CONST Declaration area
+
+// dcl : defcte | defvar ; CHANGED FOR FIXING LEFT RECURSION LLK -> LL1
 
 dcl : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';'
     defcte | tipo '::' varlist ';' defvar ; // LL1
@@ -89,6 +104,8 @@ etiquetas : simpvalue listaetiqetas // Optional included
 listaetiqetas : ',' simpvalue | ; // Optional included
 
 // Optional finished
+
+// exp : exp op exp | factor CHANGED TO BE LL1 with expAux
 
 exp : factor expAux ;
 

@@ -117,6 +117,17 @@ public class FortranToCParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
+
+	    // Object declaration
+	    private Synthesis synthesisHandler;
+
+	    // Get the object as a parameter from the constructor
+	    public FortranToCParser (TokenStream input, Synthesis info) {
+	        this(input);
+	        synthesisHandler = info;
+	    }
+
+
 	public FortranToCParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
