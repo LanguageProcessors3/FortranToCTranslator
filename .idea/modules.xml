@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FortranToCGrupalPL.iml" filepath="$PROJECT_DIR$/FortranToCGrupalPL.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FortranToCWindows.iml" filepath="$PROJECT_DIR$/FortranToCWindows.iml" />
     </modules>
   </component>
 </project>

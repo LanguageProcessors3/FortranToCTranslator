@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f5b3cfec-bcfd-424d-a3b3-3825b2b13ccc" name="Default Changelist" comment="" />
+    <list default="true" id="bb67bd18-c32f-425e-9451-da12846f1e92" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../EDASolution/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/CustomErrorListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/CustomErrorStrategy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/FortranToC.g4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/antlr-4.7.2-complete.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/input.txt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FavoritesManager">
-    <favorites_list name="FortranToCGrupalPL" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -18,9 +23,16 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectId" id="1XbpFYUd80ZbvmBiAQlnPz1kA1d" />
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="C:\Users\Gonzalo\IdeaProjects\FortranToCWindows\.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1Z812s8Oj54ZFqvVv1iO88X8HsE" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -31,28 +43,30 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/antlr-4.7.2-complete.jar!/" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src" />
+      <recent name="C:\Users\Gonzalo\IdeaProjects\FortranToCWindows\src" />
     </key>
   </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
-      <module name="FortranToCGrupalPL" />
-      <option name="PROGRAM_PARAMETERS" value="$PROJECT_DIR$/src/input.txt" />
-      <option name="INPUT_FILE" value="$PROJECT_DIR$/src/input.txt" />
+      <module name="FortranToCWindows" />
+      <option name="PROGRAM_PARAMETERS" value="C:\Users\Gonzalo\IdeaProjects\FortranToCWindows\src\input.txt" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -68,24 +82,12 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="f5b3cfec-bcfd-424d-a3b3-3825b2b13ccc" name="Default Changelist" comment="" />
-      <created>1581324544487</created>
+      <changelist id="bb67bd18-c32f-425e-9451-da12846f1e92" name="Default Changelist" comment="" />
+      <created>1584205702771</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1581324544487</updated>
-      <workItem from="1581324547959" duration="3857000" />
-      <workItem from="1581329120753" duration="1577000" />
-      <workItem from="1581548585278" duration="4476000" />
-      <workItem from="1581623825523" duration="156000" />
-      <workItem from="1582107944651" duration="1564000" />
-      <workItem from="1582112615321" duration="273000" />
-      <workItem from="1582137543143" duration="2359000" />
-      <workItem from="1582218732902" duration="162000" />
-      <workItem from="1582532486517" duration="6207000" />
-      <workItem from="1582654480884" duration="107000" />
-      <workItem from="1583138579067" duration="2812000" />
-      <workItem from="1583171396503" duration="2944000" />
-      <workItem from="1583742043257" duration="3504000" />
+      <updated>1584205702771</updated>
+      <workItem from="1584205710355" duration="8581000" />
     </task>
     <servers />
   </component>
@@ -93,49 +95,37 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="418" y="101" width="1305" height="815" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581325491832">
-      <screen x="0" y="0" width="1920" height="1020" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584206054758">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="418" y="101" width="1305" height="815" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1020@0.0.1920.1020" timestamp="1581325491832" />
-    <state x="338" y="194" width="1224" height="628" key="FileChooserDialogImpl" timestamp="1581325485099">
-      <screen x="0" y="0" width="1920" height="1020" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584206054758" />
+    <state x="722" y="234" key="#com.intellij.ide.util.MemberChooser" timestamp="1584214000000">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="338" y="194" width="1224" height="628" key="FileChooserDialogImpl/0.0.1920.1020@0.0.1920.1020" timestamp="1581325485099" />
-    <state width="1862" height="229" key="GridCell.Tab.0.bottom" timestamp="1582540340981">
-      <screen x="0" y="0" width="1920" height="1020" />
+    <state x="722" y="234" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1584214000000" />
+    <state x="503" y="260" key="FileChooserDialogImpl" timestamp="1584206040687">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1862" height="229" key="GridCell.Tab.0.bottom/0.0.1920.1020@0.0.1920.1020" timestamp="1582540340981" />
-    <state width="1862" height="229" key="GridCell.Tab.0.center" timestamp="1582540340980">
-      <screen x="0" y="0" width="1920" height="1020" />
+    <state x="503" y="260" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1584206040687" />
+    <state width="1879" height="198" key="GridCell.Tab.0.bottom" timestamp="1584215021839">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1862" height="229" key="GridCell.Tab.0.center/0.0.1920.1020@0.0.1920.1020" timestamp="1582540340980" />
-    <state width="1862" height="229" key="GridCell.Tab.0.left" timestamp="1582540340979">
-      <screen x="0" y="0" width="1920" height="1020" />
+    <state width="1879" height="198" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584215021839" />
+    <state width="1879" height="198" key="GridCell.Tab.0.center" timestamp="1584215021839">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1862" height="229" key="GridCell.Tab.0.left/0.0.1920.1020@0.0.1920.1020" timestamp="1582540340979" />
-    <state width="1862" height="229" key="GridCell.Tab.0.right" timestamp="1582540340980">
-      <screen x="0" y="0" width="1920" height="1020" />
+    <state width="1879" height="198" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584215021839" />
+    <state width="1879" height="198" key="GridCell.Tab.0.left" timestamp="1584215021839">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1862" height="229" key="GridCell.Tab.0.right/0.0.1920.1020@0.0.1920.1020" timestamp="1582540340980" />
-    <state x="315" y="0" width="1280" height="1018" key="SettingsEditor" timestamp="1581324574584">
-      <screen x="0" y="0" width="1920" height="1020" />
+    <state width="1879" height="198" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584215021839" />
+    <state width="1879" height="198" key="GridCell.Tab.0.right" timestamp="1584215021839">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="315" y="0" width="1280" height="1018" key="SettingsEditor/0.0.1920.1020@0.0.1920.1020" timestamp="1581324574584" />
-    <state x="479" y="298" key="com.intellij.ide.util.TipDialog" timestamp="1583742042813">
-      <screen x="0" y="0" width="1920" height="1020" />
+    <state width="1879" height="198" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584215021839" />
+    <state x="440" y="94" key="SettingsEditor" timestamp="1584212034662">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="479" y="298" key="com.intellij.ide.util.TipDialog/0.0.1920.1020@0.0.1920.1020" timestamp="1583742042813" />
-    <state x="673" y="127" width="563" height="761" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1583176798165">
-      <screen x="0" y="0" width="1920" height="1020" />
-    </state>
-    <state x="673" y="127" width="563" height="761" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1020@0.0.1920.1020" timestamp="1583176798165" />
-    <state x="0" y="0" width="967" height="1020" key="find.popup" timestamp="1582533192111">
-      <screen x="0" y="0" width="1920" height="1020" />
-    </state>
-    <state x="0" y="0" width="967" height="1020" key="find.popup/0.0.1920.1020@0.0.1920.1020" timestamp="1582533192111" />
-    <state x="0" y="20" width="1910" height="975" key="new project wizard" timestamp="1582218893420">
-      <screen x="0" y="0" width="1920" height="1020" />
-    </state>
-    <state x="0" y="20" width="1910" height="975" key="new project wizard/0.0.1920.1020@0.0.1920.1020" timestamp="1582218893420" />
+    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1584212034662" />
   </component>
 </project>

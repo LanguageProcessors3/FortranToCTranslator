@@ -11,8 +11,11 @@ public class Main {
             // Identificar al analizador léxico como fuente de tokens para el sintactico
             CommonTokenStream tokens = new CommonTokenStream(analex);
             // Crear el objeto correspondiente al analizador sintáctico con sus datos
-            Synthesis synthesisHandler = new Synthesis();
-            FortranToCParser anasint = new FortranToCParser(tokens, synthesisHandler);
+            // Synthesis synthesisHandler = new Synthesis();
+            FortranToCParser anasint = new FortranToCParser(tokens);
+            anasint.setErrorHandler(new CustomErrorStrategy());
+            anasint.removeErrorListeners();
+            anasint.addErrorListener(new CustomErrorListener());
             /* Si se quiere pasar al analizador algún objeto externo con el que trabajar,
             este deberá ser de una clase del mismo paqueteAquí se le llama "sintesis",
             pero puede ser cualquier nombre.
