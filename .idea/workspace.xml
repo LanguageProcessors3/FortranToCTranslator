@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bb67bd18-c32f-425e-9451-da12846f1e92" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../EDASolution/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/CustomErrorListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/CustomErrorStrategy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/FortranToC.g4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/antlr-4.7.2-complete.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/input.txt" afterDir="false" />
-    </list>
+    <list default="true" id="bb67bd18-c32f-425e-9451-da12846f1e92" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,8 +45,8 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Libraries" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
   </component>
   <component name="RecentsManager">
@@ -65,8 +57,9 @@
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
-      <module name="FortranToCWindows" />
-      <option name="PROGRAM_PARAMETERS" value="C:\Users\Gonzalo\IdeaProjects\FortranToCWindows\src\input.txt" />
+      <module name="FortranToC" />
+      <option name="PROGRAM_PARAMETERS" value="C:\Users\gonza\IdeaProjects\FortranToC\src\input.txt" />
+      <option name="INPUT_FILE" value="$PROJECT_DIR$/src/input.txt" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -88,6 +81,7 @@
       <option name="presentableId" value="Default" />
       <updated>1584205702771</updated>
       <workItem from="1584205710355" duration="8581000" />
+      <workItem from="1584298478925" duration="3181000" />
     </task>
     <servers />
   </component>
@@ -95,37 +89,49 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584206054758">
+    <state x="674" y="154" width="587" height="731" key="#Main" timestamp="1584300416447">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584206054758" />
+    <state x="674" y="154" width="587" height="731" key="#Main/0.0.1920.1040@0.0.1920.1040" timestamp="1584300416447" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584298358578">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584298358578" />
     <state x="722" y="234" key="#com.intellij.ide.util.MemberChooser" timestamp="1584214000000">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="722" y="234" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1584214000000" />
-    <state x="503" y="260" key="FileChooserDialogImpl" timestamp="1584206040687">
+    <state x="689" y="303" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1584300401744">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="503" y="260" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1584206040687" />
-    <state width="1879" height="198" key="GridCell.Tab.0.bottom" timestamp="1584215021839">
+    <state x="689" y="303" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584300401744" />
+    <state x="503" y="260" key="FileChooserDialogImpl" timestamp="1584300358993">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1879" height="198" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584215021839" />
-    <state width="1879" height="198" key="GridCell.Tab.0.center" timestamp="1584215021839">
+    <state x="503" y="260" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1584300358993" />
+    <state width="1877" height="155" key="GridCell.Tab.0.bottom" timestamp="1584301663000">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1879" height="198" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584215021839" />
-    <state width="1879" height="198" key="GridCell.Tab.0.left" timestamp="1584215021839">
+    <state width="1877" height="155" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584301663000" />
+    <state width="1877" height="155" key="GridCell.Tab.0.center" timestamp="1584301663000">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1879" height="198" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584215021839" />
-    <state width="1879" height="198" key="GridCell.Tab.0.right" timestamp="1584215021839">
+    <state width="1877" height="155" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584301663000" />
+    <state width="1877" height="155" key="GridCell.Tab.0.left" timestamp="1584301663000">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1879" height="198" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584215021839" />
-    <state x="440" y="94" key="SettingsEditor" timestamp="1584212034662">
+    <state width="1877" height="155" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584301663000" />
+    <state width="1877" height="155" key="GridCell.Tab.0.right" timestamp="1584301663000">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1584212034662" />
+    <state width="1877" height="155" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584301663000" />
+    <state x="440" y="94" key="SettingsEditor" timestamp="1584298586923">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1584298586923" />
+    <state x="636" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1584298479233">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="636" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584298479233" />
   </component>
 </project>

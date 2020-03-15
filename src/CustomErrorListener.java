@@ -2,9 +2,10 @@ import org.antlr.v4.runtime.*;
 
 public class CustomErrorListener extends BaseErrorListener {
 
+    // Syntax Error Handling
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-        System.err.println("linea: " + line + ":" + charPositionInLine + " en " + offendingSymbol + ": " + msg);
+        System.err.println("Linea: " + line + ":" + charPositionInLine + " en " + offendingSymbol + ": " + msg);
         underlineError(recognizer, (Token)offendingSymbol, line, charPositionInLine);
     }
 

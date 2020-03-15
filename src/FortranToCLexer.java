@@ -33,6 +33,14 @@ public class FortranToCLexer extends Lexer {
 		"DEFAULT_MODE"
 	};
 
+	@Override
+	public void notifyListeners(LexerNoViableAltException e) {
+		String text = this._input.getText(Interval.of(this._tokenStartCharIndex, this._input.index()));
+		String msg = "error de reconocimiento de Token en: '" + this.getErrorDisplay(text) + "'";
+		ANTLRErrorListener listener = this.getErrorListenerDispatch();
+		listener.syntaxError(this, null, this._tokenStartLine, this._tokenStartCharPositionInLine, msg, e);
+	}
+
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "T__8", 

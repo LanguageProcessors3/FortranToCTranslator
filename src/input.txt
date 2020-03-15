@@ -117,7 +117,7 @@ SUBROUTINE PruebaIfs ! Subrutina sin parametros de llamada para probar ifs
 	! Sentencias If-then con una lista de sentencias
 	IF ( .TRUE. .OR. a<b .AND. b>c .EQV. c==d ) THEN
 		CALL Subrutina1Param ( Funcion1Param(i1)+i2*i3 );
-		concatenacionStrings = 'comilla doble " dentro' + "comilla simple ' dentro"";
+		concatenacionStrings = 'comilla doble " dentro' + "comilla simple ' dentro";
 	ENDIF
 
 	! Sentencias If-then-else con una lista de sentencias y sentencias anidadas
