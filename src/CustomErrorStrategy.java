@@ -5,12 +5,12 @@ public class CustomErrorStrategy extends DefaultErrorStrategy {
 
     // Recover Methods
     @Override
-    public void recover(Parser recognizer, RecognitionException e) throws RuntimeException {
+    public void recover(Parser recognizer, RecognitionException e) {
         throw new RuntimeException(e);
     }
 
     @Override
-    public void sync(Parser recognizer) throws RecognitionException { }
+    public void sync(Parser recognizer) { }
 
     @Override
     public Token recoverInline(Parser recognizer) throws RecognitionException {
@@ -49,7 +49,7 @@ public class CustomErrorStrategy extends DefaultErrorStrategy {
             Token t = recognizer.getCurrentToken();
             IntervalSet expecting = this.getExpectedTokens(recognizer);
             String msg = "Se esperaba encontrar: " + expecting.toString(recognizer.getVocabulary()) + " en " + this.getTokenErrorDisplay(t);
-            recognizer.notifyErrorListeners(t, msg, (RecognitionException)null);
+            recognizer.notifyErrorListeners(t, msg, null);
         }
     }
 
