@@ -1,25 +1,28 @@
 import java.io.*;
+
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.PredictionMode;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        // Preparar el fichero de entrada para asignarlo al analizador léxico
-        CharStream input = CharStreams.fromFileName(args[0]);
+    public static void main(String[] args) {
+        try {
 
-        // Crear el objeto correspondiente al analizador léxico con el fichero de entrada
-        FortranToCLexer analex = new FortranToCLexer(input);
+            // Preparar el fichero de entrada para asignarlo al analizador léxico
+            CharStream input = CharStreams.fromFileName(args[0]);
 
-        // Identificar al analizador léxico como fuente de tokens para el sintactico
-        CommonTokenStream tokens = new CommonTokenStream(analex);
+            // Crear el objeto correspondiente al analizador léxico con el fichero de entrada
+            FortranToCLexer analex = new FortranToCLexer(input);
 
-        // Crear el objeto correspondiente al analizador sintáctico con sus datos
-        // Synthesis synthesisHandler = new Synthesis();
-        FortranToCParser anasint = new FortranToCParser(tokens);
-        anasint.removeErrorListeners();
-        anasint.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
-        anasint.setErrorHandler(new CustomErrorStrategy());
-        anasint.addErrorListener(new CustomErrorListener());
+            // Identificar al analizador léxico como fuente de tokens para el sintactico
+            CommonTokenStream tokens = new CommonTokenStream(analex);
+
+            // Crear el objeto correspondiente al analizador sintáctico con sus datos
+            // Synthesis synthesisHandler = new Synthesis();
+            FortranToCParser anasint = new FortranToCParser(tokens);
+            anasint.removeErrorListeners();
+            anasint.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+            anasint.setErrorHandler(new CustomErrorStrategy());
+            anasint.addErrorListener(new CustomErrorListener());
 
 
         /* Si se quiere pasar al analizador algún objeto externo con el que trabajar,
@@ -29,6 +32,14 @@ public class Main {
         /* Comenzar el análisis llamando al axioma de la gramáticaAtención,
         sustituye "AxiomaDeLaGramatica" por el nombre del axioma de tu gramática*/
 
-        anasint.prg();
+            anasint.prg();
+
+        } catch (org.antlr.v4.runtime.RecognitionException e) { //Fallo al reconocer la entrada
+            System.err.println("REC " + e.getMessage());
+        } catch (IOException e) { //Fallo de entrada/salida
+            System.err.println("IO " + e.getMessage());
+        } catch (java.lang.RuntimeException e) { //Cualquier otro fallo
+            System.err.println("RUN " + e.getMessage());
+        }
     }
 }
