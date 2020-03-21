@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FortranToC:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/FortranToC_jar</output-path>
+    <root id="archive" name="FortranToC.jar">
+      <element id="module-output" name="FortranToC" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/antlr-4.7.2-complete.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

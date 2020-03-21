@@ -57,7 +57,7 @@ SUBROUTINE Subrutina0Param ! Subrutina sin parametros de llamada
 END SUBROUTINE Subrutina0Param
 
 SUBROUTINE Subrutina1Param ( Sub1Param1 ) ! Subrutina con 1 parametro de llamada
-	INTEGER , INTENT ( IN ) Sub1Param1 ;
+	INTEGER , INTENT ( IN ) Sub1Param1;
 
 	! Declaracion de variables
 	REAL :: r1, r2=0.2, r3 ;
@@ -95,7 +95,7 @@ END FUNCTION Funcion1Param
 FUNCTION Funcion2Param ( Fun2Param1, Fun2Param2 ) ! Funcion con 2 parametros de llamada
 	REAL :: Funcion2Param ;
 	INTEGER , INTENT ( IN ) Fun2Param1 ;
-	CHARACTER (25) , INTENT ( IN ) Fun2Param2 ;
+	CHARACTER (25) , INTENT ( IN ) Fun2Param2;
 	! Declaracion de variables
 	REAL :: r1, r2=0.2, r3 ;
 
@@ -136,7 +136,7 @@ SUBROUTINE PruebaIfs ! Subrutina sin parametros de llamada para probar ifs
 				CALL Subrutina1Param ( Funcion1Param(i1)+i2*i3 );
 				concatenacionStrings = 'comilla doble " dentro' + "comilla simple  dentro";
             ENDIF
-		ENDIF
+        ENDIF
 	ENDIF
 END SUBROUTINE PruebaIfs
 
@@ -198,7 +198,7 @@ SUBROUTINE PruebaSELECTs ! Subrutina sin parametros de llamada para probar SELEC
 			contador = contador + 1;
 			CALL PruebaIfs;
 			CALL Subrutina0Param;
-	END SELECT
+    END SELECT
 
 	SELECT CASE ( 1.23E4 + -000.64E-77 / -045.0e16  * a )
 		CASE ( : 1.23E4 )
