@@ -6,19 +6,38 @@ public class CustomErrorStrategy extends DefaultErrorStrategy {
 
     // Recover Methods
     @Override
-    public void recover(Parser recognizer, RecognitionException e) {
-        throw e;
+    public void recover(Parser recognizer, RecognitionException except) {
+        throw except;
     }
 
     // Redefinition of the sync and recover in line methods at Default Error Strategy for recovering from detected errors
     @Override
+    public Token recoverInline(Parser recognizer) throws RecognitionException {
+        Token matchedToken = this.singleTokenDeletion(recognizer);
+        if (matchedToken != null) {
+            recognizer.consume();
+            return matchedToken;
+        } else if (this.singleTokenInsertion(recognizer))
+            return this.getMissingSymbol(recognizer);
+        else {
+            InputMismatchException except;
+            if (this.nextTokensContext == null)
+                except = new InputMismatchException(recognizer);
+            else
+                except = new InputMismatchException(recognizer, this.nextTokensState, this.nextTokensContext);
+            throw except;
+        }
+    }
+
+    @Override
     public void sync(Parser recognizer) throws RecognitionException {
-        ATNState s = recognizer.getInterpreter().atn.states.get(recognizer.getState());
+        ATNState state = recognizer.getInterpreter().atn.states.get(recognizer.getState());
+
         if (!this.inErrorRecoveryMode(recognizer)) {
             TokenStream tokens = recognizer.getInputStream();
-            int la = tokens.LA(1);
-            IntervalSet nextTokens = recognizer.getATN().nextTokens(s);
-            if (nextTokens.contains(la)) {
+            int la1 = tokens.LA(1);
+            IntervalSet nextTokens = recognizer.getATN().nextTokens(state);
+            if (nextTokens.contains(la1)) {
                 this.nextTokensContext = null;
                 this.nextTokensState = -1;
             } else if (nextTokens.contains(-2)) {
@@ -26,50 +45,17 @@ public class CustomErrorStrategy extends DefaultErrorStrategy {
                     this.nextTokensContext = recognizer.getContext();
                     this.nextTokensState = recognizer.getState();
                 }
-
             } else {
-                switch (s.getStateType()) {
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 10:
-                        if (this.singleTokenDeletion(recognizer) != null) {
-                            return;
-                        }
-
-                        throw new InputMismatchException(recognizer);
-                    case 9:
-                    case 11:
-                        this.reportUnwantedToken(recognizer);
-                        IntervalSet expecting = recognizer.getExpectedTokens();
-                        IntervalSet whatFollowsLoopIterationOrRule = expecting.or(this.getErrorRecoverySet(recognizer));
-                        this.consumeUntil(recognizer, whatFollowsLoopIterationOrRule);
-                    case 6:
-                    case 7:
-                    case 8:
-                    default:
+                if (state.getStateType() == 10) {
+                    if (this.singleTokenDeletion(recognizer) != null) return;
+                    throw new InputMismatchException(recognizer);
+                } else if (state.getStateType() == 11) {
+                    this.reportUnwantedToken(recognizer);
+                    IntervalSet expected = recognizer.getExpectedTokens();
+                    IntervalSet stateInfo = expected.or(this.getErrorRecoverySet(recognizer));
+                    this.consumeUntil(recognizer, stateInfo);
                 }
             }
-        }
-    }
-
-    @Override
-    public Token recoverInline(Parser recognizer) throws RecognitionException {
-        Token matchedSymbol = this.singleTokenDeletion(recognizer);
-        if (matchedSymbol != null) {
-            recognizer.consume();
-            return matchedSymbol;
-        } else if (this.singleTokenInsertion(recognizer)) {
-            return this.getMissingSymbol(recognizer);
-        } else {
-            InputMismatchException e;
-            if (this.nextTokensContext == null) {
-                e = new InputMismatchException(recognizer);
-            } else {
-                e = new InputMismatchException(recognizer, this.nextTokensState, this.nextTokensContext);
-            }
-
-            throw e;
         }
     }
 
