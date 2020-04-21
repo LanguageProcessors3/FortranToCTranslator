@@ -105,6 +105,9 @@ public class FortranToCLexer extends Lexer {
 	}
 
 
+	    VarConstTranslator vct = new VarConstTranslator();
+
+
 	public FortranToCLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);

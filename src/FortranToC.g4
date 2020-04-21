@@ -1,5 +1,9 @@
 grammar FortranToC ;
 
+@members {
+    VarConstTranslator vct = new VarConstTranslator();
+}
+
 // Token combination rules in parser
 // Main
 
@@ -20,26 +24,48 @@ sentlist: sent sentlist | ;
 
 // dcl : defcte | defvar ; CHANGED FOR FIXING LEFT RECURSION LLK -> LL1
 
-dcl : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';'
-    defcte | tipo '::' varlist ';' defvar ; // LL1
+dcl : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';' defcte {}
+    | tipo '::' varlist ';' defvar {}
+    ; // LL1
 
-defcte : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';'
-    defcte
-    | ;
+defcte : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';' defcte {}
+    |
+    ;
 
-ctelist : ',' IDENT '=' simpvalue ctelist | ;
+ctelist returns [VarConstTranslator vct]
+    : ',' IDENT '=' simpvalue ctelist
+    |
+    ;
 
-simpvalue : NUM_INT_CONST | NUM_REAL_CONST | STRING_CONST | NUM_INT_CONST_B | NUM_INT_CONST_O | NUM_INT_CONST_H ; // Optional included
+simpvalue returns [VarConstTranslator vct]
+    : NUM_INT_CONST { $vct.setInt_const(Integer.parseInt($NUM_INT_CONST.text)); }
+    | NUM_REAL_CONST { $vct.setReal_const(Double.parseDouble($NUM_REAL_CONST.text)); }
+    | STRING_CONST { $vct.setString_const($STRING_CONST.text); }
+    | NUM_INT_CONST_B { $vct.setBin_const(Integer.parseInt($NUM_INT_CONST_B.text)); }
+    | NUM_INT_CONST_O { $vct.setOct_const(Integer.parseInt($NUM_INT_CONST_O.text)); }
+    | NUM_INT_CONST_H { $vct.setHex_const(Integer.parseInt($NUM_INT_CONST_H.text)); }
+    ; // Optional included
 
-defvar : tipo '::' varlist ';' defvar | ;
+defvar : tipo '::' varlist ';' defvar {}
+    |
+    ;
 
-tipo : 'INTEGER' | 'REAL' | 'CHARACTER' charlength ;
+tipo : 'INTEGER' {}
+    | 'REAL' {}
+    | 'CHARACTER' charlength {}
+    ;
 
-charlength : '(' NUM_INT_CONST ')' | ;
+charlength : '(' NUM_INT_CONST ')' {}
+    |
+    ;
 
-varlist : IDENT init | IDENT init ',' varlist ; // LLK -> ANTLR produces LL1 checking the longest production first
+varlist : IDENT init {}
+    | IDENT init ',' varlist {}
+    ; // LLK -> ANTLR produces LL1 checking the longest production first
 
-init : '=' simpvalue | ;
+init : '=' simpvalue {}
+    |
+    ;
 
 // Function Declaration area
 
