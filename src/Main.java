@@ -25,14 +25,16 @@ public class Main {
             anasint.addErrorListener(new CustomErrorListener());
 
 
-        /* Si se quiere pasar al analizador algún objeto externo con el que trabajar,
-        este deberá ser de una clase del mismo paqueteAquí se le llama "sintesis",
-        pero puede ser cualquier nombre.
-        HelloParser anasint = new HelloParser(tokens, new sintesis());*/
-        /* Comenzar el análisis llamando al axioma de la gramáticaAtención,
-        sustituye "AxiomaDeLaGramatica" por el nombre del axioma de tu gramática*/
+            /* Si se quiere pasar al analizador algún objeto externo con el que trabajar,
+            este deberá ser de una clase del mismo paqueteAquí se le llama "sintesis",
+            pero puede ser cualquier nombre.
+            HelloParser anasint = new HelloParser(tokens, new sintesis());*/
+            /* Comenzar el análisis llamando al axioma de la gramáticaAtención,
+            sustituye "AxiomaDeLaGramatica" por el nombre del axioma de tu gramática*/
 
             anasint.prg();
+
+
 
         } catch (org.antlr.v4.runtime.RecognitionException e) { //Fallo al reconocer la entrada
             System.err.println("REC " + e.getMessage());

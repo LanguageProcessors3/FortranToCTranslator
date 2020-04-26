@@ -5,13 +5,84 @@
       <artifact name="FortranToC:jar" />
     </artifacts-to-build>
   </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="bb67bd18-c32f-425e-9451-da12846f1e92" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ConstTranslator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToC.g4" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToC.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToC.interp" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToC.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCLexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCLexer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCLexer.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CabeceraContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CabeceraContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CablistContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CablistContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CasosContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CasosContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CharlengthContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CharlengthContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CodfunContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CodfunContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CodprocContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CodprocContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CtelistContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$CtelistContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DclContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DclContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DcllistContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DcllistContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$Dec_f_paramlistContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$Dec_f_paramlistContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$Dec_s_paramlistContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$Dec_s_paramlistContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DecfunContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DecfunContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DecprocContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DecprocContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DecsubprogContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DecsubprogContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DefcteContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DefcteContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DefvarContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DefvarContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DovalContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$DovalContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$EtiquetasContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$EtiquetasContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$ExpAuxContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$ExpAuxContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$ExpContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$ExpContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$ExpcondContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$ExpcondContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$ExplistContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$ExplistContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$FactorContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$FactorContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$FactorcondContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$FactorcondContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$Formal_paramlistContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$Formal_paramlistContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$InitContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$InitContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$ListaetiqetasContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$ListaetiqetasContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$NomparamlistContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$NomparamlistContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$OpContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$OpContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$OparitContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$OparitContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$OpcompContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$OpcompContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$OplogContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$OplogContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$PrgContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$PrgContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$Proc_callContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$Proc_callContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$SentContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$SentContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$SentlistContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$SentlistContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$SimpvalueContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$SimpvalueContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$SubpparamlistContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$SubpparamlistContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$SubproglistContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$SubproglistContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$TipoContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$TipoContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$TipoparamContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$TipoparamContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$VarlistContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser$VarlistContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/FortranToCParser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FortranToC/input.txt" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FortranToC/input.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FortranToC.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToC.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FortranToCLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToCLexer.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FortranToC.interp" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToC.interp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FortranToCLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToCLexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FortranToCParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToCParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/VarConstTranslator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/input.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/input.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +132,7 @@
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="FortranToC" />
-      <option name="PROGRAM_PARAMETERS" value="C:\Users\gonza\IdeaProjects\FortranToC\src\input.txt" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;C:\Users\EVA\Desktop\PL WORKBENCH\FortranToCTranslator\src\input.txt&quot;" />
       <option name="INPUT_FILE" value="$PROJECT_DIR$/src/input.txt" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -91,6 +162,8 @@
       <workItem from="1584632984188" duration="1461000" />
       <workItem from="1584819233226" duration="7436000" />
       <workItem from="1587487978893" duration="24000" />
+      <workItem from="1587639233877" duration="1841000" />
+      <workItem from="1587896116789" duration="12512000" />
     </task>
     <servers />
   </component>
@@ -98,6 +171,15 @@
     <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -105,38 +187,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="674" y="154" width="587" height="731" key="#Main/0.0.1920.1040@0.0.1920.1040" timestamp="1584300416447" />
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584298358578">
+    <state x="362" y="323" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587900865831">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584298358578" />
-    <state x="722" y="234" key="#com.intellij.ide.util.MemberChooser" timestamp="1587486240178">
+    <state x="362" y="323" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1587900865831" />
+    <state x="722" y="234" key="#com.intellij.ide.util.MemberChooser" timestamp="1587901357681">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="722" y="234" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1587486240178" />
+    <state x="722" y="234" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1587901357681" />
     <state x="689" y="303" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1584833279935">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="689" y="303" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584833279935" />
-    <state x="503" y="260" key="FileChooserDialogImpl" timestamp="1584300358993">
+    <state x="503" y="260" key="FileChooserDialogImpl" timestamp="1587900794118">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="503" y="260" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1584300358993" />
-    <state width="1877" height="241" key="GridCell.Tab.0.bottom" timestamp="1584833388683">
+    <state x="503" y="260" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1587900794118" />
+    <state width="1877" height="248" key="GridCell.Tab.0.bottom" timestamp="1587908881912">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="241" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584833388683" />
-    <state width="1877" height="241" key="GridCell.Tab.0.center" timestamp="1584833388683">
+    <state width="1877" height="248" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1587908881912" />
+    <state width="1877" height="248" key="GridCell.Tab.0.center" timestamp="1587908881912">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="241" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584833388683" />
-    <state width="1877" height="241" key="GridCell.Tab.0.left" timestamp="1584833388683">
+    <state width="1877" height="248" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1587908881912" />
+    <state width="1877" height="248" key="GridCell.Tab.0.left" timestamp="1587908881912">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="241" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584833388683" />
-    <state width="1877" height="241" key="GridCell.Tab.0.right" timestamp="1584833388683">
+    <state width="1877" height="248" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1587908881912" />
+    <state width="1877" height="248" key="GridCell.Tab.0.right" timestamp="1587908881912">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="241" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584833388683" />
+    <state width="1877" height="248" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1587908881912" />
     <state x="440" y="94" key="SettingsEditor" timestamp="1584833296901">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

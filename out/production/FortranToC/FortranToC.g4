@@ -1,12 +1,23 @@
 grammar FortranToC ;
 
+@members {
+    void printConst(String ident, String value) {
+        System.out.println("#defines " + ident + " " + value + ";");
+    }
+}
+
 // Token combination rules in parser
 // Main
 
-prg : 'PROGRAM' IDENT ';' dcllist cabecera sent sentlist 'END'
-    'PROGRAM' IDENT subproglist ;
+prg
+    : 'PROGRAM' IDENT ';' dcllist cabecera sent sentlist 'END'
+    'PROGRAM' IDENT subproglist {  }
+    ;
 
-dcllist : dcl dcllist | ;
+dcllist
+    : dcl dcllist {  }
+    |
+    ;
 
 cabecera : 'INTERFACE' cablist 'END' 'INTERFACE' | ;
 
@@ -20,26 +31,51 @@ sentlist: sent sentlist | ;
 
 // dcl : defcte | defvar ; CHANGED FOR FIXING LEFT RECURSION LLK -> LL1
 
-dcl : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';'
-    defcte | tipo '::' varlist ';' defvar ; // LL1
+dcl
+    : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue { printConst($IDENT.text, $simpvalue.value); } ctelist ';' defcte
+    | tipo '::' varlist ';' defvar {}
+    ; // LL1
 
-defcte : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';'
-    defcte
-    | ;
+defcte
+    : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue { printConst($IDENT.text, $simpvalue.value); } ctelist ';' defcte
+    |
+    ;
 
-ctelist : ',' IDENT '=' simpvalue ctelist | ;
+ctelist
+    : ',' IDENT '=' simpvalue { printConst($IDENT.text, $simpvalue.value); } ctelist
+    |
+    ;
 
-simpvalue : NUM_INT_CONST | NUM_REAL_CONST | STRING_CONST | NUM_INT_CONST_B | NUM_INT_CONST_O | NUM_INT_CONST_H ; // Optional included
+simpvalue returns [String value]
+    : NUM_INT_CONST { $value = $NUM_INT_CONST.text ; } // #define int value
+    | NUM_REAL_CONST { $value = $NUM_REAL_CONST.text ; } // #define float value
+    | STRING_CONST { $value = $STRING_CONST.text ; } // #define char[] value
+    | NUM_INT_CONST_B { $value = $NUM_INT_CONST_B.text ; } // #define 0b value
+    | NUM_INT_CONST_O { $value = $NUM_INT_CONST_O.text ; } // #define 0o value
+    | NUM_INT_CONST_H { $value = $NUM_INT_CONST_H.text ; } // #define 0x value
+    ; // Optional included
 
-defvar : tipo '::' varlist ';' defvar | ;
+defvar : tipo '::' varlist ';' defvar {}
+    |
+    ;
 
-tipo : 'INTEGER' | 'REAL' | 'CHARACTER' charlength ;
+tipo
+    : 'INTEGER' {}
+    | 'REAL' {}
+    | 'CHARACTER' charlength {}
+    ;
 
-charlength : '(' NUM_INT_CONST ')' | ;
+charlength : '(' NUM_INT_CONST ')' {}
+    |
+    ;
 
-varlist : IDENT init | IDENT init ',' varlist ; // LLK -> ANTLR produces LL1 checking the longest production first
+varlist : IDENT init {}
+    | IDENT init ',' varlist {}
+    ; // LLK -> ANTLR produces LL1 checking the longest production first
 
-init : '=' simpvalue | ;
+init : '=' simpvalue {}
+    |
+    ;
 
 // Function Declaration area
 

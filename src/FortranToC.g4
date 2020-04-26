@@ -1,16 +1,23 @@
 grammar FortranToC ;
 
 @members {
-    VarConstTranslator vct = new VarConstTranslator();
+    void printConst(String ident, String value) {
+        System.out.println("#defines " + ident + " " + value + ";");
+    }
 }
 
 // Token combination rules in parser
 // Main
 
-prg : 'PROGRAM' IDENT ';' dcllist cabecera sent sentlist 'END'
-    'PROGRAM' IDENT subproglist ;
+prg
+    : 'PROGRAM' IDENT ';' dcllist cabecera sent sentlist 'END'
+    'PROGRAM' IDENT subproglist {  }
+    ;
 
-dcllist : dcl dcllist | ;
+dcllist
+    : dcl dcllist {  }
+    |
+    ;
 
 cabecera : 'INTERFACE' cablist 'END' 'INTERFACE' | ;
 
@@ -24,33 +31,36 @@ sentlist: sent sentlist | ;
 
 // dcl : defcte | defvar ; CHANGED FOR FIXING LEFT RECURSION LLK -> LL1
 
-dcl : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';' defcte {}
+dcl
+    : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue { printConst($IDENT.text, $simpvalue.value); } ctelist ';' defcte
     | tipo '::' varlist ';' defvar {}
     ; // LL1
 
-defcte : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';' defcte {}
+defcte
+    : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue { printConst($IDENT.text, $simpvalue.value); } ctelist ';' defcte
     |
     ;
 
-ctelist returns [VarConstTranslator vct]
-    : ',' IDENT '=' simpvalue ctelist
+ctelist
+    : ',' IDENT '=' simpvalue { printConst($IDENT.text, $simpvalue.value); } ctelist
     |
     ;
 
-simpvalue returns [VarConstTranslator vct]
-    : NUM_INT_CONST { $vct.setInt_const(Integer.parseInt($NUM_INT_CONST.text)); }
-    | NUM_REAL_CONST { $vct.setReal_const(Double.parseDouble($NUM_REAL_CONST.text)); }
-    | STRING_CONST { $vct.setString_const($STRING_CONST.text); }
-    | NUM_INT_CONST_B { $vct.setBin_const(Integer.parseInt($NUM_INT_CONST_B.text)); }
-    | NUM_INT_CONST_O { $vct.setOct_const(Integer.parseInt($NUM_INT_CONST_O.text)); }
-    | NUM_INT_CONST_H { $vct.setHex_const(Integer.parseInt($NUM_INT_CONST_H.text)); }
+simpvalue returns [String value]
+    : NUM_INT_CONST { $value = $NUM_INT_CONST.text ; } // #define int value
+    | NUM_REAL_CONST { $value = $NUM_REAL_CONST.text ; } // #define float value
+    | STRING_CONST { $value = $STRING_CONST.text ; } // #define char[] value
+    | NUM_INT_CONST_B { $value = $NUM_INT_CONST_B.text ; } // #define 0b value
+    | NUM_INT_CONST_O { $value = $NUM_INT_CONST_O.text ; } // #define 0o value
+    | NUM_INT_CONST_H { $value = $NUM_INT_CONST_H.text ; } // #define 0x value
     ; // Optional included
 
 defvar : tipo '::' varlist ';' defvar {}
     |
     ;
 
-tipo : 'INTEGER' {}
+tipo
+    : 'INTEGER' {}
     | 'REAL' {}
     | 'CHARACTER' charlength {}
     ;

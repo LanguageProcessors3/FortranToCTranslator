@@ -9,8 +9,8 @@ REAL :: r1 = -0.4, r2 = 234e-2, r3 = 23.498e14 ;
 CHARACTER (2) :: c1, c2 = 'SI' ;
 
 ! Declaracion de constantes
-INTEGER , PARAMETER :: cte1 = 23, cte2 = 04; ! Contantes enteras
-REAL , PARAMETER :: cte3 = 56.34 ; ! Contantes reales
+INTEGER , PARAMETER :: cte1 = 23, cte2 = 04, cte3 = 68; ! Contantes enteras
+REAL , PARAMETER :: cte4 = 56.34, cte5 = 23.22, cte6 = 0.2, cte7 = 1.22 ; ! Contantes reales
 
 INTERFACE
 	SUBROUTINE Subrutina0Param ! Subrutina sin parametros de llamada

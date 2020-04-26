@@ -105,7 +105,9 @@ public class FortranToCLexer extends Lexer {
 	}
 
 
-	    VarConstTranslator vct = new VarConstTranslator();
+	    void printConst(String ident, String value) {
+	        System.out.println("#defines " + ident + " " + value + ";");
+	    }
 
 
 	public FortranToCLexer(CharStream input) {
