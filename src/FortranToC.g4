@@ -79,13 +79,15 @@ init : '=' simpvalue {}
 
 // Function Declaration area
 
-decproc : 'SUBROUTINE' IDENT formal_paramlist
+decproc : 'SUBROUTINE' IDENT formal_paramlist{
+    println("void " + $IDENT.text + $formal_paramlist.text);}
     dec_s_paramlist
     'END' 'SUBROUTINE' IDENT ;
 
-formal_paramlist : | '(' nomparamlist ')' ;
+formal_paramlist : {$formal_paramlist.text = "";} | '(' nomparamlist ')' {$formal_paramlist.text = "(" + $nomparamlist.text + ");};
 
-nomparamlist : IDENT | IDENT ',' nomparamlist ; // LL1
+nomparamlist : IDENT {$nomparamlist.text = " var " + $IDENT.text;}
+              | IDENT ',' nomparamlist {$nomparamlist.text = ", var " + $IDENT.text + $nomparamlist1.text;}; // LL1
 
 dec_s_paramlist : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';'
     dec_s_paramlist
