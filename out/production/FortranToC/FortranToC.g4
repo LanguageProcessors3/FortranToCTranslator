@@ -4,6 +4,8 @@ grammar FortranToC ;
     void printConst(String ident, String value) {
         System.out.println("#defines " + ident + " " + value + ";");
     }
+
+    FunctionDeclarationTranslator fdt = new FunctionDeclarationTranslator();
 }
 
 // Token combination rules in parser
@@ -59,14 +61,15 @@ defvar : tipo '::' varlist ';' defvar {}
     |
     ;
 
-tipo
-    : 'INTEGER' {}
-    | 'REAL' {}
-    | 'CHARACTER' charlength {}
+tipo returns [String type]
+    : 'INTEGER' { $type = "int" ; }
+    | 'REAL' { $type = "float" ; }
+    | 'CHARACTER' charlength { $type = "char" + $charlength.num_const ; }
     ;
 
-charlength : '(' NUM_INT_CONST ')' {}
-    |
+charlength returns [String num_const]
+    : '(' NUM_INT_CONST ')' { $num_const = "[" + $NUM_INT_CONST.text + "]" ; }
+    | { $num_const = "" ; }
     ;
 
 varlist : IDENT init {}
@@ -79,26 +82,32 @@ init : '=' simpvalue {}
 
 // Function Declaration area
 
-decproc : 'SUBROUTINE' IDENT formal_paramlist
+decproc
+    : 'SUBROUTINE' IDENT formal_paramlist
     dec_s_paramlist
-    'END' 'SUBROUTINE' IDENT ;
+    'END' 'SUBROUTINE' IDENT { fdt.printProcHeader($IDENT.text) ; } ;
 
-formal_paramlist : | '(' nomparamlist ')' ;
+formal_paramlist
+    :
+    | '(' nomparamlist ')' ;
 
-nomparamlist : IDENT | IDENT ',' nomparamlist ; // LL1
+nomparamlist
+    : IDENT { fdt.getIdents().add($IDENT.text) ; }
+    | IDENT ',' nomparamlist { fdt.getIdents().add($IDENT.text) ; } ; // LL1
 
-dec_s_paramlist : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';'
+dec_s_paramlist
+    : tipo { fdt.getTypes().add($tipo.type) ; } ',' 'INTENT' '(' tipoparam ')' IDENT ';'
     dec_s_paramlist
     | ;
 
 tipoparam : 'IN' | 'OUT' | 'INOUT' ;
 
 decfun : 'FUNCTION' IDENT '(' nomparamlist ')'
-    tipo '::' IDENT ';'
+    tipo '::' IDENT ';' { fdt.getTypes().add($tipo.type) ; }
     dec_f_paramlist
-    'END' 'FUNCTION' IDENT ;
+    'END' 'FUNCTION' IDENT { fdt.printFuncHeader($IDENT.text) ; } ;
 
-dec_f_paramlist : tipo ',' 'INTENT' '(' 'IN' ')' IDENT ';'
+dec_f_paramlist : tipo { fdt.getTypes().add($tipo.type) ; } ',' 'INTENT' '(' 'IN' ')' IDENT ';'
     dec_f_paramlist
     | ;
 

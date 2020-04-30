@@ -109,6 +109,8 @@ public class FortranToCLexer extends Lexer {
 	        System.out.println("#defines " + ident + " " + value + ";");
 	    }
 
+	    FunctionDeclarationTranslator fdt = new FunctionDeclarationTranslator();
+
 
 	public FortranToCLexer(CharStream input) {
 		super(input);
