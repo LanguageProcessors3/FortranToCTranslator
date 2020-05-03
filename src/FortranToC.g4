@@ -13,8 +13,7 @@ grammar FortranToC ;
 
 prg
     : 'PROGRAM' IDENT ';' dcllist cabecera sent sentlist 'END'
-    'PROGRAM' IDENT subproglist {  }
-    ;
+    'PROGRAM' IDENT subproglist {  } ;
 
 dcllist
     : dcl dcllist {  }
@@ -147,29 +146,40 @@ op : oparit ;
 
 oparit : '+' | '-' | '*' | '/' ;
 
-factor : simpvalue | '(' exp ')' | IDENT '(' exp explist ')' | IDENT ;
+factor
+    : simpvalue
+    | '(' exp ')'
+    | IDENT '(' exp explist ')' { fdt.getFactors().add($IDENT.text); }
+    | IDENT { fdt.getFactors().add($IDENT.text); } ;
 
 explist : ',' exp explist | ;
 
-proc_call : 'CALL' IDENT subpparamlist ;
+proc_call
+    : 'CALL' IDENT subpparamlist { fdt.printSubprogram($IDENT.text); } ;
 
 subpparamlist : '(' exp explist ')' | ;
 
 // Function Implementation area
 
-subproglist : codproc subproglist | codfun subproglist | ;
+subproglist
+    : codproc subproglist
+    | codfun subproglist
+    |
+    ;
 
-codproc : 'SUBROUTINE' IDENT formal_paramlist
-    dec_s_paramlist
+codproc
+    : 'SUBROUTINE' IDENT formal_paramlist
+    dec_s_paramlist { fdt.printProcImplementation($IDENT.text) ; }
     dcllist sent sentlist
-    'END' 'SUBROUTINE' IDENT ;
+    'END' 'SUBROUTINE' IDENT { System.out.println("}"); } ;
 
-codfun : 'FUNCTION' IDENT '(' nomparamlist ')'
+codfun
+    : 'FUNCTION' IDENT '(' nomparamlist ')'
     tipo '::' IDENT ';'
     dec_f_paramlist
     dcllist sent sentlist
-    IDENT '=' exp ';'
-    'END' 'FUNCTION' IDENT ;
+    IDENT '=' exp ';' {  }
+    'END' 'FUNCTION' IDENT { System.out.println("}"); } ;
 
 // Optional parser implementation
 // Flow control statements
