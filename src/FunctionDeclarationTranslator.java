@@ -27,7 +27,9 @@ public class FunctionDeclarationTranslator {
         return types;
     }
 
-    public List<String> getFactors() { return factors; }
+    public List<String> getFactors() {
+        return factors;
+    }
 
     private String parameters() {
         if (!this.types.isEmpty() && !this.idents.isEmpty()) {
@@ -78,7 +80,15 @@ public class FunctionDeclarationTranslator {
     }
 
     public void printProcImplementation(String name) {
-        String fun = "void" + " " + name + " " + parameters().substring(0,parameters().length()-1) + " {";
+        String fun = "void" + " " + name + " " + parameters().substring(0, parameters().length() - 1) + " {";
+        System.out.println(fun);
+        this.functions.add(fun);
+        this.idents.clear();
+        this.types.clear();
+    }
+
+    public void printFuncImplementation(String name, String funcType) {
+        String fun = funcType + " " + name + " " + parameters().substring(0, parameters().length() - 1) + " {";
         System.out.println(fun);
         this.functions.add(fun);
         this.idents.clear();

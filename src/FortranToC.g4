@@ -173,13 +173,12 @@ codproc
     dcllist sent sentlist
     'END' 'SUBROUTINE' IDENT { System.out.println("}"); } ;
 
-codfun
-    : 'FUNCTION' IDENT '(' nomparamlist ')'
+codfun : 'FUNCTION' IDENT '(' nomparamlist ')'
     tipo '::' IDENT ';'
-    dec_f_paramlist
+    dec_f_paramlist { fdt.printFuncImplementation($IDENT.text, $tipo.type) ; }
     dcllist sent sentlist
     IDENT '=' exp ';' {  }
-    'END' 'FUNCTION' IDENT { System.out.println("}"); } ;
+    'END' 'FUNCTION' IDENT { System.out.println("\t" + "return" + " " + $IDENT.text + "\n}"); } ;
 
 // Optional parser implementation
 // Flow control statements
