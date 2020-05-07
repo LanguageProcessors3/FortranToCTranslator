@@ -12,7 +12,7 @@ grammar FortranToC ;
 // Main
 
 prg
-    : 'PROGRAM' IDENT ';' dcllist cabecera sent sentlist 'END'
+    : 'PROGRAM' IDENT ';' dcllist cabecera {System.out.println("void main (void)\n{");}sent sentlist {System.out.println("}");} 'END'
     'PROGRAM' IDENT subproglist {  } ;
 
 dcllist
