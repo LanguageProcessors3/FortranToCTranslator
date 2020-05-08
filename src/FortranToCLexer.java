@@ -105,10 +105,10 @@ public class FortranToCLexer extends Lexer {
 	}
 
 
-	    ConstTranslator ct = new ConstTranslator();
-	    HeaderTranslator hdt = new HeaderTranslator();
-	    SentTranslator st = new SentTranslator();
-	    ImplementationsTranslator imt = new ImplementationsTranslator();
+	    ArrayList<Constant> constants = new ArrayList<>();
+	    ArrayList<Header> headers = new ArrayList<>();
+	    ArrayList<Variable> variables = new ArrayList<>();
+	    ArrayList<String> statements = new ArrayList<>();
 
 
 	public FortranToCLexer(CharStream input) {

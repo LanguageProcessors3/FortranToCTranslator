@@ -1,50 +1,62 @@
 grammar FortranToC ;
 
 @members {
-    ConstTranslator ct = new ConstTranslator();
-    HeaderTranslator hdt = new HeaderTranslator();
-    SentTranslator st = new SentTranslator();
-    ImplementationsTranslator imt = new ImplementationsTranslator();
+    ArrayList<Constant> constants = new ArrayList<>();
+    ArrayList<Header> headers = new ArrayList<>();
+    ArrayList<Variable> variables = new ArrayList<>();
+    ArrayList<String> statements = new ArrayList<>();
 }
 
 // Token combination rules in parser
 // Main
 
 prg
-    : 'PROGRAM' IDENT ';' dcllist cabecera { System.out.println("void main (void) {") ; } sent[true] sentlist[true] { System.out.println("}") ; } 'END'
-    'PROGRAM' IDENT subproglist {  } ;
+    : 'PROGRAM' IDENT ';' dcllist cabecera { System.out.println("void main (void) {") ; } sent sentlist { System.out.println("}") ; } 'END'
+    'PROGRAM' IDENT subproglist {  }
+    ;
 
 dcllist
-    : dcl dcllist {  }
+    : dcl dcllist
     |
     ;
 
-cabecera : 'INTERFACE' cablist 'END' 'INTERFACE' | ;
+cabecera
+    : 'INTERFACE' cablist 'END' 'INTERFACE'
+    |
+    ;
 
-cablist : decproc decsubprog | decfun decsubprog ;
+cablist
+    : decproc decsubprog
+    | decfun decsubprog
+    ;
 
-decsubprog : decproc decsubprog | decfun decsubprog | ;
+decsubprog
+    : decproc decsubprog
+    | decfun decsubprog
+    |
+    ;
 
-sentlist[boolean isIsolated]
-    : sent[$isIsolated] sentlist[$isIsolated]
-    | ;
+sentlist
+    : sent sentlist
+    |
+    ;
 
 // VAR and CONST Declaration area
 
 // dcl : defcte | defvar ; CHANGED FOR FIXING LEFT RECURSION LLK -> LL1
 
 dcl
-    : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue { ct.saveConst($IDENT.text, $simpvalue.value) ; } ctelist ';' defcte
-    | tipo '::' varlist ';' defvar {}
+    : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue { constants.add(new Constant($IDENT.text, $simpvalue.value)) ; } ctelist ';' defcte
+    | tipo '::' varlist[$tipo.value, $tipo.size] ';' defvar
     ; // LL1
 
 defcte
-    : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue { ct.saveConst($IDENT.text, $simpvalue.value) ; } ctelist ';' defcte
+    : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue { constants.add(new Constant($IDENT.text, $simpvalue.value)) ; } ctelist ';' defcte
     |
     ;
 
 ctelist
-    : ',' IDENT '=' simpvalue { ct.saveConst($IDENT.text, $simpvalue.value) ; } ctelist
+    : ',' IDENT '=' simpvalue { constants.add(new Constant($IDENT.text, $simpvalue.value)) ; } ctelist
     |
     ;
 
@@ -57,14 +69,14 @@ simpvalue returns [String value]
     | NUM_INT_CONST_H { $value = $NUM_INT_CONST_H.text ; } // #define 0x value
     ; // Optional included
 
-defvar : tipo '::' varlist ';' defvar {}
+defvar : tipo '::' varlist[$tipo.value, $tipo.size] ';' defvar
     |
     ;
 
-tipo returns [String type]
-    : 'INTEGER' { $type = "int" ; }
-    | 'REAL' { $type = "float" ; }
-    | 'CHARACTER' charlength { $type = "char" + $charlength.num_const ; }
+tipo returns [String value, String size]
+    : 'INTEGER' { $value = "int" ; $size = "" ; }
+    | 'REAL' { $value = "float" ; $size = "" ; }
+    | 'CHARACTER' charlength { $value = "char" ; $size = $charlength.num_const ; }
     ;
 
 charlength returns [String num_const]
@@ -72,109 +84,149 @@ charlength returns [String num_const]
     | { $num_const = "" ; }
     ;
 
-varlist : IDENT init {}
-    | IDENT init ',' varlist {}
+varlist[String type, String size]
+    : IDENT init { statements.add($type + " " + $IDENT.text + $size + $init.value + ";") ; }
+    | IDENT init { statements.add($type + " " + $IDENT.text + $size + $init.value + ";") ; } ',' varlist[$type, $size]
     ; // LLK -> ANTLR produces LL1 checking the longest production first
 
-init : '=' simpvalue {}
-    |
+init returns [String value]
+    : '=' simpvalue { $value = " = " + $simpvalue.value ; }
+    | { $value = "" ; }
     ;
 
 // Function Declaration area
 
 decproc
-    : 'SUBROUTINE' IDENT formal_paramlist[true]
-    dec_s_paramlist[true]
-    'END' 'SUBROUTINE' IDENT { hdt.saveProcHeader($IDENT.text) ; } ;
+    : 'SUBROUTINE' id1=IDENT formal_paramlist
+    dec_s_paramlist
+    'END' 'SUBROUTINE' id2=IDENT { Header h = new Header("void", $id1.text, $id2.text);
+                                   h.setParameters(variables);
+                                   variables.clear();
+                                   headers.add(h);
+                                 }
+    ;
 
-formal_paramlist[boolean isHeader]
+formal_paramlist
     :
-    | '(' nomparamlist[$isHeader] ')' ;
+    | '(' nomparamlist ')'
+    ;
 
-nomparamlist[boolean isHeader]
-    : IDENT { if (isHeader) hdt.getIdents().add($IDENT.text) ; else imt.getIdents().add($IDENT.text) ; }
-    | IDENT ',' nomparamlist[$isHeader] { if (isHeader) hdt.getIdents().add($IDENT.text) ; else imt.getIdents().add($IDENT.text) ; } ; // LL1
+nomparamlist
+    : IDENT
+    | IDENT ',' nomparamlist
+    ; // LL1
 
-dec_s_paramlist[boolean isHeader]
-    : tipo { if (isHeader) hdt.getTypes().add($tipo.type) ; else imt.getTypes().add($tipo.type) ; } ',' 'INTENT' '(' tipoparam ')' IDENT ';'
-    dec_s_paramlist[$isHeader]
-    | ;
+dec_s_paramlist
+    : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';'
+    { variables.add(new Variable($tipo.value, $tipoparam.value + $IDENT.text, $tipo.size)); }
+    dec_s_paramlist
+    |
+    ;
 
-tipoparam : 'IN' | 'OUT' | 'INOUT' ;
+tipoparam returns [String value]
+    : 'IN' { $value = ""; }
+    | 'OUT' { $value = "*"; }
+    | 'INOUT' { $value = "*"; }
+    ;
 
-decfun : 'FUNCTION' IDENT '(' nomparamlist[true] ')'
-    tipo '::' IDENT ';' { hdt.getTypes().add($tipo.type) ; }
-    dec_f_paramlist[true]
-    'END' 'FUNCTION' IDENT { hdt.saveFuncHeader($IDENT.text) ; } ;
+decfun
+    : 'FUNCTION' id1=IDENT '(' nomparamlist ')'
+    tipo '::' id2=IDENT ';'
+    dec_f_paramlist { Header h = new Header($tipo.value, $id1.text, $id2.text);
+                      h.setParameters(variables);
+                      variables.clear();
+                      headers.add(h);
+                    }
+    'END' 'FUNCTION' IDENT
+    ;
 
-dec_f_paramlist[boolean isHeader]
-    : tipo { if (isHeader) hdt.getTypes().add($tipo.type) ; else imt.getTypes().add($tipo.type) ; } ',' 'INTENT' '(' 'IN' ')' IDENT ';'
-    dec_f_paramlist[$isHeader]
-    | ;
+dec_f_paramlist
+    : tipo ',' 'INTENT' '(' 'IN' ')' IDENT ';'
+    { variables.add(new Variable($tipo.value, $IDENT.text, $tipo.size));}
+    dec_f_paramlist
+    |
+    ;
 
 // Statement area
 
 // Optional part added to sent
-sent[boolean isIsolated]
-    : IDENT '=' exp[$isIsolated] ';'
-    | proc_call[$isIsolated] ';'
-    | 'IF' '(' expcond[$isIsolated] ')' sent[$isIsolated]
-    | 'IF' '(' expcond[$isIsolated] ')' 'THEN' sentlist[$isIsolated] 'ENDIF'
-    | 'IF' '(' expcond[$isIsolated] ')' 'THEN' sentlist[$isIsolated] 'ELSE' sentlist[$isIsolated] 'ENDIF'
-    | 'DO' 'WHILE' '(' expcond[$isIsolated] ')' sentlist[$isIsolated] 'ENDDO'
-    | 'DO' IDENT '=' doval ',' doval ',' doval sentlist[$isIsolated] 'ENDDO'
-    | 'SELECT' 'CASE' '(' exp[$isIsolated] ')' casos[$isIsolated] 'END' 'SELECT' ;
+sent
+    : IDENT '=' exp ';'
+    | proc_call ';'
+    | 'IF' '(' expcond ')' sent
+    | 'IF' '(' expcond ')' 'THEN' sentlist 'ENDIF'
+    | 'IF' '(' expcond ')' 'THEN' sentlist 'ELSE' sentlist 'ENDIF'
+    | 'DO' 'WHILE' '(' expcond ')' sentlist 'ENDDO'
+    | 'DO' IDENT '=' doval ',' doval ',' doval sentlist 'ENDDO'
+    | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT'
+    ;
 
-doval : NUM_INT_CONST | IDENT ; // Optional included
+doval
+    : NUM_INT_CONST
+    | IDENT
+    ; // Optional included
 
-casos[boolean isIsolated]
-    : 'CASE' '(' etiquetas ')' sentlist[$isIsolated] casos[$isIsolated] // Optional included
-    | 'CASE' 'DEFAULT' sentlist[$isIsolated]
-    | ;
+casos
+    : 'CASE' '(' etiquetas ')' sentlist casos // Optional included
+    | 'CASE' 'DEFAULT' sentlist
+    |
+    ;
 
 etiquetas
     : simpvalue listaetiqetas // Optional included
     | simpvalue ':' simpvalue
     | ':' simpvalue
-    | simpvalue ':' ;
+    | simpvalue ':'
+    ;
 
-listaetiqetas : ',' simpvalue | ; // Optional included
+listaetiqetas
+    : ',' simpvalue
+    |
+    ; // Optional included
 
 // Optional finished
 
 // exp : exp op exp | factor CHANGED TO BE LL1 with expAux
 
-exp[boolean isIsolated]
-    : factor[$isIsolated] expAux[$isIsolated] ;
+exp returns [String value]
+    : factor expAux { $value = $factor.value + $expAux.value ; }
+    ;
 
-expAux[boolean isIsolated]
-    : op exp[$isIsolated] expAux[$isIsolated]
-    | ;
+expAux returns [String value]
+    : op exp expAux { $value = $op.value + $ exp.value + $expAux.value ; }
+    | { $value = "" ; }
+    ;
 
-op : oparit ;
+op returns [String value]
+    : oparit { $value = $oparit.value ; }
+    ;
 
-oparit
-    : '+'
-    | '-'
-    | '*'
-    | '/' ;
+oparit returns [String value]
+    : '+' { $value = " + " ; }
+    | '-' { $value = " - " ; }
+    | '*' { $value = " * " ; }
+    | '/' { $value = " / " ; }
+    ;
 
-factor[boolean isIsolated]
+factor
     : simpvalue
-    | '(' exp[$isIsolated] ')'
-    | IDENT '(' exp[$isIsolated] explist[$isIsolated] ')' { if (isIsolated) st.getFactors().add($IDENT.text) ; else imt.getFactors().add($IDENT.text) ; }
-    | IDENT { if (isIsolated) st.getFactors().add($IDENT.text) ; else imt.getFactors().add($IDENT.text) ; } ;
+    | '(' exp ')'
+    | IDENT '(' exp explist ')'
+    | IDENT
+    ;
 
-explist[boolean isIsolated]
-    : ',' exp[$isIsolated] explist[$isIsolated]
-    | ;
+explist
+    : ',' exp explist
+    |
+    ;
 
-proc_call[boolean isIsolated]
-    : 'CALL' IDENT subpparamlist[$isIsolated] { if (isIsolated) st.saveCall($IDENT.text) ; else imt.saveSubprogram($IDENT.text) ; } ;
+proc_call returns [String value]
+    : 'CALL' IDENT subpparamlist { $value  = $IDENT.text + " ( " + $subpparamlist.value + " ) ;" ; } ;
 
-subpparamlist[boolean isIsolated]
-    : '(' exp[$isIsolated] explist[$isIsolated] ')'
-    | ;
+subpparamlist returns [String value]
+    : '(' exp explist ')' { $value = $exp.value + $explist.value ; }
+    | { $value = "" ; }
+    ;
 
 // Function Implementation area
 
@@ -185,35 +237,51 @@ subproglist
     ;
 
 codproc
-    : 'SUBROUTINE' IDENT formal_paramlist[false]
-    dec_s_paramlist[false] { imt.saveProcHeadImplementation($IDENT.text) ; }
-    dcllist sent[false] sentlist[false]
-    'END' 'SUBROUTINE' IDENT { imt.saveFuncImplementation(false, $IDENT.text); } ;
+    : 'SUBROUTINE' IDENT { variables.clear() ; } formal_paramlist
+    dec_s_paramlist { statements.add("void " + $IDENT.text + " (" + varListToString(variables) + ") {") ; }
+    dcllist sent sentlist
+    'END' 'SUBROUTINE' IDENT { statements.add("}") ; }
+    ;
 
-codfun : 'FUNCTION' IDENT '(' nomparamlist[false] ')'
-    tipo '::' IDENT ';' { imt.getTypes().add($tipo.type) ; }
-    dec_f_paramlist[false] { imt.saveFuncHeadImplementation($IDENT.text) ; }
-    dcllist sent[false] sentlist[false]
-    IDENT '=' exp[false] ';' {  }
-    'END' 'FUNCTION' IDENT { imt.saveFuncImplementation(true, $IDENT.text) ; } ;
+codfun : 'FUNCTION' IDENT '(' nomparamlist ')'
+    tipo '::' IDENT ';' { variables.clear() ; }
+    dec_f_paramlist { statements.add($tipo.value + " " + $IDENT.text + " (" + varListToString(variables) + ") {") ; }
+    dcllist sent sentlist
+    IDENT '=' exp ';' { statements.add("return " + $exp.value) ; }
+    'END' 'FUNCTION' IDENT { statements.add("}") ; }
+    ;
 
 // Optional parser implementation
 // Flow control statements
 
-expcond[boolean isIsolated]
-    : expcond[$isIsolated] oplog expcond[$isIsolated]
-    | factorcond[$isIsolated] ;
+expcond
+    : expcond oplog expcond
+    | factorcond
+    ;
 
-oplog : '.OR.' | '.AND.' | '.EQV.' | '.NEQV.' ;
+oplog
+    : '.OR.'
+    | '.AND.'
+    | '.EQV.'
+    | '.NEQV.'
+    ;
 
-factorcond[boolean isIsolated]
-    : exp[$isIsolated] opcomp exp[$isIsolated]
-    | '(' expcond[$isIsolated] ')'
-    | '.NOT.' factorcond[$isIsolated]
+factorcond
+    : exp opcomp exp
+    | '(' expcond ')'
+    | '.NOT.' factorcond
     | '.TRUE.'
-    | '.FALSE.' ;
+    | '.FALSE.'
+    ;
 
-opcomp : '<' | '>' | '<=' | '>=' | '==' | '/=' ;
+opcomp
+    : '<'
+    | '>'
+    | '<='
+    | '>='
+    | '=='
+    | '/='
+    ;
 
 
 // Token Recognition in lexer

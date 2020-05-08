@@ -25,13 +25,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb67bd18-c32f-425e-9451-da12846f1e92" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/Constant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ConstTranslator.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FortranToC.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToC.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FortranToC.interp" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToC.interp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FortranToCLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToCLexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FortranToCParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToCParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ImplementationsTranslator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ImplementationsTranslator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SentTranslator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SentTranslator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/HeaderTranslator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Header.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +118,7 @@
       <workItem from="1588246086223" duration="7699000" />
       <workItem from="1588254111394" duration="18000" />
       <workItem from="1588522600000" duration="3604000" />
-      <workItem from="1588950037879" duration="14665000" />
+      <workItem from="1588950037879" duration="21934000" />
     </task>
     <servers />
   </component>
