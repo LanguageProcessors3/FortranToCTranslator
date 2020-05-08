@@ -120,6 +120,7 @@ public class FortranToCParser extends Parser {
 
 	    ConstTranslator ct = new ConstTranslator();
 	    HeaderTranslator hdt = new HeaderTranslator();
+	    SentTranslator st = new SentTranslator();
 	    ImplementationsTranslator imt = new ImplementationsTranslator();
 
 	public FortranToCParser(TokenStream input) {
@@ -179,9 +180,9 @@ public class FortranToCParser extends Parser {
 			cabecera();
 			 System.out.println("void main (void) {") ; 
 			setState(90);
-			sent();
+			sent(true);
 			setState(91);
-			sentlist();
+			sentlist(true);
 			 System.out.println("}") ; 
 			setState(93);
 			match(T__2);
@@ -466,14 +467,17 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class SentlistContext extends ParserRuleContext {
+		public boolean isolated;
 		public SentContext sent() {
 			return getRuleContext(SentContext.class,0);
 		}
 		public SentlistContext sentlist() {
 			return getRuleContext(SentlistContext.class,0);
 		}
-		public SentlistContext(ParserRuleContext parent, int invokingState) {
+		public SentlistContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public SentlistContext(ParserRuleContext parent, int invokingState, boolean isolated) {
 			super(parent, invokingState);
+			this.isolated = isolated;
 		}
 		@Override public int getRuleIndex() { return RULE_sentlist; }
 		@Override
@@ -486,8 +490,8 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final SentlistContext sentlist() throws RecognitionException {
-		SentlistContext _localctx = new SentlistContext(_ctx, getState());
+	public final SentlistContext sentlist(boolean isolated) throws RecognitionException {
+		SentlistContext _localctx = new SentlistContext(_ctx, getState(), isolated);
 		enterRule(_localctx, 10, RULE_sentlist);
 		try {
 			setState(135);
@@ -497,9 +501,9 @@ public class FortranToCParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(131);
-				sent();
+				sent(_localctx.isolated);
 				setState(132);
-				sentlist();
+				sentlist(_localctx.isolated);
 				}
 				break;
 			case 2:
@@ -1285,7 +1289,7 @@ public class FortranToCParser extends Parser {
 				setState(253);
 				match(T__11);
 				setState(254);
-				nomparamlist(_localctx.header?true:false);
+				nomparamlist(_localctx.header);
 				setState(255);
 				match(T__12);
 				}
@@ -1644,6 +1648,7 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class SentContext extends ParserRuleContext {
+		public boolean isolatedCall;
 		public TerminalNode IDENT() { return getToken(FortranToCParser.IDENT, 0); }
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
@@ -1672,8 +1677,10 @@ public class FortranToCParser extends Parser {
 		public CasosContext casos() {
 			return getRuleContext(CasosContext.class,0);
 		}
-		public SentContext(ParserRuleContext parent, int invokingState) {
+		public SentContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public SentContext(ParserRuleContext parent, int invokingState, boolean isolatedCall) {
 			super(parent, invokingState);
+			this.isolatedCall = isolatedCall;
 		}
 		@Override public int getRuleIndex() { return RULE_sent; }
 		@Override
@@ -1686,8 +1693,8 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final SentContext sent() throws RecognitionException {
-		SentContext _localctx = new SentContext(_ctx, getState());
+	public final SentContext sent(boolean isolatedCall) throws RecognitionException {
+		SentContext _localctx = new SentContext(_ctx, getState(), isolatedCall);
 		enterRule(_localctx, 44, RULE_sent);
 		try {
 			setState(374);
@@ -1710,7 +1717,7 @@ public class FortranToCParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(319);
-				proc_call();
+				proc_call(_localctx.isolatedCall);
 				setState(320);
 				match(T__1);
 				}
@@ -1727,7 +1734,7 @@ public class FortranToCParser extends Parser {
 				setState(325);
 				match(T__12);
 				setState(326);
-				sent();
+				sent(_localctx.isolatedCall);
 				}
 				break;
 			case 4:
@@ -1744,7 +1751,7 @@ public class FortranToCParser extends Parser {
 				setState(332);
 				match(T__20);
 				setState(333);
-				sentlist();
+				sentlist(_localctx.isolatedCall);
 				setState(334);
 				match(T__21);
 				}
@@ -1763,11 +1770,11 @@ public class FortranToCParser extends Parser {
 				setState(340);
 				match(T__20);
 				setState(341);
-				sentlist();
+				sentlist(_localctx.isolatedCall);
 				setState(342);
 				match(T__22);
 				setState(343);
-				sentlist();
+				sentlist(_localctx.isolatedCall);
 				setState(344);
 				match(T__21);
 				}
@@ -1786,7 +1793,7 @@ public class FortranToCParser extends Parser {
 				setState(350);
 				match(T__12);
 				setState(351);
-				sentlist();
+				sentlist(_localctx.isolatedCall);
 				setState(352);
 				match(T__25);
 				}
@@ -1811,7 +1818,7 @@ public class FortranToCParser extends Parser {
 				setState(361);
 				doval();
 				setState(362);
-				sentlist();
+				sentlist(_localctx.isolatedCall);
 				setState(363);
 				match(T__25);
 				}
@@ -1830,7 +1837,7 @@ public class FortranToCParser extends Parser {
 				setState(369);
 				match(T__12);
 				setState(370);
-				casos();
+				casos(_localctx.isolatedCall);
 				setState(371);
 				match(T__2);
 				setState(372);
@@ -1898,6 +1905,7 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class CasosContext extends ParserRuleContext {
+		public boolean isIsolated;
 		public EtiquetasContext etiquetas() {
 			return getRuleContext(EtiquetasContext.class,0);
 		}
@@ -1907,8 +1915,10 @@ public class FortranToCParser extends Parser {
 		public CasosContext casos() {
 			return getRuleContext(CasosContext.class,0);
 		}
-		public CasosContext(ParserRuleContext parent, int invokingState) {
+		public CasosContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public CasosContext(ParserRuleContext parent, int invokingState, boolean isIsolated) {
 			super(parent, invokingState);
+			this.isIsolated = isIsolated;
 		}
 		@Override public int getRuleIndex() { return RULE_casos; }
 		@Override
@@ -1921,8 +1931,8 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final CasosContext casos() throws RecognitionException {
-		CasosContext _localctx = new CasosContext(_ctx, getState());
+	public final CasosContext casos(boolean isIsolated) throws RecognitionException {
+		CasosContext _localctx = new CasosContext(_ctx, getState(), isIsolated);
 		enterRule(_localctx, 48, RULE_casos);
 		try {
 			setState(389);
@@ -1940,9 +1950,9 @@ public class FortranToCParser extends Parser {
 				setState(381);
 				match(T__12);
 				setState(382);
-				sentlist();
+				sentlist(_localctx.isIsolated);
 				setState(383);
-				casos();
+				casos(_localctx.isIsolated);
 				}
 				break;
 			case 2:
@@ -1953,7 +1963,7 @@ public class FortranToCParser extends Parser {
 				setState(386);
 				match(T__28);
 				setState(387);
-				sentlist();
+				sentlist(_localctx.isIsolated);
 				}
 				break;
 			case 3:
@@ -2362,7 +2372,7 @@ public class FortranToCParser extends Parser {
 				explist();
 				setState(433);
 				match(T__12);
-				 imt.getFactors().add((((FactorContext)_localctx).IDENT!=null?((FactorContext)_localctx).IDENT.getText():null)); 
+				 imt.getFactors().add((((FactorContext)_localctx).IDENT!=null?((FactorContext)_localctx).IDENT.getText():null)) ; 
 				}
 				break;
 			case 4:
@@ -2370,7 +2380,7 @@ public class FortranToCParser extends Parser {
 				{
 				setState(436);
 				((FactorContext)_localctx).IDENT = match(IDENT);
-				 imt.getFactors().add((((FactorContext)_localctx).IDENT!=null?((FactorContext)_localctx).IDENT.getText():null)); 
+				 imt.getFactors().add((((FactorContext)_localctx).IDENT!=null?((FactorContext)_localctx).IDENT.getText():null)) ; 
 				}
 				break;
 			}
@@ -2446,13 +2456,16 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class Proc_callContext extends ParserRuleContext {
+		public boolean iso;
 		public Token IDENT;
 		public TerminalNode IDENT() { return getToken(FortranToCParser.IDENT, 0); }
 		public SubpparamlistContext subpparamlist() {
 			return getRuleContext(SubpparamlistContext.class,0);
 		}
-		public Proc_callContext(ParserRuleContext parent, int invokingState) {
+		public Proc_callContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Proc_callContext(ParserRuleContext parent, int invokingState, boolean iso) {
 			super(parent, invokingState);
+			this.iso = iso;
 		}
 		@Override public int getRuleIndex() { return RULE_proc_call; }
 		@Override
@@ -2465,8 +2478,8 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final Proc_callContext proc_call() throws RecognitionException {
-		Proc_callContext _localctx = new Proc_callContext(_ctx, getState());
+	public final Proc_callContext proc_call(boolean iso) throws RecognitionException {
+		Proc_callContext _localctx = new Proc_callContext(_ctx, getState(), iso);
 		enterRule(_localctx, 66, RULE_proc_call);
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -2477,7 +2490,7 @@ public class FortranToCParser extends Parser {
 			((Proc_callContext)_localctx).IDENT = match(IDENT);
 			setState(449);
 			subpparamlist();
-			 imt.saveSubprogram((((Proc_callContext)_localctx).IDENT!=null?((Proc_callContext)_localctx).IDENT.getText():null)); 
+			 if (iso) st.saveCall((((Proc_callContext)_localctx).IDENT!=null?((Proc_callContext)_localctx).IDENT.getText():null)) ; else imt.saveSubprogram((((Proc_callContext)_localctx).IDENT!=null?((Proc_callContext)_localctx).IDENT.getText():null)) ; 
 			}
 		}
 		catch (RecognitionException re) {
@@ -2670,20 +2683,20 @@ public class FortranToCParser extends Parser {
 			formal_paramlist(false);
 			setState(472);
 			dec_s_paramlist(false);
-			 imt.saveProcImplementation((((CodprocContext)_localctx).IDENT!=null?((CodprocContext)_localctx).IDENT.getText():null)) ; 
+			 imt.saveProcHeadImplementation((((CodprocContext)_localctx).IDENT!=null?((CodprocContext)_localctx).IDENT.getText():null)) ; 
 			setState(474);
 			dcllist();
 			setState(475);
-			sent();
+			sent(false);
 			setState(476);
-			sentlist();
+			sentlist(false);
 			setState(477);
 			match(T__2);
 			setState(478);
 			match(T__13);
 			setState(479);
 			((CodprocContext)_localctx).IDENT = match(IDENT);
-			 System.out.println("}"); 
+			 imt.saveFuncImplementation(false, (((CodprocContext)_localctx).IDENT!=null?((CodprocContext)_localctx).IDENT.getText():null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -2699,6 +2712,7 @@ public class FortranToCParser extends Parser {
 
 	public static class CodfunContext extends ParserRuleContext {
 		public Token IDENT;
+		public TipoContext tipo;
 		public List<TerminalNode> IDENT() { return getTokens(FortranToCParser.IDENT); }
 		public TerminalNode IDENT(int i) {
 			return getToken(FortranToCParser.IDENT, i);
@@ -2755,38 +2769,39 @@ public class FortranToCParser extends Parser {
 			setState(486);
 			match(T__12);
 			setState(487);
-			tipo();
+			((CodfunContext)_localctx).tipo = tipo();
 			setState(488);
 			match(T__6);
 			setState(489);
 			((CodfunContext)_localctx).IDENT = match(IDENT);
 			setState(490);
 			match(T__1);
-			setState(491);
+			 imt.getTypes().add(((CodfunContext)_localctx).tipo.type) ; 
+			setState(492);
 			dec_f_paramlist(false);
-			 imt.saveFuncImplementation((((CodfunContext)_localctx).IDENT!=null?((CodfunContext)_localctx).IDENT.getText():null)) ; 
-			setState(493);
-			dcllist();
+			 imt.saveFuncHeadImplementation((((CodfunContext)_localctx).IDENT!=null?((CodfunContext)_localctx).IDENT.getText():null)) ; 
 			setState(494);
-			sent();
+			dcllist();
 			setState(495);
-			sentlist();
+			sent(false);
 			setState(496);
-			((CodfunContext)_localctx).IDENT = match(IDENT);
+			sentlist(false);
 			setState(497);
-			match(T__7);
+			((CodfunContext)_localctx).IDENT = match(IDENT);
 			setState(498);
-			exp();
+			match(T__7);
 			setState(499);
+			exp();
+			setState(500);
 			match(T__1);
 			  
-			setState(501);
-			match(T__2);
 			setState(502);
-			match(T__18);
+			match(T__2);
 			setState(503);
+			match(T__18);
+			setState(504);
 			((CodfunContext)_localctx).IDENT = match(IDENT);
-			 System.out.println("\t" + "return" + " " + (((CodfunContext)_localctx).IDENT!=null?((CodfunContext)_localctx).IDENT.getText():null) + "\n}"); 
+			 imt.saveFuncImplementation(true, (((CodfunContext)_localctx).IDENT!=null?((CodfunContext)_localctx).IDENT.getText():null)) ; 
 			}
 		}
 		catch (RecognitionException re) {
@@ -2843,11 +2858,11 @@ public class FortranToCParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(507);
+			setState(508);
 			factorcond();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(515);
+			setState(516);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,27,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -2858,16 +2873,16 @@ public class FortranToCParser extends Parser {
 					{
 					_localctx = new ExpcondContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_expcond);
-					setState(509);
-					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 					setState(510);
-					oplog();
+					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 					setState(511);
+					oplog();
+					setState(512);
 					expcond(3);
 					}
 					} 
 				}
-				setState(517);
+				setState(518);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,27,_ctx);
 			}
@@ -2906,7 +2921,7 @@ public class FortranToCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(518);
+			setState(519);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__35) | (1L << T__36) | (1L << T__37) | (1L << T__38))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -2963,51 +2978,51 @@ public class FortranToCParser extends Parser {
 		FactorcondContext _localctx = new FactorcondContext(_ctx, getState());
 		enterRule(_localctx, 80, RULE_factorcond);
 		try {
-			setState(532);
+			setState(533);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,28,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(520);
-				exp();
 				setState(521);
-				opcomp();
+				exp();
 				setState(522);
+				opcomp();
+				setState(523);
 				exp();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(524);
-				match(T__11);
 				setState(525);
-				expcond(0);
+				match(T__11);
 				setState(526);
+				expcond(0);
+				setState(527);
 				match(T__12);
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(528);
-				match(T__39);
 				setState(529);
+				match(T__39);
+				setState(530);
 				factorcond();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(530);
+				setState(531);
 				match(T__40);
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(531);
+				setState(532);
 				match(T__41);
 				}
 				break;
@@ -3046,7 +3061,7 @@ public class FortranToCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(534);
+			setState(535);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__42) | (1L << T__43) | (1L << T__44) | (1L << T__45) | (1L << T__46) | (1L << T__47))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -3085,7 +3100,7 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3;\u021b\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3;\u021c\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -3119,19 +3134,19 @@ public class FortranToCParser extends Parser {
 		"\"\3\"\3\"\5\"\u01c0\n\"\3#\3#\3#\3#\3#\3$\3$\3$\3$\3$\3$\5$\u01cd\n$"+
 		"\3%\3%\3%\3%\3%\3%\3%\5%\u01d6\n%\3&\3&\3&\3&\3&\3&\3&\3&\3&\3&\3&\3&"+
 		"\3&\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3"+
-		"\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3(\3(\3(\3(\3(\3(\3(\7(\u0204\n(\f(\16"+
-		"(\u0207\13(\3)\3)\3*\3*\3*\3*\3*\3*\3*\3*\3*\3*\3*\3*\5*\u0217\n*\3+\3"+
-		"+\3+\2\3N,\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\66"+
-		"8:<>@BDFHJLNPRT\2\7\3\2\22\24\3\2\63\64\3\2!$\3\2&)\3\2-\62\2\u0222\2"+
-		"V\3\2\2\2\4j\3\2\2\2\6r\3\2\2\2\bz\3\2\2\2\n\u0083\3\2\2\2\f\u0089\3\2"+
-		"\2\2\16\u009e\3\2\2\2\20\u00ad\3\2\2\2\22\u00b7\3\2\2\2\24\u00c5\3\2\2"+
-		"\2\26\u00cf\3\2\2\2\30\u00d9\3\2\2\2\32\u00e0\3\2\2\2\34\u00ec\3\2\2\2"+
-		"\36\u00f3\3\2\2\2 \u00f5\3\2\2\2\"\u0103\3\2\2\2$\u010c\3\2\2\2&\u011a"+
+		"\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3(\3(\3(\3(\3(\3(\3(\7(\u0205\n(\f"+
+		"(\16(\u0208\13(\3)\3)\3*\3*\3*\3*\3*\3*\3*\3*\3*\3*\3*\3*\5*\u0218\n*"+
+		"\3+\3+\3+\2\3N,\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62"+
+		"\64\668:<>@BDFHJLNPRT\2\7\3\2\22\24\3\2\63\64\3\2!$\3\2&)\3\2-\62\2\u0223"+
+		"\2V\3\2\2\2\4j\3\2\2\2\6r\3\2\2\2\bz\3\2\2\2\n\u0083\3\2\2\2\f\u0089\3"+
+		"\2\2\2\16\u009e\3\2\2\2\20\u00ad\3\2\2\2\22\u00b7\3\2\2\2\24\u00c5\3\2"+
+		"\2\2\26\u00cf\3\2\2\2\30\u00d9\3\2\2\2\32\u00e0\3\2\2\2\34\u00ec\3\2\2"+
+		"\2\36\u00f3\3\2\2\2 \u00f5\3\2\2\2\"\u0103\3\2\2\2$\u010c\3\2\2\2&\u011a"+
 		"\3\2\2\2(\u011c\3\2\2\2*\u011e\3\2\2\2,\u013a\3\2\2\2.\u0178\3\2\2\2\60"+
 		"\u017a\3\2\2\2\62\u0187\3\2\2\2\64\u0195\3\2\2\2\66\u019a\3\2\2\28\u019c"+
 		"\3\2\2\2:\u01a4\3\2\2\2<\u01a6\3\2\2\2>\u01a8\3\2\2\2@\u01b8\3\2\2\2B"+
 		"\u01bf\3\2\2\2D\u01c1\3\2\2\2F\u01cc\3\2\2\2H\u01d5\3\2\2\2J\u01d7\3\2"+
-		"\2\2L\u01e4\3\2\2\2N\u01fc\3\2\2\2P\u0208\3\2\2\2R\u0216\3\2\2\2T\u0218"+
+		"\2\2L\u01e4\3\2\2\2N\u01fd\3\2\2\2P\u0209\3\2\2\2R\u0217\3\2\2\2T\u0219"+
 		"\3\2\2\2VW\7\3\2\2WX\7\63\2\2XY\7\4\2\2YZ\5\4\3\2Z[\5\6\4\2[\\\b\2\1\2"+
 		"\\]\5.\30\2]^\5\f\7\2^_\b\2\1\2_`\7\5\2\2`a\7\3\2\2ab\7\63\2\2bc\5H%\2"+
 		"cd\b\2\1\2d\3\3\2\2\2ef\5\16\b\2fg\5\4\3\2gh\b\3\1\2hk\3\2\2\2ik\3\2\2"+
@@ -3254,22 +3269,23 @@ public class FortranToCParser extends Parser {
 		"\u01e2\u01e3\b&\1\2\u01e3K\3\2\2\2\u01e4\u01e5\7\25\2\2\u01e5\u01e6\7"+
 		"\63\2\2\u01e6\u01e7\7\16\2\2\u01e7\u01e8\5$\23\2\u01e8\u01e9\7\17\2\2"+
 		"\u01e9\u01ea\5\30\r\2\u01ea\u01eb\7\t\2\2\u01eb\u01ec\7\63\2\2\u01ec\u01ed"+
-		"\7\4\2\2\u01ed\u01ee\5,\27\2\u01ee\u01ef\b\'\1\2\u01ef\u01f0\5\4\3\2\u01f0"+
-		"\u01f1\5.\30\2\u01f1\u01f2\5\f\7\2\u01f2\u01f3\7\63\2\2\u01f3\u01f4\7"+
-		"\n\2\2\u01f4\u01f5\58\35\2\u01f5\u01f6\7\4\2\2\u01f6\u01f7\b\'\1\2\u01f7"+
-		"\u01f8\7\5\2\2\u01f8\u01f9\7\25\2\2\u01f9\u01fa\7\63\2\2\u01fa\u01fb\b"+
-		"\'\1\2\u01fbM\3\2\2\2\u01fc\u01fd\b(\1\2\u01fd\u01fe\5R*\2\u01fe\u0205"+
-		"\3\2\2\2\u01ff\u0200\f\4\2\2\u0200\u0201\5P)\2\u0201\u0202\5N(\5\u0202"+
-		"\u0204\3\2\2\2\u0203\u01ff\3\2\2\2\u0204\u0207\3\2\2\2\u0205\u0203\3\2"+
-		"\2\2\u0205\u0206\3\2\2\2\u0206O\3\2\2\2\u0207\u0205\3\2\2\2\u0208\u0209"+
-		"\t\5\2\2\u0209Q\3\2\2\2\u020a\u020b\58\35\2\u020b\u020c\5T+\2\u020c\u020d"+
-		"\58\35\2\u020d\u0217\3\2\2\2\u020e\u020f\7\16\2\2\u020f\u0210\5N(\2\u0210"+
-		"\u0211\7\17\2\2\u0211\u0217\3\2\2\2\u0212\u0213\7*\2\2\u0213\u0217\5R"+
-		"*\2\u0214\u0217\7+\2\2\u0215\u0217\7,\2\2\u0216\u020a\3\2\2\2\u0216\u020e"+
-		"\3\2\2\2\u0216\u0212\3\2\2\2\u0216\u0214\3\2\2\2\u0216\u0215\3\2\2\2\u0217"+
-		"S\3\2\2\2\u0218\u0219\t\6\2\2\u0219U\3\2\2\2\37jrz\u0083\u0089\u009e\u00ad"+
-		"\u00b7\u00c5\u00cf\u00d9\u00e0\u00ec\u00f3\u0103\u010c\u011a\u013a\u0178"+
-		"\u0187\u0195\u019a\u01a4\u01b8\u01bf\u01cc\u01d5\u0205\u0216";
+		"\7\4\2\2\u01ed\u01ee\b\'\1\2\u01ee\u01ef\5,\27\2\u01ef\u01f0\b\'\1\2\u01f0"+
+		"\u01f1\5\4\3\2\u01f1\u01f2\5.\30\2\u01f2\u01f3\5\f\7\2\u01f3\u01f4\7\63"+
+		"\2\2\u01f4\u01f5\7\n\2\2\u01f5\u01f6\58\35\2\u01f6\u01f7\7\4\2\2\u01f7"+
+		"\u01f8\b\'\1\2\u01f8\u01f9\7\5\2\2\u01f9\u01fa\7\25\2\2\u01fa\u01fb\7"+
+		"\63\2\2\u01fb\u01fc\b\'\1\2\u01fcM\3\2\2\2\u01fd\u01fe\b(\1\2\u01fe\u01ff"+
+		"\5R*\2\u01ff\u0206\3\2\2\2\u0200\u0201\f\4\2\2\u0201\u0202\5P)\2\u0202"+
+		"\u0203\5N(\5\u0203\u0205\3\2\2\2\u0204\u0200\3\2\2\2\u0205\u0208\3\2\2"+
+		"\2\u0206\u0204\3\2\2\2\u0206\u0207\3\2\2\2\u0207O\3\2\2\2\u0208\u0206"+
+		"\3\2\2\2\u0209\u020a\t\5\2\2\u020aQ\3\2\2\2\u020b\u020c\58\35\2\u020c"+
+		"\u020d\5T+\2\u020d\u020e\58\35\2\u020e\u0218\3\2\2\2\u020f\u0210\7\16"+
+		"\2\2\u0210\u0211\5N(\2\u0211\u0212\7\17\2\2\u0212\u0218\3\2\2\2\u0213"+
+		"\u0214\7*\2\2\u0214\u0218\5R*\2\u0215\u0218\7+\2\2\u0216\u0218\7,\2\2"+
+		"\u0217\u020b\3\2\2\2\u0217\u020f\3\2\2\2\u0217\u0213\3\2\2\2\u0217\u0215"+
+		"\3\2\2\2\u0217\u0216\3\2\2\2\u0218S\3\2\2\2\u0219\u021a\t\6\2\2\u021a"+
+		"U\3\2\2\2\37jrz\u0083\u0089\u009e\u00ad\u00b7\u00c5\u00cf\u00d9\u00e0"+
+		"\u00ec\u00f3\u0103\u010c\u011a\u013a\u0178\u0187\u0195\u019a\u01a4\u01b8"+
+		"\u01bf\u01cc\u01d5\u0206\u0217";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

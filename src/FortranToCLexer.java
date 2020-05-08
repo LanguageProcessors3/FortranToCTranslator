@@ -107,6 +107,7 @@ public class FortranToCLexer extends Lexer {
 
 	    ConstTranslator ct = new ConstTranslator();
 	    HeaderTranslator hdt = new HeaderTranslator();
+	    SentTranslator st = new SentTranslator();
 	    ImplementationsTranslator imt = new ImplementationsTranslator();
 
 

@@ -28,10 +28,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FortranToC.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToC.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FortranToC.interp" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToC.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FortranToCLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToCLexer.interp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FortranToCLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToCLexer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FortranToCParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FortranToCParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FunctionDeclarationTranslator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HeaderTranslator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ImplementationsTranslator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ImplementationsTranslator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SentTranslator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SentTranslator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +119,7 @@
       <workItem from="1588246086223" duration="7699000" />
       <workItem from="1588254111394" duration="18000" />
       <workItem from="1588522600000" duration="3604000" />
-      <workItem from="1588950037879" duration="4520000" />
+      <workItem from="1588950037879" duration="14665000" />
     </task>
     <servers />
   </component>
@@ -165,26 +165,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="503" y="260" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1587900794118" />
-    <state width="1877" height="437" key="GridCell.Tab.0.bottom" timestamp="1588954101389">
+    <state width="1877" height="417" key="GridCell.Tab.0.bottom" timestamp="1588963688525">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1588103249769" />
-    <state width="1877" height="437" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588954101389" />
-    <state width="1877" height="437" key="GridCell.Tab.0.center" timestamp="1588954101389">
+    <state width="1877" height="417" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588963688525" />
+    <state width="1877" height="417" key="GridCell.Tab.0.center" timestamp="1588963688524">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1588103249767" />
-    <state width="1877" height="437" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588954101389" />
-    <state width="1877" height="437" key="GridCell.Tab.0.left" timestamp="1588954101389">
+    <state width="1877" height="417" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588963688524" />
+    <state width="1877" height="417" key="GridCell.Tab.0.left" timestamp="1588963688524">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1588103249767" />
-    <state width="1877" height="437" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588954101389" />
-    <state width="1877" height="437" key="GridCell.Tab.0.right" timestamp="1588954101389">
+    <state width="1877" height="417" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588963688524" />
+    <state width="1877" height="417" key="GridCell.Tab.0.right" timestamp="1588963688525">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1588103249768" />
-    <state width="1877" height="437" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588954101389" />
+    <state width="1877" height="417" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588963688525" />
     <state width="1877" height="340" key="GridCell.Tab.1.bottom" timestamp="1588526206258">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -210,9 +210,9 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="636" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584819233366" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1588246650226">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1588955381731">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1588246650226" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1588955381731" />
   </component>
 </project>

@@ -3,6 +3,7 @@ grammar FortranToC ;
 @members {
     ConstTranslator ct = new ConstTranslator();
     HeaderTranslator hdt = new HeaderTranslator();
+    SentTranslator st = new SentTranslator();
     ImplementationsTranslator imt = new ImplementationsTranslator();
 }
 
@@ -10,7 +11,7 @@ grammar FortranToC ;
 // Main
 
 prg
-    : 'PROGRAM' IDENT ';' dcllist cabecera { System.out.println("void main (void) {") ; } sent sentlist { System.out.println("}") ; } 'END'
+    : 'PROGRAM' IDENT ';' dcllist cabecera { System.out.println("void main (void) {") ; } sent[true] sentlist[true] { System.out.println("}") ; } 'END'
     'PROGRAM' IDENT subproglist {  } ;
 
 dcllist
@@ -24,7 +25,9 @@ cablist : decproc decsubprog | decfun decsubprog ;
 
 decsubprog : decproc decsubprog | decfun decsubprog | ;
 
-sentlist: sent sentlist | ;
+sentlist[boolean isIsolated]
+    : sent[$isIsolated] sentlist[$isIsolated]
+    | ;
 
 // VAR and CONST Declaration area
 
@@ -84,17 +87,17 @@ decproc
     dec_s_paramlist[true]
     'END' 'SUBROUTINE' IDENT { hdt.saveProcHeader($IDENT.text) ; } ;
 
-formal_paramlist[boolean header]
+formal_paramlist[boolean isHeader]
     :
-    | '(' nomparamlist[$header?true:false] ')' ;
+    | '(' nomparamlist[$isHeader] ')' ;
 
 nomparamlist[boolean isHeader]
     : IDENT { if (isHeader) hdt.getIdents().add($IDENT.text) ; else imt.getIdents().add($IDENT.text) ; }
     | IDENT ',' nomparamlist[$isHeader] { if (isHeader) hdt.getIdents().add($IDENT.text) ; else imt.getIdents().add($IDENT.text) ; } ; // LL1
 
-dec_s_paramlist[boolean checkHeader]
-    : tipo { if (checkHeader) hdt.getTypes().add($tipo.type) ; else imt.getTypes().add($tipo.type) ; } ',' 'INTENT' '(' tipoparam ')' IDENT ';'
-    dec_s_paramlist[$checkHeader]
+dec_s_paramlist[boolean isHeader]
+    : tipo { if (isHeader) hdt.getTypes().add($tipo.type) ; else imt.getTypes().add($tipo.type) ; } ',' 'INTENT' '(' tipoparam ')' IDENT ';'
+    dec_s_paramlist[$isHeader]
     | ;
 
 tipoparam : 'IN' | 'OUT' | 'INOUT' ;
@@ -104,29 +107,33 @@ decfun : 'FUNCTION' IDENT '(' nomparamlist[true] ')'
     dec_f_paramlist[true]
     'END' 'FUNCTION' IDENT { hdt.saveFuncHeader($IDENT.text) ; } ;
 
-dec_f_paramlist[boolean checkHead]
-    : tipo { if (checkHead) hdt.getTypes().add($tipo.type) ; else imt.getTypes().add($tipo.type) ; } ',' 'INTENT' '(' 'IN' ')' IDENT ';'
-    dec_f_paramlist[$checkHead]
+dec_f_paramlist[boolean isHeader]
+    : tipo { if (isHeader) hdt.getTypes().add($tipo.type) ; else imt.getTypes().add($tipo.type) ; } ',' 'INTENT' '(' 'IN' ')' IDENT ';'
+    dec_f_paramlist[$isHeader]
     | ;
 
 // Statement area
 
 // Optional part added to sent
-sent : IDENT '=' exp ';' | proc_call ';'
-    | 'IF' '(' expcond ')' sent
-    | 'IF' '(' expcond ')' 'THEN' sentlist 'ENDIF'
-    | 'IF' '(' expcond ')' 'THEN' sentlist 'ELSE' sentlist 'ENDIF'
-    | 'DO' 'WHILE' '(' expcond ')' sentlist 'ENDDO'
-    | 'DO' IDENT '=' doval ',' doval ',' doval sentlist 'ENDDO'
-    | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT' ;
+sent[boolean isIsolated]
+    : IDENT '=' exp[$isIsolated] ';'
+    | proc_call[$isIsolated] ';'
+    | 'IF' '(' expcond[$isIsolated] ')' sent[$isIsolated]
+    | 'IF' '(' expcond[$isIsolated] ')' 'THEN' sentlist[$isIsolated] 'ENDIF'
+    | 'IF' '(' expcond[$isIsolated] ')' 'THEN' sentlist[$isIsolated] 'ELSE' sentlist[$isIsolated] 'ENDIF'
+    | 'DO' 'WHILE' '(' expcond[$isIsolated] ')' sentlist[$isIsolated] 'ENDDO'
+    | 'DO' IDENT '=' doval ',' doval ',' doval sentlist[$isIsolated] 'ENDDO'
+    | 'SELECT' 'CASE' '(' exp[$isIsolated] ')' casos[$isIsolated] 'END' 'SELECT' ;
 
 doval : NUM_INT_CONST | IDENT ; // Optional included
 
-casos : 'CASE' '(' etiquetas ')' sentlist casos // Optional included
-    | 'CASE' 'DEFAULT' sentlist
+casos[boolean isIsolated]
+    : 'CASE' '(' etiquetas ')' sentlist[$isIsolated] casos[$isIsolated] // Optional included
+    | 'CASE' 'DEFAULT' sentlist[$isIsolated]
     | ;
 
-etiquetas : simpvalue listaetiqetas // Optional included
+etiquetas
+    : simpvalue listaetiqetas // Optional included
     | simpvalue ':' simpvalue
     | ':' simpvalue
     | simpvalue ':' ;
@@ -137,26 +144,37 @@ listaetiqetas : ',' simpvalue | ; // Optional included
 
 // exp : exp op exp | factor CHANGED TO BE LL1 with expAux
 
-exp : factor expAux ;
+exp[boolean isIsolated]
+    : factor[$isIsolated] expAux[$isIsolated] ;
 
-expAux : op exp expAux | ;
+expAux[boolean isIsolated]
+    : op exp[$isIsolated] expAux[$isIsolated]
+    | ;
 
 op : oparit ;
 
-oparit : '+' | '-' | '*' | '/' ;
+oparit
+    : '+'
+    | '-'
+    | '*'
+    | '/' ;
 
-factor
+factor[boolean isIsolated]
     : simpvalue
-    | '(' exp ')'
-    | IDENT '(' exp explist ')' { imt.getFactors().add($IDENT.text); }
-    | IDENT { imt.getFactors().add($IDENT.text); } ;
+    | '(' exp[$isIsolated] ')'
+    | IDENT '(' exp[$isIsolated] explist[$isIsolated] ')' { if (isIsolated) st.getFactors().add($IDENT.text) ; else imt.getFactors().add($IDENT.text) ; }
+    | IDENT { if (isIsolated) st.getFactors().add($IDENT.text) ; else imt.getFactors().add($IDENT.text) ; } ;
 
-explist : ',' exp explist | ;
+explist[boolean isIsolated]
+    : ',' exp[$isIsolated] explist[$isIsolated]
+    | ;
 
-proc_call
-    : 'CALL' IDENT subpparamlist { imt.saveSubprogram($IDENT.text); } ;
+proc_call[boolean isIsolated]
+    : 'CALL' IDENT subpparamlist[$isIsolated] { if (isIsolated) st.saveCall($IDENT.text) ; else imt.saveSubprogram($IDENT.text) ; } ;
 
-subpparamlist : '(' exp explist ')' | ;
+subpparamlist[boolean isIsolated]
+    : '(' exp[$isIsolated] explist[$isIsolated] ')'
+    | ;
 
 // Function Implementation area
 
@@ -168,25 +186,32 @@ subproglist
 
 codproc
     : 'SUBROUTINE' IDENT formal_paramlist[false]
-    dec_s_paramlist[false] { imt.saveProcImplementation($IDENT.text) ; }
-    dcllist sent sentlist
-    'END' 'SUBROUTINE' IDENT { System.out.println("}"); } ;
+    dec_s_paramlist[false] { imt.saveProcHeadImplementation($IDENT.text) ; }
+    dcllist sent[false] sentlist[false]
+    'END' 'SUBROUTINE' IDENT { imt.saveFuncImplementation(false, $IDENT.text); } ;
 
 codfun : 'FUNCTION' IDENT '(' nomparamlist[false] ')'
-    tipo '::' IDENT ';'
-    dec_f_paramlist[false] { imt.saveFuncImplementation($IDENT.text) ; }
-    dcllist sent sentlist
-    IDENT '=' exp ';' {  }
-    'END' 'FUNCTION' IDENT { System.out.println("\t" + "return" + " " + $IDENT.text + "\n}"); } ;
+    tipo '::' IDENT ';' { imt.getTypes().add($tipo.type) ; }
+    dec_f_paramlist[false] { imt.saveFuncHeadImplementation($IDENT.text) ; }
+    dcllist sent[false] sentlist[false]
+    IDENT '=' exp[false] ';' {  }
+    'END' 'FUNCTION' IDENT { imt.saveFuncImplementation(true, $IDENT.text) ; } ;
 
 // Optional parser implementation
 // Flow control statements
 
-expcond : expcond oplog expcond | factorcond ;
+expcond[boolean isIsolated]
+    : expcond[$isIsolated] oplog expcond[$isIsolated]
+    | factorcond[$isIsolated] ;
 
 oplog : '.OR.' | '.AND.' | '.EQV.' | '.NEQV.' ;
 
-factorcond : exp opcomp exp | '(' expcond ')' | '.NOT.' factorcond | '.TRUE.' | '.FALSE.' ;
+factorcond[boolean isIsolated]
+    : exp[$isIsolated] opcomp exp[$isIsolated]
+    | '(' expcond[$isIsolated] ')'
+    | '.NOT.' factorcond[$isIsolated]
+    | '.TRUE.'
+    | '.FALSE.' ;
 
 opcomp : '<' | '>' | '<=' | '>=' | '==' | '/=' ;
 

@@ -7,6 +7,7 @@ public class ImplementationsTranslator {
     private List<String> idents;
     private List<String> types;
     private List<String> factors;
+    private String function;
 
     public ImplementationsTranslator() {
         this.implementations = new ArrayList<>();
@@ -24,6 +25,17 @@ public class ImplementationsTranslator {
     }
 
     public List<String> getFactors() { return factors; }
+
+    private String factors() {
+        String parameters = "";
+        for (int i = 0; i < factors.size(); ++i) {
+            if (i != factors.size() - 1)
+                parameters += factors.get(i) + " , ";
+            else
+                parameters += factors.get(i);
+        }
+        return parameters;
+    }
 
     private String parameters() {
         if (!this.types.isEmpty() && !this.idents.isEmpty()) {
@@ -57,26 +69,36 @@ public class ImplementationsTranslator {
         return this.types.remove(0);
     }
 
-    public void saveProcImplementation(String name) {
-        String fun = "void" + " " + name + " " + parameters().substring(0, parameters().length() - 1) + " {";
-        System.out.println(fun);
-        this.implementations.add(fun);
+    public void saveProcHeadImplementation(String name) {
+        this.function = "void" + " " + name + " " + parameters().substring(0, parameters().length() - 1) + " {\n";
+        System.out.println(function); // Debug
         this.idents.clear();
         this.types.clear();
     }
 
-    public void saveFuncImplementation(String name) {
-        String fun = returnType() + " " + name + " " + parameters().substring(0, parameters().length() - 1) + " {";
-        System.out.println(fun);
-        this.implementations.add(fun);
+    public void saveFuncHeadImplementation(String name) {
+        this.function = returnType() + " " + name + " " + parameters().substring(0, parameters().length() - 1) + " {\n";
+        System.out.println(function); // Debug
         this.idents.clear();
         this.types.clear();
     }
 
     public void saveSubprogram(String name) {
-        String subprg = "\t" + name + parameters();
-        System.out.println(subprg);
+        this.function += "\t" + name + "(" + factors() + ");" + " \n";
+        System.out.println("\t" + name + "(" + factors() + ");" + " \n"); // Debug
         this.factors.clear();
+    }
+
+    public void saveFuncImplementation(boolean isFunction, String name) {
+        if (isFunction) {
+            this.function += "\t" + "return" + " " + name + "\n}\n";
+            System.out.println("\t" + "return" + " " + name + "\n}\n"); // Debug
+        }
+        else {
+            this.function += "}\n";
+            System.out.println("}\n"); // Debug
+        }
+        this.implementations.add(function);
     }
 
 }
