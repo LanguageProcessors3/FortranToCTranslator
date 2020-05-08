@@ -1,18 +1,16 @@
 grammar FortranToC ;
 
 @members {
-    void printConst(String ident, String value) {
-        System.out.println("#defines " + ident + " " + value + ";");
-    }
-
-    FunctionDeclarationTranslator fdt = new FunctionDeclarationTranslator();
+    ConstTranslator ct = new ConstTranslator();
+    HeaderTranslator hdt = new HeaderTranslator();
+    ImplementationsTranslator imt = new ImplementationsTranslator();
 }
 
 // Token combination rules in parser
 // Main
 
 prg
-    : 'PROGRAM' IDENT ';' dcllist cabecera {System.out.println("void main (void)\n{");}sent sentlist {System.out.println("}");} 'END'
+    : 'PROGRAM' IDENT ';' dcllist cabecera { System.out.println("void main (void) {") ; } sent sentlist { System.out.println("}") ; } 'END'
     'PROGRAM' IDENT subproglist {  } ;
 
 dcllist
@@ -33,17 +31,17 @@ sentlist: sent sentlist | ;
 // dcl : defcte | defvar ; CHANGED FOR FIXING LEFT RECURSION LLK -> LL1
 
 dcl
-    : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue { printConst($IDENT.text, $simpvalue.value); } ctelist ';' defcte
+    : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue { ct.saveConst($IDENT.text, $simpvalue.value) ; } ctelist ';' defcte
     | tipo '::' varlist ';' defvar {}
     ; // LL1
 
 defcte
-    : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue { printConst($IDENT.text, $simpvalue.value); } ctelist ';' defcte
+    : tipo ',' 'PARAMETER' '::' IDENT '=' simpvalue { ct.saveConst($IDENT.text, $simpvalue.value) ; } ctelist ';' defcte
     |
     ;
 
 ctelist
-    : ',' IDENT '=' simpvalue { printConst($IDENT.text, $simpvalue.value); } ctelist
+    : ',' IDENT '=' simpvalue { ct.saveConst($IDENT.text, $simpvalue.value) ; } ctelist
     |
     ;
 
@@ -82,32 +80,33 @@ init : '=' simpvalue {}
 // Function Declaration area
 
 decproc
-    : 'SUBROUTINE' IDENT formal_paramlist
-    dec_s_paramlist
-    'END' 'SUBROUTINE' IDENT { fdt.printProcHeader($IDENT.text) ; } ;
+    : 'SUBROUTINE' IDENT formal_paramlist[true]
+    dec_s_paramlist[true]
+    'END' 'SUBROUTINE' IDENT { hdt.saveProcHeader($IDENT.text) ; } ;
 
-formal_paramlist
+formal_paramlist[boolean header]
     :
-    | '(' nomparamlist ')' ;
+    | '(' nomparamlist[$header?true:false] ')' ;
 
-nomparamlist
-    : IDENT { fdt.getIdents().add($IDENT.text) ; }
-    | IDENT ',' nomparamlist { fdt.getIdents().add($IDENT.text) ; } ; // LL1
+nomparamlist[boolean isHeader]
+    : IDENT { if (isHeader) hdt.getIdents().add($IDENT.text) ; else imt.getIdents().add($IDENT.text) ; }
+    | IDENT ',' nomparamlist[$isHeader] { if (isHeader) hdt.getIdents().add($IDENT.text) ; else imt.getIdents().add($IDENT.text) ; } ; // LL1
 
-dec_s_paramlist
-    : tipo { fdt.getTypes().add($tipo.type) ; } ',' 'INTENT' '(' tipoparam ')' IDENT ';'
-    dec_s_paramlist
+dec_s_paramlist[boolean checkHeader]
+    : tipo { if (checkHeader) hdt.getTypes().add($tipo.type) ; else imt.getTypes().add($tipo.type) ; } ',' 'INTENT' '(' tipoparam ')' IDENT ';'
+    dec_s_paramlist[$checkHeader]
     | ;
 
 tipoparam : 'IN' | 'OUT' | 'INOUT' ;
 
-decfun : 'FUNCTION' IDENT '(' nomparamlist ')'
-    tipo '::' IDENT ';' { fdt.getTypes().add($tipo.type) ; }
-    dec_f_paramlist
-    'END' 'FUNCTION' IDENT { fdt.printFuncHeader($IDENT.text) ; } ;
+decfun : 'FUNCTION' IDENT '(' nomparamlist[true] ')'
+    tipo '::' IDENT ';' { hdt.getTypes().add($tipo.type) ; }
+    dec_f_paramlist[true]
+    'END' 'FUNCTION' IDENT { hdt.saveFuncHeader($IDENT.text) ; } ;
 
-dec_f_paramlist : tipo { fdt.getTypes().add($tipo.type) ; } ',' 'INTENT' '(' 'IN' ')' IDENT ';'
-    dec_f_paramlist
+dec_f_paramlist[boolean checkHead]
+    : tipo { if (checkHead) hdt.getTypes().add($tipo.type) ; else imt.getTypes().add($tipo.type) ; } ',' 'INTENT' '(' 'IN' ')' IDENT ';'
+    dec_f_paramlist[$checkHead]
     | ;
 
 // Statement area
@@ -149,13 +148,13 @@ oparit : '+' | '-' | '*' | '/' ;
 factor
     : simpvalue
     | '(' exp ')'
-    | IDENT '(' exp explist ')' { fdt.getFactors().add($IDENT.text); }
-    | IDENT { fdt.getFactors().add($IDENT.text); } ;
+    | IDENT '(' exp explist ')' { imt.getFactors().add($IDENT.text); }
+    | IDENT { imt.getFactors().add($IDENT.text); } ;
 
 explist : ',' exp explist | ;
 
 proc_call
-    : 'CALL' IDENT subpparamlist { fdt.printSubprogram($IDENT.text); } ;
+    : 'CALL' IDENT subpparamlist { imt.saveSubprogram($IDENT.text); } ;
 
 subpparamlist : '(' exp explist ')' | ;
 
@@ -168,14 +167,14 @@ subproglist
     ;
 
 codproc
-    : 'SUBROUTINE' IDENT formal_paramlist
-    dec_s_paramlist { fdt.printProcImplementation($IDENT.text) ; }
+    : 'SUBROUTINE' IDENT formal_paramlist[false]
+    dec_s_paramlist[false] { imt.saveProcImplementation($IDENT.text) ; }
     dcllist sent sentlist
     'END' 'SUBROUTINE' IDENT { System.out.println("}"); } ;
 
-codfun : 'FUNCTION' IDENT '(' nomparamlist ')'
+codfun : 'FUNCTION' IDENT '(' nomparamlist[false] ')'
     tipo '::' IDENT ';'
-    dec_f_paramlist { fdt.printFuncImplementation($IDENT.text, $tipo.type) ; }
+    dec_f_paramlist[false] { imt.saveFuncImplementation($IDENT.text) ; }
     dcllist sent sentlist
     IDENT '=' exp ';' {  }
     'END' 'FUNCTION' IDENT { System.out.println("\t" + "return" + " " + $IDENT.text + "\n}"); } ;
