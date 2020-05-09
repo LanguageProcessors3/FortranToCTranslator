@@ -8,7 +8,7 @@ public class Constant {
     }
 
     public void printConst() {
-        System.out.println("#define " + this.name + " " + this.value + ";");
+        System.out.println("#define " + this.name + " " + this.value);
     }
 
 }

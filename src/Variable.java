@@ -9,12 +9,16 @@ public class Variable {
         if (!length.isEmpty()) {
             this.length = length;
             this.name += "[]";
-        }
+        } else this.length = "";
     }
 
     @Override
     public String toString() {
         return this.type + " " + this.name + this.length;
+    }
+
+    public String parameterFormat() {
+        return this.type + " " + this.name;
     }
 
 }

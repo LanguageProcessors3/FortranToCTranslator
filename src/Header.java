@@ -12,24 +12,20 @@ public class Header {
         this.parameters = new ArrayList<>();
     }
 
-    public List<Variable> getParameters() {
-        return this.parameters;
-    }
-
     public void setParameters(ArrayList<Variable> params) {
         this.parameters = params;
     }
 
     public void printHeader() {
-        String header = this.returnType + " " + this.name + " ( ";
+        String header = this.returnType + " " + this.name + "(";
         if (this.parameters.isEmpty())
-            header += "void );";
+            header += "void);";
         else {
             for (int i = 0; i < this.parameters.size(); ++i) {
                 if (i != this.parameters.size() - 1)
-                    header += this.parameters.get(i).toString() + " , ";
+                    header += this.parameters.get(i).parameterFormat() + ", ";
                 else
-                    header += this.parameters.get(i).toString() + " );";
+                    header += this.parameters.get(i).parameterFormat() + ");";
             }
         }
         System.out.println(header);

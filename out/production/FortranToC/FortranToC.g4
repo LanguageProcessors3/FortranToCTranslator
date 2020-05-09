@@ -11,15 +11,17 @@ grammar FortranToC ;
 
         for (int i = 0; i < v.size(); ++i) {
             if (i != v.size() - 1) {
-                s += v.get(i).toString();
+                s += v.get(i).parameterFormat();
                 s = s.replace('*','&');
                 s += " , ";
             }
             else {
-                s += v.get(i).toString();
+                s += v.get(i).parameterFormat();
                 s = s.replace('*','&');
             }
         }
+
+        if (s.isEmpty()) s = "void";
 
         return s;
     }
@@ -35,7 +37,7 @@ grammar FortranToC ;
 
         System.out.println();
 
-        System.out.println("void main ( void ) {");
+        System.out.println("void main(void) {");
 
         printStatements();
     }
@@ -56,7 +58,7 @@ grammar FortranToC ;
 
             else if (s.startsWith("break")) {
                 tabs = tabs.substring(0, tabs.length() - 1);
-                System.out.println(tabs + s);
+                System.out.println(tabs + "\t" + s);
                 hasCase = false;
             }
 
@@ -91,7 +93,7 @@ grammar FortranToC ;
 
 prg
     : 'PROGRAM' IDENT ';' dcllist cabecera sent sentlist 'END'
-    'PROGRAM' { statements.add("}") ; } IDENT subproglist { printprg() ; }
+    'PROGRAM' { statements.add("}\n") ; } IDENT subproglist { printprg() ; }
     ;
 
 dcllist
@@ -148,7 +150,8 @@ simpvalue returns [String value]
     | NUM_INT_CONST_H { $value = $NUM_INT_CONST_H.text ; } // #define 0x value
     ; // Optional included
 
-defvar : tipo '::' varlist[$tipo.value, $tipo.size] ';' defvar
+defvar
+    : tipo '::' varlist[$tipo.value, $tipo.size] ';' defvar
     |
     ;
 
@@ -180,7 +183,7 @@ decproc
     dec_s_paramlist
     'END' 'SUBROUTINE' IDENT { Header h = new Header("void", $IDENT.text);
                                h.setParameters(variables);
-                               variables.clear();
+                               variables = new ArrayList<>();
                                headers.add(h);
                              }
     ;
@@ -204,8 +207,8 @@ dec_s_paramlist
 
 tipoparam returns [String value]
     : 'IN' { $value = ""; }
-    | 'OUT' { $value = "*"; }
-    | 'INOUT' { $value = "*"; }
+    | 'OUT' { $value = "* "; }
+    | 'INOUT' { $value = "* "; }
     ;
 
 decfun
@@ -213,7 +216,7 @@ decfun
     tipo '::' IDENT ';'
     dec_f_paramlist { Header h = new Header($tipo.value, $IDENT.text);
                       h.setParameters(variables);
-                      variables.clear();
+                      variables = new ArrayList<>();
                       headers.add(h);
                     }
     'END' 'FUNCTION' IDENT
@@ -232,12 +235,15 @@ dec_f_paramlist
 sent
     : IDENT '=' exp ';' { statements.add($IDENT.text + " = " + $exp.value + ";") ; }
     | proc_call ';' { statements.add($proc_call.value) ; }
-    | 'IF' '(' expcond ')' sent
-    | 'IF' '(' expcond ')' 'THEN' sentlist 'ENDIF'
-    | 'IF' '(' expcond ')' 'THEN' sentlist 'ELSE' sentlist 'ENDIF'
-    | 'DO' 'WHILE' '(' expcond ')' sentlist 'ENDDO'
-    | 'DO' IDENT '=' doval ',' doval ',' doval sentlist 'ENDDO'
-    | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT'
+    | 'IF' '(' expcond { statements.add("if (" + $expcond.value + ") {") ; } ')' sent { statements.add("}") ; }
+    | 'IF' '(' expcond { statements.add("if (" + $expcond.value + ") {") ; } ')' 'THEN' sentlist 'ENDIF' { statements.add("}") ; }
+    | 'IF' '(' expcond { statements.add("if (" + $expcond.value + ") {") ; } ')' 'THEN' sentlist { statements.add("} else {") ; } 'ELSE' sentlist 'ENDIF' { statements.add("}") ; }
+    | 'DO' 'WHILE' '(' expcond ')' { statements.add("while (" + $expcond.value + ") {") ; } sentlist 'ENDDO' { statements.add("}") ; }
+    | 'DO' IDENT '=' doval1=doval ',' doval2=doval ',' doval3=doval { statements.add("for (" + $IDENT.text + " = " + $doval1.value + "; "
+                                                                      + $IDENT.text + " != " + $doval2.value + "; " + $IDENT.text + " = "
+                                                                      + $IDENT.text + " + " + $doval3.value + ") {") ; }
+      sentlist 'ENDDO' { statements.add("}") ; }
+    | 'SELECT' 'CASE' '(' exp ')' { statements.add("switch (" + $exp.value + ") {") ; } casos 'END' 'SELECT' { statements.add("}") ; }
     ;
 
 doval returns [String value]
@@ -247,19 +253,19 @@ doval returns [String value]
 
 casos
     : 'CASE' '(' etiquetas ')' sentlist { statements.add("break;") ; } casos // Optional included
-    | 'CASE' 'DEFAULT' { statements.add("default :") ; } sentlist
+    | 'CASE' 'DEFAULT' { statements.add("default:") ; } sentlist
     |
     ;
 
 etiquetas
-    : simpvalue listaetiqetas // Optional included
-    | simpvalue ':' simpvalue
-    | ':' simpvalue
-    | simpvalue ':'
+    : simpvalue listaetiqetas { statements.add("case " + $simpvalue.value + ":"); } // Optional included
+    | simp1=simpvalue ':' simp2=simpvalue { statements.add("case " + $simp1.value + " to " + $simp2.value + ":") ; }
+    | ':' simpvalue { statements.add("case < " + $simpvalue.value + ":") ; }
+    | simpvalue ':' { statements.add("case > " + $simpvalue.value + ":") ; }
     ;
 
 listaetiqetas
-    : ',' simpvalue
+    : ',' simpvalue { statements.add("case " + $simpvalue.value + ":") ; }
     |
     ; // Optional included
 
@@ -291,7 +297,7 @@ factor returns [String value]
     : simpvalue { $value = $simpvalue.value ; }
     | '(' exp ')' { $value = "(" + $exp.value + ")" ; }
     | IDENT '(' exp explist ')' { $value = $IDENT.text + "(" + $exp.value + $explist.value + ")" ; }
-    | IDENT { $value = "" ; }
+    | IDENT { $value = $IDENT.text ; }
     ;
 
 explist returns [String value]
@@ -300,7 +306,7 @@ explist returns [String value]
     ;
 
 proc_call returns [String value]
-    : 'CALL' IDENT subpparamlist { $value  = $IDENT.text + " ( " + $subpparamlist.value + " ) ;" ; } ;
+    : 'CALL' IDENT subpparamlist { $value  = $IDENT.text + "(" + $subpparamlist.value + ");" ; } ;
 
 subpparamlist returns [String value]
     : '(' exp explist ')' { $value = $exp.value + $explist.value ; }
@@ -316,26 +322,26 @@ subproglist
     ;
 
 codproc
-    : 'SUBROUTINE' IDENT { variables.clear() ; } formal_paramlist
-    dec_s_paramlist { statements.add("void " + $IDENT.text + " (" + variablesToString(variables) + ") {") ; }
+    : 'SUBROUTINE' IDENT { variables = new ArrayList<>() ; } formal_paramlist
+    dec_s_paramlist { statements.add("void " + $IDENT.text + "(" + variablesToString(variables) + ") {") ; }
     dcllist sent sentlist
-    'END' 'SUBROUTINE' IDENT { statements.add("}") ; }
+    'END' 'SUBROUTINE' IDENT { statements.add("}\n") ; }
     ;
 
 codfun : 'FUNCTION' IDENT '(' nomparamlist ')'
-    tipo '::' IDENT ';' { variables.clear() ; }
-    dec_f_paramlist { statements.add($tipo.value + " " + $IDENT.text + " (" + variablesToString(variables) + ") {") ; }
+    tipo '::' IDENT ';' { variables = new ArrayList<>() ; }
+    dec_f_paramlist { statements.add($tipo.value + " " + $IDENT.text + "(" + variablesToString(variables) + ") {") ; }
     dcllist sent sentlist
-    IDENT '=' exp ';' { statements.add("return " + $exp.value) ; }
-    'END' 'FUNCTION' IDENT { statements.add("}") ; }
+    IDENT '=' exp ';' { statements.add("return " + $exp.value + ";") ; }
+    'END' 'FUNCTION' IDENT { statements.add("}\n") ; }
     ;
 
 // Optional parser implementation
 // Flow control statements
 
 expcond returns [String value]
-    : expcond oplog expcond
-    | factorcond
+    : expcond1=expcond oplog expcond2=expcond { $value = $expcond1.value + $oplog.value + $expcond2.value ; }
+    | factorcond { $value = $factorcond.value ; }
     ;
 
 oplog returns [String value]
@@ -349,8 +355,8 @@ factorcond returns [String value]
     : exp1=exp opcomp exp2=exp { $value = $exp1.value + $opcomp.value + $exp2.value ; }
     | '(' expcond ')' { $value = "(" + $expcond.value + ")" ; }
     | '.NOT.' factaux=factorcond { $value = "!" + $factaux.value ; }
-    | '.TRUE.' { $value = " true " ; }
-    | '.FALSE.' { $value = "false" ; }
+    | '.TRUE.' { $value = "1" ; }
+    | '.FALSE.' { $value = "0" ; }
     ;
 
 opcomp returns [String value]
