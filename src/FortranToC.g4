@@ -6,7 +6,7 @@ grammar FortranToC ;
     ArrayList<Variable> variables = new ArrayList<>();
     ArrayList<String> statements = new ArrayList<>();
 
-    String variablesToString (ArrayList<Variable> v) {
+    public String variablesToString (ArrayList<Variable> v) {
         String s = "";
 
         for (int i = 0; i < v.size(); ++i) {
@@ -23,14 +23,75 @@ grammar FortranToC ;
 
         return s;
     }
+
+    public void printprg () {
+        for (Constant c : constants)
+            c.printConst();
+
+        System.out.println();
+
+        for (Header h : headers)
+            h.printHeader();
+
+        System.out.println();
+
+        System.out.println("void main ( void ) {");
+
+        printStatements();
+    }
+
+    public void printStatements () {
+        boolean hasCase = false;
+        String tabs = "\t";
+
+        for (String s: statements) {
+
+            if (s.startsWith("default") || s.startsWith("case")) {
+                if (!hasCase) {
+                    System.out.println(tabs + s);
+                    tabs += "\t";
+                    hasCase = true;
+                } else System.out.println(tabs + s);
+            }
+
+            else if (s.startsWith("break")) {
+                tabs = identacion.substring(0, identacion.length() - 1);
+                System.out.println(tabs + s);
+                hasCase = false;
+            }
+
+            else if (s.contains("{") && s.contains("}")) {
+                tabs = tabs.substring(0, tabs.length() - 1);
+                System.out.println(tabs + s);
+                tabs += "\t";
+            }
+
+            else if (s.contains("{")) {
+                System.out.println(tabs + s);
+                tabs += "\t";
+            }
+
+            else if (s.contains("}")) {
+                if (hasCase) {
+                    tabs = tabs.substring(0, tabs.length() - 1);
+                    hasCase = false;
+                }
+                tabs = tabs.substring(0, tabs.length() - 1);
+                System.out.println(tabs + s);
+            }
+
+            else System.out.println(tabs + s);
+        }
+    }
+
 }
 
 // Token combination rules in parser
 // Main
 
 prg
-    : 'PROGRAM' IDENT ';' dcllist cabecera { System.out.println("void main (void) {") ; } sent sentlist { System.out.println("}") ; } 'END'
-    'PROGRAM' { statements.add("}") ; } IDENT subproglist {  }
+    : 'PROGRAM' IDENT ';' dcllist cabecera sent sentlist 'END'
+    'PROGRAM' { statements.add("}") ; } IDENT subproglist { printprg() ; }
     ;
 
 dcllist
