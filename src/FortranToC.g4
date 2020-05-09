@@ -232,12 +232,15 @@ dec_f_paramlist
 sent
     : IDENT '=' exp ';' { statements.add($IDENT.text + " = " + $exp.value + ";") ; }
     | proc_call ';' { statements.add($proc_call.value) ; }
-    | 'IF' '(' expcond ')' sent
-    | 'IF' '(' expcond ')' 'THEN' sentlist 'ENDIF'
-    | 'IF' '(' expcond ')' 'THEN' sentlist 'ELSE' sentlist 'ENDIF'
-    | 'DO' 'WHILE' '(' expcond ')' sentlist 'ENDDO'
-    | 'DO' IDENT '=' doval ',' doval ',' doval sentlist 'ENDDO'
-    | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT'
+    | 'IF' '(' expcond { statements.add("if ( " + $expcond.value + " ) {") ; } ')' sent { statements.add("}") ; }
+    | 'IF' '(' expcond ')' 'THEN' sentlist 'ENDIF' { statements.add("}") ; }
+    | 'IF' '(' expcond ')' 'THEN' sentlist { statements.add("} else {") ; } 'ELSE' sentlist 'ENDIF' { statements.add("}") ; }
+    | 'DO' 'WHILE' '(' expcond ')' { statements.add("while ( " + $expcond.value + " ) {") ; } sentlist 'ENDDO' { statements.add("}") ; }
+    | 'DO' IDENT '=' doval1=doval ',' doval2=doval ',' doval3=doval { statements.add("for ( " + $IDENT.text + "=" + $doval1.value + " ; "
+                                                                      + $IDENT.text + "!=" + $doval2.value + " ; " + $IDENT.text + "="
+                                                                      + $IDENT.text + "+" + $doval3.value + " ) {") ; }
+      sentlist 'ENDDO' { statements.add("}") ; }
+    | 'SELECT' 'CASE' '(' exp ')' { statements.add("switch (" + $exp.value + ") {") ; } casos 'END' 'SELECT' { statements.add("}") ; }
     ;
 
 doval returns [String value]
@@ -334,8 +337,8 @@ codfun : 'FUNCTION' IDENT '(' nomparamlist ')'
 // Flow control statements
 
 expcond returns [String value]
-    : expcond oplog expcond
-    | factorcond
+    : expcond1=expcond oplog expcond2=expcond { $value = $expcond1.value + $oplog.value + $expcond2.value ; }
+    | factorcond { $value = $factorcond.value ; }
     ;
 
 oplog returns [String value]
