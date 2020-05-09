@@ -110,6 +110,24 @@ public class FortranToCLexer extends Lexer {
 	    ArrayList<Variable> variables = new ArrayList<>();
 	    ArrayList<String> statements = new ArrayList<>();
 
+	    String variablesToString (ArrayList<Variable> v) {
+	        String s = "";
+
+	        for (int i = 0; i < v.size(); ++i) {
+	            if (i != v.size() - 1) {
+	                s += v.get(i).toString();
+	                s = s.replace('*','&');
+	                s += " , ";
+	            }
+	            else {
+	                s += v.get(i).toString();
+	                s = s.replace('*','&');
+	            }
+	        }
+
+	        return s;
+	    }
+
 
 	public FortranToCLexer(CharStream input) {
 		super(input);

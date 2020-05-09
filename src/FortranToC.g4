@@ -5,6 +5,24 @@ grammar FortranToC ;
     ArrayList<Header> headers = new ArrayList<>();
     ArrayList<Variable> variables = new ArrayList<>();
     ArrayList<String> statements = new ArrayList<>();
+
+    String variablesToString (ArrayList<Variable> v) {
+        String s = "";
+
+        for (int i = 0; i < v.size(); ++i) {
+            if (i != v.size() - 1) {
+                s += v.get(i).toString();
+                s = s.replace('*','&');
+                s += " , ";
+            }
+            else {
+                s += v.get(i).toString();
+                s = s.replace('*','&');
+            }
+        }
+
+        return s;
+    }
 }
 
 // Token combination rules in parser
@@ -12,7 +30,7 @@ grammar FortranToC ;
 
 prg
     : 'PROGRAM' IDENT ';' dcllist cabecera { System.out.println("void main (void) {") ; } sent sentlist { System.out.println("}") ; } 'END'
-    'PROGRAM' IDENT subproglist {  }
+    'PROGRAM' { statements.add("}") ; } IDENT subproglist {  }
     ;
 
 dcllist
@@ -151,8 +169,8 @@ dec_f_paramlist
 
 // Optional part added to sent
 sent
-    : IDENT '=' exp ';'
-    | proc_call ';'
+    : IDENT '=' exp ';' { statements.add($IDENT.text + " = " + $exp.value + ";") ; }
+    | proc_call ';' { statements.add($proc_call.value) ; }
     | 'IF' '(' expcond ')' sent
     | 'IF' '(' expcond ')' 'THEN' sentlist 'ENDIF'
     | 'IF' '(' expcond ')' 'THEN' sentlist 'ELSE' sentlist 'ENDIF'
@@ -161,14 +179,14 @@ sent
     | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT'
     ;
 
-doval
-    : NUM_INT_CONST
-    | IDENT
+doval returns [String value]
+    : NUM_INT_CONST { $value = $NUM_INT_CONST.text ; }
+    | IDENT { $value = $IDENT.text ; }
     ; // Optional included
 
 casos
-    : 'CASE' '(' etiquetas ')' sentlist casos // Optional included
-    | 'CASE' 'DEFAULT' sentlist
+    : 'CASE' '(' etiquetas ')' sentlist { statements.add("break;") ; } casos // Optional included
+    | 'CASE' 'DEFAULT' { statements.add("default :") ; } sentlist
     |
     ;
 
@@ -193,7 +211,7 @@ exp returns [String value]
     ;
 
 expAux returns [String value]
-    : op exp expAux { $value = $op.value + $ exp.value + $expAux.value ; }
+    : op exp expAuxaux=expAux { $value = $op.value + $exp.value + $expAuxaux.value ; }
     | { $value = "" ; }
     ;
 
@@ -208,16 +226,16 @@ oparit returns [String value]
     | '/' { $value = " / " ; }
     ;
 
-factor
-    : simpvalue
-    | '(' exp ')'
-    | IDENT '(' exp explist ')'
-    | IDENT
+factor returns [String value]
+    : simpvalue { $value = $simpvalue.value ; }
+    | '(' exp ')' { $value = "(" + $exp.value + ")" ; }
+    | IDENT '(' exp explist ')' { $value = $IDENT.text + "(" + $exp.value + $explist.value + ")" ; }
+    | IDENT { $value = "" ; }
     ;
 
-explist
-    : ',' exp explist
-    |
+explist returns [String value]
+    : ',' exp explistaux=explist { $value = "," + $exp.value + $explistaux.value ; }
+    | { $value = "" ; }
     ;
 
 proc_call returns [String value]
@@ -238,14 +256,14 @@ subproglist
 
 codproc
     : 'SUBROUTINE' IDENT { variables.clear() ; } formal_paramlist
-    dec_s_paramlist { statements.add("void " + $IDENT.text + " (" + varListToString(variables) + ") {") ; }
+    dec_s_paramlist { statements.add("void " + $IDENT.text + " (" + variablesToString(variables) + ") {") ; }
     dcllist sent sentlist
     'END' 'SUBROUTINE' IDENT { statements.add("}") ; }
     ;
 
 codfun : 'FUNCTION' IDENT '(' nomparamlist ')'
     tipo '::' IDENT ';' { variables.clear() ; }
-    dec_f_paramlist { statements.add($tipo.value + " " + $IDENT.text + " (" + varListToString(variables) + ") {") ; }
+    dec_f_paramlist { statements.add($tipo.value + " " + $IDENT.text + " (" + variablesToString(variables) + ") {") ; }
     dcllist sent sentlist
     IDENT '=' exp ';' { statements.add("return " + $exp.value) ; }
     'END' 'FUNCTION' IDENT { statements.add("}") ; }
@@ -254,33 +272,33 @@ codfun : 'FUNCTION' IDENT '(' nomparamlist ')'
 // Optional parser implementation
 // Flow control statements
 
-expcond
+expcond returns [String value]
     : expcond oplog expcond
     | factorcond
     ;
 
-oplog
-    : '.OR.'
-    | '.AND.'
-    | '.EQV.'
-    | '.NEQV.'
+oplog returns [String value]
+    : '.OR.' { $value = " || " ; }
+    | '.AND.' { $value = " && " ; }
+    | '.EQV.' { $value = " !^ " ; }
+    | '.NEQV.' { $value = " ^ " ; }
     ;
 
-factorcond
-    : exp opcomp exp
-    | '(' expcond ')'
-    | '.NOT.' factorcond
-    | '.TRUE.'
-    | '.FALSE.'
+factorcond returns [String value]
+    : exp1=exp opcomp exp2=exp { $value = $exp1.value + $opcomp.value + $exp2.value ; }
+    | '(' expcond ')' { $value = "(" + $expcond.value + ")" ; }
+    | '.NOT.' factaux=factorcond { $value = "!" + $factaux.value ; }
+    | '.TRUE.' { $value = " true " ; }
+    | '.FALSE.' { $value = "false" ; }
     ;
 
-opcomp
-    : '<'
-    | '>'
-    | '<='
-    | '>='
-    | '=='
-    | '/='
+opcomp returns [String value]
+    : '<' { $value = " < " ; }
+    | '>' { $value = " > " ; }
+    | '<=' { $value = " <= " ; }
+    | '>=' { $value = " >= " ; }
+    | '==' { $value = " == " ; }
+    | '/=' { $value = " != " ; }
     ;
 
 

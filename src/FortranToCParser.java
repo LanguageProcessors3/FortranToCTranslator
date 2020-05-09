@@ -118,10 +118,28 @@ public class FortranToCParser extends Parser {
 	public ATN getATN() { return _ATN; }
 
 
-	    ConstTranslator ct = new ConstTranslator();
-	    HeaderTranslator hdt = new HeaderTranslator();
-	    SentTranslator st = new SentTranslator();
-	    ImplementationsTranslator imt = new ImplementationsTranslator();
+	    ArrayList<Constant> constants = new ArrayList<>();
+	    ArrayList<Header> headers = new ArrayList<>();
+	    ArrayList<Variable> variables = new ArrayList<>();
+	    ArrayList<String> statements = new ArrayList<>();
+
+	    String variablesToString (ArrayList<Variable> v) {
+	        String s = "";
+
+	        for (int i = 0; i < v.size(); ++i) {
+	            if (i != v.size() - 1) {
+	                s += v.get(i).toString();
+	                s = s.replace('*','&');
+	                s += " , ";
+	            }
+	            else {
+	                s += v.get(i).toString();
+	                s = s.replace('*','&');
+	            }
+	        }
+
+	        return s;
+	    }
 
 	public FortranToCParser(TokenStream input) {
 		super(input);
@@ -180,17 +198,18 @@ public class FortranToCParser extends Parser {
 			cabecera();
 			 System.out.println("void main (void) {") ; 
 			setState(90);
-			sent(true);
+			sent();
 			setState(91);
-			sentlist(true);
+			sentlist();
 			 System.out.println("}") ; 
 			setState(93);
 			match(T__2);
 			setState(94);
 			match(T__0);
-			setState(95);
-			match(IDENT);
+			 statements.add("}") ; 
 			setState(96);
+			match(IDENT);
+			setState(97);
 			subproglist();
 			  
 			}
@@ -239,11 +258,10 @@ public class FortranToCParser extends Parser {
 			case T__10:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(99);
-				dcl();
 				setState(100);
+				dcl();
+				setState(101);
 				dcllist();
-				  
 				}
 				break;
 			case T__3:
@@ -467,17 +485,14 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class SentlistContext extends ParserRuleContext {
-		public boolean isolated;
 		public SentContext sent() {
 			return getRuleContext(SentContext.class,0);
 		}
 		public SentlistContext sentlist() {
 			return getRuleContext(SentlistContext.class,0);
 		}
-		public SentlistContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public SentlistContext(ParserRuleContext parent, int invokingState, boolean isolated) {
+		public SentlistContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
-			this.isolated = isolated;
 		}
 		@Override public int getRuleIndex() { return RULE_sentlist; }
 		@Override
@@ -490,8 +505,8 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final SentlistContext sentlist(boolean isolated) throws RecognitionException {
-		SentlistContext _localctx = new SentlistContext(_ctx, getState(), isolated);
+	public final SentlistContext sentlist() throws RecognitionException {
+		SentlistContext _localctx = new SentlistContext(_ctx, getState());
 		enterRule(_localctx, 10, RULE_sentlist);
 		try {
 			setState(135);
@@ -501,9 +516,9 @@ public class FortranToCParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(131);
-				sent(_localctx.isolated);
+				sent();
 				setState(132);
-				sentlist(_localctx.isolated);
+				sentlist();
 				}
 				break;
 			case 2:
@@ -527,6 +542,7 @@ public class FortranToCParser extends Parser {
 	public static class DclContext extends ParserRuleContext {
 		public Token IDENT;
 		public SimpvalueContext simpvalue;
+		public TipoContext tipo;
 		public TipoContext tipo() {
 			return getRuleContext(TipoContext.class,0);
 		}
@@ -564,7 +580,7 @@ public class FortranToCParser extends Parser {
 		DclContext _localctx = new DclContext(_ctx, getState());
 		enterRule(_localctx, 12, RULE_dcl);
 		try {
-			setState(156);
+			setState(155);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 			case 1:
@@ -584,7 +600,7 @@ public class FortranToCParser extends Parser {
 				match(T__7);
 				setState(143);
 				((DclContext)_localctx).simpvalue = simpvalue();
-				 ct.saveConst((((DclContext)_localctx).IDENT!=null?((DclContext)_localctx).IDENT.getText():null), ((DclContext)_localctx).simpvalue.value) ; 
+				 constants.add(new Constant((((DclContext)_localctx).IDENT!=null?((DclContext)_localctx).IDENT.getText():null), ((DclContext)_localctx).simpvalue.value)) ; 
 				setState(145);
 				ctelist();
 				setState(146);
@@ -597,16 +613,15 @@ public class FortranToCParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(149);
-				tipo();
+				((DclContext)_localctx).tipo = tipo();
 				setState(150);
 				match(T__6);
 				setState(151);
-				varlist();
+				varlist(((DclContext)_localctx).tipo.value, ((DclContext)_localctx).tipo.size);
 				setState(152);
 				match(T__1);
 				setState(153);
 				defvar();
-
 				}
 				break;
 			}
@@ -656,32 +671,32 @@ public class FortranToCParser extends Parser {
 		DefcteContext _localctx = new DefcteContext(_ctx, getState());
 		enterRule(_localctx, 14, RULE_defcte);
 		try {
-			setState(171);
+			setState(170);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(158);
+				setState(157);
 				tipo();
-				setState(159);
+				setState(158);
 				match(T__4);
-				setState(160);
+				setState(159);
 				match(T__5);
-				setState(161);
+				setState(160);
 				match(T__6);
-				setState(162);
+				setState(161);
 				((DefcteContext)_localctx).IDENT = match(IDENT);
-				setState(163);
+				setState(162);
 				match(T__7);
-				setState(164);
+				setState(163);
 				((DefcteContext)_localctx).simpvalue = simpvalue();
-				 ct.saveConst((((DefcteContext)_localctx).IDENT!=null?((DefcteContext)_localctx).IDENT.getText():null), ((DefcteContext)_localctx).simpvalue.value) ; 
-				setState(166);
+				 constants.add(new Constant((((DefcteContext)_localctx).IDENT!=null?((DefcteContext)_localctx).IDENT.getText():null), ((DefcteContext)_localctx).simpvalue.value)) ; 
+				setState(165);
 				ctelist();
-				setState(167);
+				setState(166);
 				match(T__1);
-				setState(168);
+				setState(167);
 				defcte();
 				}
 				break;
@@ -731,22 +746,22 @@ public class FortranToCParser extends Parser {
 		CtelistContext _localctx = new CtelistContext(_ctx, getState());
 		enterRule(_localctx, 16, RULE_ctelist);
 		try {
-			setState(181);
+			setState(180);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__4:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(173);
+				setState(172);
 				match(T__4);
-				setState(174);
+				setState(173);
 				((CtelistContext)_localctx).IDENT = match(IDENT);
-				setState(175);
+				setState(174);
 				match(T__7);
-				setState(176);
+				setState(175);
 				((CtelistContext)_localctx).simpvalue = simpvalue();
-				 ct.saveConst((((CtelistContext)_localctx).IDENT!=null?((CtelistContext)_localctx).IDENT.getText():null), ((CtelistContext)_localctx).simpvalue.value) ; 
-				setState(178);
+				 constants.add(new Constant((((CtelistContext)_localctx).IDENT!=null?((CtelistContext)_localctx).IDENT.getText():null), ((CtelistContext)_localctx).simpvalue.value)) ; 
+				setState(177);
 				ctelist();
 				}
 				break;
@@ -802,13 +817,13 @@ public class FortranToCParser extends Parser {
 		SimpvalueContext _localctx = new SimpvalueContext(_ctx, getState());
 		enterRule(_localctx, 18, RULE_simpvalue);
 		try {
-			setState(195);
+			setState(194);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NUM_INT_CONST:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(183);
+				setState(182);
 				((SimpvalueContext)_localctx).NUM_INT_CONST = match(NUM_INT_CONST);
 				 ((SimpvalueContext)_localctx).value =  (((SimpvalueContext)_localctx).NUM_INT_CONST!=null?((SimpvalueContext)_localctx).NUM_INT_CONST.getText():null) ; 
 				}
@@ -816,7 +831,7 @@ public class FortranToCParser extends Parser {
 			case NUM_REAL_CONST:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(185);
+				setState(184);
 				((SimpvalueContext)_localctx).NUM_REAL_CONST = match(NUM_REAL_CONST);
 				 ((SimpvalueContext)_localctx).value =  (((SimpvalueContext)_localctx).NUM_REAL_CONST!=null?((SimpvalueContext)_localctx).NUM_REAL_CONST.getText():null) ; 
 				}
@@ -824,7 +839,7 @@ public class FortranToCParser extends Parser {
 			case STRING_CONST:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(187);
+				setState(186);
 				((SimpvalueContext)_localctx).STRING_CONST = match(STRING_CONST);
 				 ((SimpvalueContext)_localctx).value =  (((SimpvalueContext)_localctx).STRING_CONST!=null?((SimpvalueContext)_localctx).STRING_CONST.getText():null) ; 
 				}
@@ -832,7 +847,7 @@ public class FortranToCParser extends Parser {
 			case NUM_INT_CONST_B:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(189);
+				setState(188);
 				((SimpvalueContext)_localctx).NUM_INT_CONST_B = match(NUM_INT_CONST_B);
 				 ((SimpvalueContext)_localctx).value =  (((SimpvalueContext)_localctx).NUM_INT_CONST_B!=null?((SimpvalueContext)_localctx).NUM_INT_CONST_B.getText():null) ; 
 				}
@@ -840,7 +855,7 @@ public class FortranToCParser extends Parser {
 			case NUM_INT_CONST_O:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(191);
+				setState(190);
 				((SimpvalueContext)_localctx).NUM_INT_CONST_O = match(NUM_INT_CONST_O);
 				 ((SimpvalueContext)_localctx).value =  (((SimpvalueContext)_localctx).NUM_INT_CONST_O!=null?((SimpvalueContext)_localctx).NUM_INT_CONST_O.getText():null) ; 
 				}
@@ -848,7 +863,7 @@ public class FortranToCParser extends Parser {
 			case NUM_INT_CONST_H:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(193);
+				setState(192);
 				((SimpvalueContext)_localctx).NUM_INT_CONST_H = match(NUM_INT_CONST_H);
 				 ((SimpvalueContext)_localctx).value =  (((SimpvalueContext)_localctx).NUM_INT_CONST_H!=null?((SimpvalueContext)_localctx).NUM_INT_CONST_H.getText():null) ; 
 				}
@@ -869,6 +884,7 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class DefvarContext extends ParserRuleContext {
+		public TipoContext tipo;
 		public TipoContext tipo() {
 			return getRuleContext(TipoContext.class,0);
 		}
@@ -896,23 +912,22 @@ public class FortranToCParser extends Parser {
 		DefvarContext _localctx = new DefvarContext(_ctx, getState());
 		enterRule(_localctx, 20, RULE_defvar);
 		try {
-			setState(205);
+			setState(203);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
+				setState(196);
+				((DefvarContext)_localctx).tipo = tipo();
 				setState(197);
-				tipo();
-				setState(198);
 				match(T__6);
+				setState(198);
+				varlist(((DefvarContext)_localctx).tipo.value, ((DefvarContext)_localctx).tipo.size);
 				setState(199);
-				varlist();
-				setState(200);
 				match(T__1);
-				setState(201);
+				setState(200);
 				defvar();
-
 				}
 				break;
 			case 2:
@@ -934,7 +949,8 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class TipoContext extends ParserRuleContext {
-		public String type;
+		public String value;
+		public String size;
 		public CharlengthContext charlength;
 		public CharlengthContext charlength() {
 			return getRuleContext(CharlengthContext.class,0);
@@ -957,33 +973,33 @@ public class FortranToCParser extends Parser {
 		TipoContext _localctx = new TipoContext(_ctx, getState());
 		enterRule(_localctx, 22, RULE_tipo);
 		try {
-			setState(215);
+			setState(213);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__8:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(207);
+				setState(205);
 				match(T__8);
-				 ((TipoContext)_localctx).type =  "int" ; 
+				 ((TipoContext)_localctx).value =  "int" ; ((TipoContext)_localctx).size =  "" ; 
 				}
 				break;
 			case T__9:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(209);
+				setState(207);
 				match(T__9);
-				 ((TipoContext)_localctx).type =  "float" ; 
+				 ((TipoContext)_localctx).value =  "float" ; ((TipoContext)_localctx).size =  "" ; 
 				}
 				break;
 			case T__10:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(211);
+				setState(209);
 				match(T__10);
-				setState(212);
+				setState(210);
 				((TipoContext)_localctx).charlength = charlength();
-				 ((TipoContext)_localctx).type =  "char" + ((TipoContext)_localctx).charlength.num_const ; 
+				 ((TipoContext)_localctx).value =  "char" ; ((TipoContext)_localctx).size =  ((TipoContext)_localctx).charlength.num_const ; 
 				}
 				break;
 			default:
@@ -1023,17 +1039,17 @@ public class FortranToCParser extends Parser {
 		CharlengthContext _localctx = new CharlengthContext(_ctx, getState());
 		enterRule(_localctx, 24, RULE_charlength);
 		try {
-			setState(222);
+			setState(220);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__11:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(217);
+				setState(215);
 				match(T__11);
-				setState(218);
+				setState(216);
 				((CharlengthContext)_localctx).NUM_INT_CONST = match(NUM_INT_CONST);
-				setState(219);
+				setState(217);
 				match(T__12);
 				 ((CharlengthContext)_localctx).num_const =  "[" + (((CharlengthContext)_localctx).NUM_INT_CONST!=null?((CharlengthContext)_localctx).NUM_INT_CONST.getText():null) + "]" ; 
 				}
@@ -1061,6 +1077,10 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class VarlistContext extends ParserRuleContext {
+		public String type;
+		public String size;
+		public Token IDENT;
+		public InitContext init;
 		public TerminalNode IDENT() { return getToken(FortranToCParser.IDENT, 0); }
 		public InitContext init() {
 			return getRuleContext(InitContext.class,0);
@@ -1068,8 +1088,11 @@ public class FortranToCParser extends Parser {
 		public VarlistContext varlist() {
 			return getRuleContext(VarlistContext.class,0);
 		}
-		public VarlistContext(ParserRuleContext parent, int invokingState) {
+		public VarlistContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public VarlistContext(ParserRuleContext parent, int invokingState, String type, String size) {
 			super(parent, invokingState);
+			this.type = type;
+			this.size = size;
 		}
 		@Override public int getRuleIndex() { return RULE_varlist; }
 		@Override
@@ -1082,35 +1105,35 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final VarlistContext varlist() throws RecognitionException {
-		VarlistContext _localctx = new VarlistContext(_ctx, getState());
+	public final VarlistContext varlist(String type,String size) throws RecognitionException {
+		VarlistContext _localctx = new VarlistContext(_ctx, getState(), type, size);
 		enterRule(_localctx, 26, RULE_varlist);
 		try {
-			setState(234);
+			setState(232);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(224);
-				match(IDENT);
-				setState(225);
-				init();
-
+				setState(222);
+				((VarlistContext)_localctx).IDENT = match(IDENT);
+				setState(223);
+				((VarlistContext)_localctx).init = init();
+				 statements.add(_localctx.type + " " + (((VarlistContext)_localctx).IDENT!=null?((VarlistContext)_localctx).IDENT.getText():null) + _localctx.size + ((VarlistContext)_localctx).init.value + ";") ; 
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(228);
-				match(IDENT);
+				setState(226);
+				((VarlistContext)_localctx).IDENT = match(IDENT);
+				setState(227);
+				((VarlistContext)_localctx).init = init();
+				 statements.add(_localctx.type + " " + (((VarlistContext)_localctx).IDENT!=null?((VarlistContext)_localctx).IDENT.getText():null) + _localctx.size + ((VarlistContext)_localctx).init.value + ";") ; 
 				setState(229);
-				init();
-				setState(230);
 				match(T__4);
-				setState(231);
-				varlist();
-
+				setState(230);
+				varlist(_localctx.type, _localctx.size);
 				}
 				break;
 			}
@@ -1127,6 +1150,8 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class InitContext extends ParserRuleContext {
+		public String value;
+		public SimpvalueContext simpvalue;
 		public SimpvalueContext simpvalue() {
 			return getRuleContext(SimpvalueContext.class,0);
 		}
@@ -1148,23 +1173,24 @@ public class FortranToCParser extends Parser {
 		InitContext _localctx = new InitContext(_ctx, getState());
 		enterRule(_localctx, 28, RULE_init);
 		try {
-			setState(241);
+			setState(239);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__7:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(236);
+				setState(234);
 				match(T__7);
-				setState(237);
-				simpvalue();
-
+				setState(235);
+				((InitContext)_localctx).simpvalue = simpvalue();
+				 ((InitContext)_localctx).value =  " = " + ((InitContext)_localctx).simpvalue.value ; 
 				}
 				break;
 			case T__1:
 			case T__4:
 				enterOuterAlt(_localctx, 2);
 				{
+				 ((InitContext)_localctx).value =  "" ; 
 				}
 				break;
 			default:
@@ -1183,16 +1209,17 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class DecprocContext extends ParserRuleContext {
-		public Token IDENT;
-		public List<TerminalNode> IDENT() { return getTokens(FortranToCParser.IDENT); }
-		public TerminalNode IDENT(int i) {
-			return getToken(FortranToCParser.IDENT, i);
-		}
+		public Token id1;
+		public Token id2;
 		public Formal_paramlistContext formal_paramlist() {
 			return getRuleContext(Formal_paramlistContext.class,0);
 		}
 		public Dec_s_paramlistContext dec_s_paramlist() {
 			return getRuleContext(Dec_s_paramlistContext.class,0);
+		}
+		public List<TerminalNode> IDENT() { return getTokens(FortranToCParser.IDENT); }
+		public TerminalNode IDENT(int i) {
+			return getToken(FortranToCParser.IDENT, i);
 		}
 		public DecprocContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1214,21 +1241,25 @@ public class FortranToCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
+			setState(241);
+			match(T__13);
+			setState(242);
+			((DecprocContext)_localctx).id1 = match(IDENT);
 			setState(243);
-			match(T__13);
+			formal_paramlist();
 			setState(244);
-			((DecprocContext)_localctx).IDENT = match(IDENT);
+			dec_s_paramlist();
 			setState(245);
-			formal_paramlist(true);
-			setState(246);
-			dec_s_paramlist(true);
-			setState(247);
 			match(T__2);
-			setState(248);
+			setState(246);
 			match(T__13);
-			setState(249);
-			((DecprocContext)_localctx).IDENT = match(IDENT);
-			 hdt.saveProcHeader((((DecprocContext)_localctx).IDENT!=null?((DecprocContext)_localctx).IDENT.getText():null)) ; 
+			setState(247);
+			((DecprocContext)_localctx).id2 = match(IDENT);
+			 Header h = new Header("void", (((DecprocContext)_localctx).id1!=null?((DecprocContext)_localctx).id1.getText():null), (((DecprocContext)_localctx).id2!=null?((DecprocContext)_localctx).id2.getText():null));
+			                                   h.setParameters(variables);
+			                                   variables.clear();
+			                                   headers.add(h);
+			                                 
 			}
 		}
 		catch (RecognitionException re) {
@@ -1243,14 +1274,11 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class Formal_paramlistContext extends ParserRuleContext {
-		public boolean header;
 		public NomparamlistContext nomparamlist() {
 			return getRuleContext(NomparamlistContext.class,0);
 		}
-		public Formal_paramlistContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public Formal_paramlistContext(ParserRuleContext parent, int invokingState, boolean header) {
+		public Formal_paramlistContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
-			this.header = header;
 		}
 		@Override public int getRuleIndex() { return RULE_formal_paramlist; }
 		@Override
@@ -1263,11 +1291,11 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final Formal_paramlistContext formal_paramlist(boolean header) throws RecognitionException {
-		Formal_paramlistContext _localctx = new Formal_paramlistContext(_ctx, getState(), header);
+	public final Formal_paramlistContext formal_paramlist() throws RecognitionException {
+		Formal_paramlistContext _localctx = new Formal_paramlistContext(_ctx, getState());
 		enterRule(_localctx, 32, RULE_formal_paramlist);
 		try {
-			setState(257);
+			setState(255);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__2:
@@ -1286,11 +1314,11 @@ public class FortranToCParser extends Parser {
 			case T__11:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(253);
+				setState(251);
 				match(T__11);
-				setState(254);
-				nomparamlist(_localctx.header);
-				setState(255);
+				setState(252);
+				nomparamlist();
+				setState(253);
 				match(T__12);
 				}
 				break;
@@ -1310,16 +1338,12 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class NomparamlistContext extends ParserRuleContext {
-		public boolean isHeader;
-		public Token IDENT;
 		public TerminalNode IDENT() { return getToken(FortranToCParser.IDENT, 0); }
 		public NomparamlistContext nomparamlist() {
 			return getRuleContext(NomparamlistContext.class,0);
 		}
-		public NomparamlistContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public NomparamlistContext(ParserRuleContext parent, int invokingState, boolean isHeader) {
+		public NomparamlistContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
-			this.isHeader = isHeader;
 		}
 		@Override public int getRuleIndex() { return RULE_nomparamlist; }
 		@Override
@@ -1332,31 +1356,29 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final NomparamlistContext nomparamlist(boolean isHeader) throws RecognitionException {
-		NomparamlistContext _localctx = new NomparamlistContext(_ctx, getState(), isHeader);
+	public final NomparamlistContext nomparamlist() throws RecognitionException {
+		NomparamlistContext _localctx = new NomparamlistContext(_ctx, getState());
 		enterRule(_localctx, 34, RULE_nomparamlist);
 		try {
-			setState(266);
+			setState(261);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,15,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(259);
-				((NomparamlistContext)_localctx).IDENT = match(IDENT);
-				 if (isHeader) hdt.getIdents().add((((NomparamlistContext)_localctx).IDENT!=null?((NomparamlistContext)_localctx).IDENT.getText():null)) ; else imt.getIdents().add((((NomparamlistContext)_localctx).IDENT!=null?((NomparamlistContext)_localctx).IDENT.getText():null)) ; 
+				setState(257);
+				match(IDENT);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(261);
-				((NomparamlistContext)_localctx).IDENT = match(IDENT);
-				setState(262);
+				setState(258);
+				match(IDENT);
+				setState(259);
 				match(T__4);
-				setState(263);
-				nomparamlist(_localctx.isHeader);
-				 if (isHeader) hdt.getIdents().add((((NomparamlistContext)_localctx).IDENT!=null?((NomparamlistContext)_localctx).IDENT.getText():null)) ; else imt.getIdents().add((((NomparamlistContext)_localctx).IDENT!=null?((NomparamlistContext)_localctx).IDENT.getText():null)) ; 
+				setState(260);
+				nomparamlist();
 				}
 				break;
 			}
@@ -1373,8 +1395,9 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class Dec_s_paramlistContext extends ParserRuleContext {
-		public boolean checkHeader;
 		public TipoContext tipo;
+		public TipoparamContext tipoparam;
+		public Token IDENT;
 		public TipoContext tipo() {
 			return getRuleContext(TipoContext.class,0);
 		}
@@ -1385,10 +1408,8 @@ public class FortranToCParser extends Parser {
 		public Dec_s_paramlistContext dec_s_paramlist() {
 			return getRuleContext(Dec_s_paramlistContext.class,0);
 		}
-		public Dec_s_paramlistContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public Dec_s_paramlistContext(ParserRuleContext parent, int invokingState, boolean checkHeader) {
+		public Dec_s_paramlistContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
-			this.checkHeader = checkHeader;
 		}
 		@Override public int getRuleIndex() { return RULE_dec_s_paramlist; }
 		@Override
@@ -1401,35 +1422,35 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final Dec_s_paramlistContext dec_s_paramlist(boolean checkHeader) throws RecognitionException {
-		Dec_s_paramlistContext _localctx = new Dec_s_paramlistContext(_ctx, getState(), checkHeader);
+	public final Dec_s_paramlistContext dec_s_paramlist() throws RecognitionException {
+		Dec_s_paramlistContext _localctx = new Dec_s_paramlistContext(_ctx, getState());
 		enterRule(_localctx, 36, RULE_dec_s_paramlist);
 		try {
-			setState(280);
+			setState(275);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,16,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(268);
+				setState(263);
 				((Dec_s_paramlistContext)_localctx).tipo = tipo();
-				 if (checkHeader) hdt.getTypes().add(((Dec_s_paramlistContext)_localctx).tipo.type) ; else imt.getTypes().add(((Dec_s_paramlistContext)_localctx).tipo.type) ; 
-				setState(270);
+				setState(264);
 				match(T__4);
-				setState(271);
+				setState(265);
 				match(T__14);
-				setState(272);
+				setState(266);
 				match(T__11);
-				setState(273);
-				tipoparam();
-				setState(274);
+				setState(267);
+				((Dec_s_paramlistContext)_localctx).tipoparam = tipoparam();
+				setState(268);
 				match(T__12);
-				setState(275);
-				match(IDENT);
-				setState(276);
+				setState(269);
+				((Dec_s_paramlistContext)_localctx).IDENT = match(IDENT);
+				setState(270);
 				match(T__1);
-				setState(277);
-				dec_s_paramlist(_localctx.checkHeader);
+				 variables.add(new Variable(((Dec_s_paramlistContext)_localctx).tipo.value, ((Dec_s_paramlistContext)_localctx).tipoparam.value + (((Dec_s_paramlistContext)_localctx).IDENT!=null?((Dec_s_paramlistContext)_localctx).IDENT.getText():null), ((Dec_s_paramlistContext)_localctx).tipo.size)); 
+				setState(272);
+				dec_s_paramlist();
 				}
 				break;
 			case 2:
@@ -1451,6 +1472,7 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class TipoparamContext extends ParserRuleContext {
+		public String value;
 		public TipoparamContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1468,20 +1490,36 @@ public class FortranToCParser extends Parser {
 	public final TipoparamContext tipoparam() throws RecognitionException {
 		TipoparamContext _localctx = new TipoparamContext(_ctx, getState());
 		enterRule(_localctx, 38, RULE_tipoparam);
-		int _la;
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(282);
-			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__15) | (1L << T__16) | (1L << T__17))) != 0)) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+			setState(283);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case T__15:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(277);
+				match(T__15);
+				 ((TipoparamContext)_localctx).value =  ""; 
+				}
+				break;
+			case T__16:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(279);
+				match(T__16);
+				 ((TipoparamContext)_localctx).value =  "*"; 
+				}
+				break;
+			case T__17:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(281);
+				match(T__17);
+				 ((TipoparamContext)_localctx).value =  "*"; 
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1496,12 +1534,9 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class DecfunContext extends ParserRuleContext {
-		public Token IDENT;
+		public Token id1;
 		public TipoContext tipo;
-		public List<TerminalNode> IDENT() { return getTokens(FortranToCParser.IDENT); }
-		public TerminalNode IDENT(int i) {
-			return getToken(FortranToCParser.IDENT, i);
-		}
+		public Token id2;
 		public NomparamlistContext nomparamlist() {
 			return getRuleContext(NomparamlistContext.class,0);
 		}
@@ -1510,6 +1545,10 @@ public class FortranToCParser extends Parser {
 		}
 		public Dec_f_paramlistContext dec_f_paramlist() {
 			return getRuleContext(Dec_f_paramlistContext.class,0);
+		}
+		public List<TerminalNode> IDENT() { return getTokens(FortranToCParser.IDENT); }
+		public TerminalNode IDENT(int i) {
+			return getToken(FortranToCParser.IDENT, i);
 		}
 		public DecfunContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1531,34 +1570,37 @@ public class FortranToCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(284);
-			match(T__18);
 			setState(285);
-			((DecfunContext)_localctx).IDENT = match(IDENT);
-			setState(286);
-			match(T__11);
-			setState(287);
-			nomparamlist(true);
-			setState(288);
-			match(T__12);
-			setState(289);
-			((DecfunContext)_localctx).tipo = tipo();
-			setState(290);
-			match(T__6);
-			setState(291);
-			((DecfunContext)_localctx).IDENT = match(IDENT);
-			setState(292);
-			match(T__1);
-			 hdt.getTypes().add(((DecfunContext)_localctx).tipo.type) ; 
-			setState(294);
-			dec_f_paramlist(true);
-			setState(295);
-			match(T__2);
-			setState(296);
 			match(T__18);
+			setState(286);
+			((DecfunContext)_localctx).id1 = match(IDENT);
+			setState(287);
+			match(T__11);
+			setState(288);
+			nomparamlist();
+			setState(289);
+			match(T__12);
+			setState(290);
+			((DecfunContext)_localctx).tipo = tipo();
+			setState(291);
+			match(T__6);
+			setState(292);
+			((DecfunContext)_localctx).id2 = match(IDENT);
+			setState(293);
+			match(T__1);
+			setState(294);
+			dec_f_paramlist();
+			 Header h = new Header(((DecfunContext)_localctx).tipo.value, (((DecfunContext)_localctx).id1!=null?((DecfunContext)_localctx).id1.getText():null), (((DecfunContext)_localctx).id2!=null?((DecfunContext)_localctx).id2.getText():null));
+			                      h.setParameters(variables);
+			                      variables.clear();
+			                      headers.add(h);
+			                    
+			setState(296);
+			match(T__2);
 			setState(297);
-			((DecfunContext)_localctx).IDENT = match(IDENT);
-			 hdt.saveFuncHeader((((DecfunContext)_localctx).IDENT!=null?((DecfunContext)_localctx).IDENT.getText():null)) ; 
+			match(T__18);
+			setState(298);
+			match(IDENT);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1573,8 +1615,8 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class Dec_f_paramlistContext extends ParserRuleContext {
-		public boolean checkHead;
 		public TipoContext tipo;
+		public Token IDENT;
 		public TipoContext tipo() {
 			return getRuleContext(TipoContext.class,0);
 		}
@@ -1582,10 +1624,8 @@ public class FortranToCParser extends Parser {
 		public Dec_f_paramlistContext dec_f_paramlist() {
 			return getRuleContext(Dec_f_paramlistContext.class,0);
 		}
-		public Dec_f_paramlistContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public Dec_f_paramlistContext(ParserRuleContext parent, int invokingState, boolean checkHead) {
+		public Dec_f_paramlistContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
-			this.checkHead = checkHead;
 		}
 		@Override public int getRuleIndex() { return RULE_dec_f_paramlist; }
 		@Override
@@ -1598,35 +1638,35 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final Dec_f_paramlistContext dec_f_paramlist(boolean checkHead) throws RecognitionException {
-		Dec_f_paramlistContext _localctx = new Dec_f_paramlistContext(_ctx, getState(), checkHead);
+	public final Dec_f_paramlistContext dec_f_paramlist() throws RecognitionException {
+		Dec_f_paramlistContext _localctx = new Dec_f_paramlistContext(_ctx, getState());
 		enterRule(_localctx, 42, RULE_dec_f_paramlist);
 		try {
 			setState(312);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,17,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,18,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(300);
 				((Dec_f_paramlistContext)_localctx).tipo = tipo();
-				 if (checkHead) hdt.getTypes().add(((Dec_f_paramlistContext)_localctx).tipo.type) ; else imt.getTypes().add(((Dec_f_paramlistContext)_localctx).tipo.type) ; 
-				setState(302);
+				setState(301);
 				match(T__4);
-				setState(303);
+				setState(302);
 				match(T__14);
-				setState(304);
+				setState(303);
 				match(T__11);
-				setState(305);
+				setState(304);
 				match(T__15);
-				setState(306);
+				setState(305);
 				match(T__12);
+				setState(306);
+				((Dec_f_paramlistContext)_localctx).IDENT = match(IDENT);
 				setState(307);
-				match(IDENT);
-				setState(308);
 				match(T__1);
+				 variables.add(new Variable(((Dec_f_paramlistContext)_localctx).tipo.value, (((Dec_f_paramlistContext)_localctx).IDENT!=null?((Dec_f_paramlistContext)_localctx).IDENT.getText():null), ((Dec_f_paramlistContext)_localctx).tipo.size));
 				setState(309);
-				dec_f_paramlist(_localctx.checkHead);
+				dec_f_paramlist();
 				}
 				break;
 			case 2:
@@ -1648,7 +1688,9 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class SentContext extends ParserRuleContext {
-		public boolean isolatedCall;
+		public Token IDENT;
+		public ExpContext exp;
+		public Proc_callContext proc_call;
 		public TerminalNode IDENT() { return getToken(FortranToCParser.IDENT, 0); }
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
@@ -1677,10 +1719,8 @@ public class FortranToCParser extends Parser {
 		public CasosContext casos() {
 			return getRuleContext(CasosContext.class,0);
 		}
-		public SentContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public SentContext(ParserRuleContext parent, int invokingState, boolean isolatedCall) {
+		public SentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
-			this.isolatedCall = isolatedCall;
 		}
 		@Override public int getRuleIndex() { return RULE_sent; }
 		@Override
@@ -1693,124 +1733,122 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final SentContext sent(boolean isolatedCall) throws RecognitionException {
-		SentContext _localctx = new SentContext(_ctx, getState(), isolatedCall);
+	public final SentContext sent() throws RecognitionException {
+		SentContext _localctx = new SentContext(_ctx, getState());
 		enterRule(_localctx, 44, RULE_sent);
 		try {
-			setState(374);
+			setState(376);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,18,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,19,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(314);
-				match(IDENT);
+				((SentContext)_localctx).IDENT = match(IDENT);
 				setState(315);
 				match(T__7);
 				setState(316);
-				exp();
+				((SentContext)_localctx).exp = exp();
 				setState(317);
 				match(T__1);
+				 statements.add((((SentContext)_localctx).IDENT!=null?((SentContext)_localctx).IDENT.getText():null) + " = " + ((SentContext)_localctx).exp.value + ";") ; 
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(319);
-				proc_call(_localctx.isolatedCall);
 				setState(320);
+				((SentContext)_localctx).proc_call = proc_call();
+				setState(321);
 				match(T__1);
+				 statements.add(((SentContext)_localctx).proc_call.value) ; 
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(322);
-				match(T__19);
-				setState(323);
-				match(T__11);
 				setState(324);
-				expcond(0);
+				match(T__19);
 				setState(325);
-				match(T__12);
+				match(T__11);
 				setState(326);
-				sent(_localctx.isolatedCall);
+				expcond(0);
+				setState(327);
+				match(T__12);
+				setState(328);
+				sent();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(328);
-				match(T__19);
-				setState(329);
-				match(T__11);
 				setState(330);
-				expcond(0);
+				match(T__19);
 				setState(331);
-				match(T__12);
+				match(T__11);
 				setState(332);
-				match(T__20);
+				expcond(0);
 				setState(333);
-				sentlist(_localctx.isolatedCall);
+				match(T__12);
 				setState(334);
+				match(T__20);
+				setState(335);
+				sentlist();
+				setState(336);
 				match(T__21);
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(336);
-				match(T__19);
-				setState(337);
-				match(T__11);
 				setState(338);
-				expcond(0);
+				match(T__19);
 				setState(339);
-				match(T__12);
+				match(T__11);
 				setState(340);
-				match(T__20);
+				expcond(0);
 				setState(341);
-				sentlist(_localctx.isolatedCall);
+				match(T__12);
 				setState(342);
-				match(T__22);
+				match(T__20);
 				setState(343);
-				sentlist(_localctx.isolatedCall);
+				sentlist();
 				setState(344);
+				match(T__22);
+				setState(345);
+				sentlist();
+				setState(346);
 				match(T__21);
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(346);
-				match(T__23);
-				setState(347);
-				match(T__24);
 				setState(348);
-				match(T__11);
+				match(T__23);
 				setState(349);
-				expcond(0);
+				match(T__24);
 				setState(350);
-				match(T__12);
+				match(T__11);
 				setState(351);
-				sentlist(_localctx.isolatedCall);
+				expcond(0);
 				setState(352);
+				match(T__12);
+				setState(353);
+				sentlist();
+				setState(354);
 				match(T__25);
 				}
 				break;
 			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(354);
-				match(T__23);
-				setState(355);
-				match(IDENT);
 				setState(356);
-				match(T__7);
+				match(T__23);
 				setState(357);
-				doval();
+				match(IDENT);
 				setState(358);
-				match(T__4);
+				match(T__7);
 				setState(359);
 				doval();
 				setState(360);
@@ -1818,29 +1856,33 @@ public class FortranToCParser extends Parser {
 				setState(361);
 				doval();
 				setState(362);
-				sentlist(_localctx.isolatedCall);
+				match(T__4);
 				setState(363);
+				doval();
+				setState(364);
+				sentlist();
+				setState(365);
 				match(T__25);
 				}
 				break;
 			case 8:
 				enterOuterAlt(_localctx, 8);
 				{
-				setState(365);
-				match(T__26);
-				setState(366);
-				match(T__27);
 				setState(367);
-				match(T__11);
+				match(T__26);
 				setState(368);
-				exp();
+				match(T__27);
 				setState(369);
-				match(T__12);
+				match(T__11);
 				setState(370);
-				casos(_localctx.isolatedCall);
+				exp();
 				setState(371);
-				match(T__2);
+				match(T__12);
 				setState(372);
+				casos();
+				setState(373);
+				match(T__2);
+				setState(374);
 				match(T__26);
 				}
 				break;
@@ -1858,6 +1900,9 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class DovalContext extends ParserRuleContext {
+		public String value;
+		public Token NUM_INT_CONST;
+		public Token IDENT;
 		public TerminalNode NUM_INT_CONST() { return getToken(FortranToCParser.NUM_INT_CONST, 0); }
 		public TerminalNode IDENT() { return getToken(FortranToCParser.IDENT, 0); }
 		public DovalContext(ParserRuleContext parent, int invokingState) {
@@ -1877,20 +1922,28 @@ public class FortranToCParser extends Parser {
 	public final DovalContext doval() throws RecognitionException {
 		DovalContext _localctx = new DovalContext(_ctx, getState());
 		enterRule(_localctx, 46, RULE_doval);
-		int _la;
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(376);
-			_la = _input.LA(1);
-			if ( !(_la==IDENT || _la==NUM_INT_CONST) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+			setState(382);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case NUM_INT_CONST:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(378);
+				((DovalContext)_localctx).NUM_INT_CONST = match(NUM_INT_CONST);
+				 ((DovalContext)_localctx).value =  (((DovalContext)_localctx).NUM_INT_CONST!=null?((DovalContext)_localctx).NUM_INT_CONST.getText():null) ; 
+				}
+				break;
+			case IDENT:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(380);
+				((DovalContext)_localctx).IDENT = match(IDENT);
+				 ((DovalContext)_localctx).value =  (((DovalContext)_localctx).IDENT!=null?((DovalContext)_localctx).IDENT.getText():null) ; 
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1905,7 +1958,6 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class CasosContext extends ParserRuleContext {
-		public boolean isIsolated;
 		public EtiquetasContext etiquetas() {
 			return getRuleContext(EtiquetasContext.class,0);
 		}
@@ -1915,10 +1967,8 @@ public class FortranToCParser extends Parser {
 		public CasosContext casos() {
 			return getRuleContext(CasosContext.class,0);
 		}
-		public CasosContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public CasosContext(ParserRuleContext parent, int invokingState, boolean isIsolated) {
+		public CasosContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
-			this.isIsolated = isIsolated;
 		}
 		@Override public int getRuleIndex() { return RULE_casos; }
 		@Override
@@ -1931,39 +1981,41 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final CasosContext casos(boolean isIsolated) throws RecognitionException {
-		CasosContext _localctx = new CasosContext(_ctx, getState(), isIsolated);
+	public final CasosContext casos() throws RecognitionException {
+		CasosContext _localctx = new CasosContext(_ctx, getState());
 		enterRule(_localctx, 48, RULE_casos);
 		try {
-			setState(389);
+			setState(397);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,19,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,21,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(378);
+				setState(384);
 				match(T__27);
-				setState(379);
+				setState(385);
 				match(T__11);
-				setState(380);
+				setState(386);
 				etiquetas();
-				setState(381);
+				setState(387);
 				match(T__12);
-				setState(382);
-				sentlist(_localctx.isIsolated);
-				setState(383);
-				casos(_localctx.isIsolated);
+				setState(388);
+				sentlist();
+				 statements.add("break;") ; 
+				setState(390);
+				casos();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(385);
+				setState(392);
 				match(T__27);
-				setState(386);
+				setState(393);
 				match(T__28);
-				setState(387);
-				sentlist(_localctx.isIsolated);
+				 statements.add("default :") ; 
+				setState(395);
+				sentlist();
 				}
 				break;
 			case 3:
@@ -2012,44 +2064,44 @@ public class FortranToCParser extends Parser {
 		EtiquetasContext _localctx = new EtiquetasContext(_ctx, getState());
 		enterRule(_localctx, 50, RULE_etiquetas);
 		try {
-			setState(403);
+			setState(411);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,20,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,22,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(391);
+				setState(399);
 				simpvalue();
-				setState(392);
+				setState(400);
 				listaetiqetas();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(394);
+				setState(402);
 				simpvalue();
-				setState(395);
+				setState(403);
 				match(T__29);
-				setState(396);
+				setState(404);
 				simpvalue();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(398);
+				setState(406);
 				match(T__29);
-				setState(399);
+				setState(407);
 				simpvalue();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(400);
+				setState(408);
 				simpvalue();
-				setState(401);
+				setState(409);
 				match(T__29);
 				}
 				break;
@@ -2088,15 +2140,15 @@ public class FortranToCParser extends Parser {
 		ListaetiqetasContext _localctx = new ListaetiqetasContext(_ctx, getState());
 		enterRule(_localctx, 52, RULE_listaetiqetas);
 		try {
-			setState(408);
+			setState(416);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__4:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(405);
+				setState(413);
 				match(T__4);
-				setState(406);
+				setState(414);
 				simpvalue();
 				}
 				break;
@@ -2121,6 +2173,9 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class ExpContext extends ParserRuleContext {
+		public String value;
+		public FactorContext factor;
+		public ExpAuxContext expAux;
 		public FactorContext factor() {
 			return getRuleContext(FactorContext.class,0);
 		}
@@ -2147,10 +2202,11 @@ public class FortranToCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(410);
-			factor();
-			setState(411);
-			expAux();
+			setState(418);
+			((ExpContext)_localctx).factor = factor();
+			setState(419);
+			((ExpContext)_localctx).expAux = expAux();
+			 ((ExpContext)_localctx).value =  ((ExpContext)_localctx).factor.value + ((ExpContext)_localctx).expAux.value ; 
 			}
 		}
 		catch (RecognitionException re) {
@@ -2165,6 +2221,10 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class ExpAuxContext extends ParserRuleContext {
+		public String value;
+		public OpContext op;
+		public ExpContext exp;
+		public ExpAuxContext expAuxaux;
 		public OpContext op() {
 			return getRuleContext(OpContext.class,0);
 		}
@@ -2192,23 +2252,25 @@ public class FortranToCParser extends Parser {
 		ExpAuxContext _localctx = new ExpAuxContext(_ctx, getState());
 		enterRule(_localctx, 56, RULE_expAux);
 		try {
-			setState(418);
+			setState(428);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,22,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,24,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(413);
-				op();
-				setState(414);
-				exp();
-				setState(415);
-				expAux();
+				setState(422);
+				((ExpAuxContext)_localctx).op = op();
+				setState(423);
+				((ExpAuxContext)_localctx).exp = exp();
+				setState(424);
+				((ExpAuxContext)_localctx).expAuxaux = expAux();
+				 ((ExpAuxContext)_localctx).value =  ((ExpAuxContext)_localctx).op.value + ((ExpAuxContext)_localctx).exp.value + ((ExpAuxContext)_localctx).expAuxaux.value ; 
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
+				 ((ExpAuxContext)_localctx).value =  "" ; 
 				}
 				break;
 			}
@@ -2225,6 +2287,8 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class OpContext extends ParserRuleContext {
+		public String value;
+		public OparitContext oparit;
 		public OparitContext oparit() {
 			return getRuleContext(OparitContext.class,0);
 		}
@@ -2248,8 +2312,9 @@ public class FortranToCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(420);
-			oparit();
+			setState(430);
+			((OpContext)_localctx).oparit = oparit();
+			 ((OpContext)_localctx).value =  ((OpContext)_localctx).oparit.value ; 
 			}
 		}
 		catch (RecognitionException re) {
@@ -2264,6 +2329,7 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class OparitContext extends ParserRuleContext {
+		public String value;
 		public OparitContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2281,20 +2347,44 @@ public class FortranToCParser extends Parser {
 	public final OparitContext oparit() throws RecognitionException {
 		OparitContext _localctx = new OparitContext(_ctx, getState());
 		enterRule(_localctx, 60, RULE_oparit);
-		int _la;
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(422);
-			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__30) | (1L << T__31) | (1L << T__32) | (1L << T__33))) != 0)) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+			setState(441);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case T__30:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(433);
+				match(T__30);
+				 ((OparitContext)_localctx).value =  " + " ; 
+				}
+				break;
+			case T__31:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(435);
+				match(T__31);
+				 ((OparitContext)_localctx).value =  " - " ; 
+				}
+				break;
+			case T__32:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(437);
+				match(T__32);
+				 ((OparitContext)_localctx).value =  " * " ; 
+				}
+				break;
+			case T__33:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(439);
+				match(T__33);
+				 ((OparitContext)_localctx).value =  " / " ; 
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2309,7 +2399,11 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class FactorContext extends ParserRuleContext {
+		public String value;
+		public SimpvalueContext simpvalue;
+		public ExpContext exp;
 		public Token IDENT;
+		public ExplistContext explist;
 		public SimpvalueContext simpvalue() {
 			return getRuleContext(SimpvalueContext.class,0);
 		}
@@ -2338,49 +2432,51 @@ public class FortranToCParser extends Parser {
 		FactorContext _localctx = new FactorContext(_ctx, getState());
 		enterRule(_localctx, 62, RULE_factor);
 		try {
-			setState(438);
+			setState(460);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,23,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,26,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(424);
-				simpvalue();
+				setState(443);
+				((FactorContext)_localctx).simpvalue = simpvalue();
+				 ((FactorContext)_localctx).value =  ((FactorContext)_localctx).simpvalue.value ; 
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(425);
+				setState(446);
 				match(T__11);
-				setState(426);
-				exp();
-				setState(427);
+				setState(447);
+				((FactorContext)_localctx).exp = exp();
+				setState(448);
 				match(T__12);
+				 ((FactorContext)_localctx).value =  "(" + ((FactorContext)_localctx).exp.value + ")" ; 
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(429);
+				setState(451);
 				((FactorContext)_localctx).IDENT = match(IDENT);
-				setState(430);
+				setState(452);
 				match(T__11);
-				setState(431);
-				exp();
-				setState(432);
-				explist();
-				setState(433);
+				setState(453);
+				((FactorContext)_localctx).exp = exp();
+				setState(454);
+				((FactorContext)_localctx).explist = explist();
+				setState(455);
 				match(T__12);
-				 imt.getFactors().add((((FactorContext)_localctx).IDENT!=null?((FactorContext)_localctx).IDENT.getText():null)) ; 
+				 ((FactorContext)_localctx).value =  (((FactorContext)_localctx).IDENT!=null?((FactorContext)_localctx).IDENT.getText():null) + "(" + ((FactorContext)_localctx).exp.value + ((FactorContext)_localctx).explist.value + ")" ; 
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(436);
-				((FactorContext)_localctx).IDENT = match(IDENT);
-				 imt.getFactors().add((((FactorContext)_localctx).IDENT!=null?((FactorContext)_localctx).IDENT.getText():null)) ; 
+				setState(458);
+				match(IDENT);
+				 ((FactorContext)_localctx).value =  "" ; 
 				}
 				break;
 			}
@@ -2397,6 +2493,9 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class ExplistContext extends ParserRuleContext {
+		public String value;
+		public ExpContext exp;
+		public ExplistContext explistaux;
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
 		}
@@ -2421,23 +2520,25 @@ public class FortranToCParser extends Parser {
 		ExplistContext _localctx = new ExplistContext(_ctx, getState());
 		enterRule(_localctx, 64, RULE_explist);
 		try {
-			setState(445);
+			setState(468);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__4:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(440);
+				setState(462);
 				match(T__4);
-				setState(441);
-				exp();
-				setState(442);
-				explist();
+				setState(463);
+				((ExplistContext)_localctx).exp = exp();
+				setState(464);
+				((ExplistContext)_localctx).explistaux = explist();
+				 ((ExplistContext)_localctx).value =  "," + ((ExplistContext)_localctx).exp.value + ((ExplistContext)_localctx).explistaux.value ; 
 				}
 				break;
 			case T__12:
 				enterOuterAlt(_localctx, 2);
 				{
+				 ((ExplistContext)_localctx).value =  "" ; 
 				}
 				break;
 			default:
@@ -2456,16 +2557,15 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class Proc_callContext extends ParserRuleContext {
-		public boolean iso;
+		public String value;
 		public Token IDENT;
+		public SubpparamlistContext subpparamlist;
 		public TerminalNode IDENT() { return getToken(FortranToCParser.IDENT, 0); }
 		public SubpparamlistContext subpparamlist() {
 			return getRuleContext(SubpparamlistContext.class,0);
 		}
-		public Proc_callContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public Proc_callContext(ParserRuleContext parent, int invokingState, boolean iso) {
+		public Proc_callContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
-			this.iso = iso;
 		}
 		@Override public int getRuleIndex() { return RULE_proc_call; }
 		@Override
@@ -2478,19 +2578,19 @@ public class FortranToCParser extends Parser {
 		}
 	}
 
-	public final Proc_callContext proc_call(boolean iso) throws RecognitionException {
-		Proc_callContext _localctx = new Proc_callContext(_ctx, getState(), iso);
+	public final Proc_callContext proc_call() throws RecognitionException {
+		Proc_callContext _localctx = new Proc_callContext(_ctx, getState());
 		enterRule(_localctx, 66, RULE_proc_call);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(447);
+			setState(470);
 			match(T__34);
-			setState(448);
+			setState(471);
 			((Proc_callContext)_localctx).IDENT = match(IDENT);
-			setState(449);
-			subpparamlist();
-			 if (iso) st.saveCall((((Proc_callContext)_localctx).IDENT!=null?((Proc_callContext)_localctx).IDENT.getText():null)) ; else imt.saveSubprogram((((Proc_callContext)_localctx).IDENT!=null?((Proc_callContext)_localctx).IDENT.getText():null)) ; 
+			setState(472);
+			((Proc_callContext)_localctx).subpparamlist = subpparamlist();
+			 ((Proc_callContext)_localctx).value =  (((Proc_callContext)_localctx).IDENT!=null?((Proc_callContext)_localctx).IDENT.getText():null) + " ( " + ((Proc_callContext)_localctx).subpparamlist.value + " ) ;" ; 
 			}
 		}
 		catch (RecognitionException re) {
@@ -2505,6 +2605,9 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class SubpparamlistContext extends ParserRuleContext {
+		public String value;
+		public ExpContext exp;
+		public ExplistContext explist;
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
 		}
@@ -2529,25 +2632,27 @@ public class FortranToCParser extends Parser {
 		SubpparamlistContext _localctx = new SubpparamlistContext(_ctx, getState());
 		enterRule(_localctx, 68, RULE_subpparamlist);
 		try {
-			setState(458);
+			setState(482);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__11:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(452);
+				setState(475);
 				match(T__11);
-				setState(453);
-				exp();
-				setState(454);
-				explist();
-				setState(455);
+				setState(476);
+				((SubpparamlistContext)_localctx).exp = exp();
+				setState(477);
+				((SubpparamlistContext)_localctx).explist = explist();
+				setState(478);
 				match(T__12);
+				 ((SubpparamlistContext)_localctx).value =  ((SubpparamlistContext)_localctx).exp.value + ((SubpparamlistContext)_localctx).explist.value ; 
 				}
 				break;
 			case T__1:
 				enterOuterAlt(_localctx, 2);
 				{
+				 ((SubpparamlistContext)_localctx).value =  "" ; 
 				}
 				break;
 			default:
@@ -2593,24 +2698,24 @@ public class FortranToCParser extends Parser {
 		SubproglistContext _localctx = new SubproglistContext(_ctx, getState());
 		enterRule(_localctx, 70, RULE_subproglist);
 		try {
-			setState(467);
+			setState(491);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__13:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(460);
+				setState(484);
 				codproc();
-				setState(461);
+				setState(485);
 				subproglist();
 				}
 				break;
 			case T__18:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(463);
+				setState(487);
 				codfun();
-				setState(464);
+				setState(488);
 				subproglist();
 				}
 				break;
@@ -2675,28 +2780,29 @@ public class FortranToCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(469);
+			setState(493);
 			match(T__13);
-			setState(470);
+			setState(494);
 			((CodprocContext)_localctx).IDENT = match(IDENT);
-			setState(471);
-			formal_paramlist(false);
-			setState(472);
-			dec_s_paramlist(false);
-			 imt.saveProcHeadImplementation((((CodprocContext)_localctx).IDENT!=null?((CodprocContext)_localctx).IDENT.getText():null)) ; 
-			setState(474);
+			 variables.clear() ; 
+			setState(496);
+			formal_paramlist();
+			setState(497);
+			dec_s_paramlist();
+			 statements.add("void " + (((CodprocContext)_localctx).IDENT!=null?((CodprocContext)_localctx).IDENT.getText():null) + " (" + variablesToString(variables) + ") {") ; 
+			setState(499);
 			dcllist();
-			setState(475);
-			sent(false);
-			setState(476);
-			sentlist(false);
-			setState(477);
+			setState(500);
+			sent();
+			setState(501);
+			sentlist();
+			setState(502);
 			match(T__2);
-			setState(478);
+			setState(503);
 			match(T__13);
-			setState(479);
+			setState(504);
 			((CodprocContext)_localctx).IDENT = match(IDENT);
-			 imt.saveFuncImplementation(false, (((CodprocContext)_localctx).IDENT!=null?((CodprocContext)_localctx).IDENT.getText():null)); 
+			 statements.add("}") ; 
 			}
 		}
 		catch (RecognitionException re) {
@@ -2713,6 +2819,7 @@ public class FortranToCParser extends Parser {
 	public static class CodfunContext extends ParserRuleContext {
 		public Token IDENT;
 		public TipoContext tipo;
+		public ExpContext exp;
 		public List<TerminalNode> IDENT() { return getTokens(FortranToCParser.IDENT); }
 		public TerminalNode IDENT(int i) {
 			return getToken(FortranToCParser.IDENT, i);
@@ -2758,50 +2865,50 @@ public class FortranToCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(482);
+			setState(507);
 			match(T__18);
-			setState(483);
+			setState(508);
 			((CodfunContext)_localctx).IDENT = match(IDENT);
-			setState(484);
+			setState(509);
 			match(T__11);
-			setState(485);
-			nomparamlist(false);
-			setState(486);
+			setState(510);
+			nomparamlist();
+			setState(511);
 			match(T__12);
-			setState(487);
+			setState(512);
 			((CodfunContext)_localctx).tipo = tipo();
-			setState(488);
+			setState(513);
 			match(T__6);
-			setState(489);
+			setState(514);
 			((CodfunContext)_localctx).IDENT = match(IDENT);
-			setState(490);
+			setState(515);
 			match(T__1);
-			 imt.getTypes().add(((CodfunContext)_localctx).tipo.type) ; 
-			setState(492);
-			dec_f_paramlist(false);
-			 imt.saveFuncHeadImplementation((((CodfunContext)_localctx).IDENT!=null?((CodfunContext)_localctx).IDENT.getText():null)) ; 
-			setState(494);
+			 variables.clear() ; 
+			setState(517);
+			dec_f_paramlist();
+			 statements.add(((CodfunContext)_localctx).tipo.value + " " + (((CodfunContext)_localctx).IDENT!=null?((CodfunContext)_localctx).IDENT.getText():null) + " (" + variablesToString(variables) + ") {") ; 
+			setState(519);
 			dcllist();
-			setState(495);
-			sent(false);
-			setState(496);
-			sentlist(false);
-			setState(497);
+			setState(520);
+			sent();
+			setState(521);
+			sentlist();
+			setState(522);
 			((CodfunContext)_localctx).IDENT = match(IDENT);
-			setState(498);
+			setState(523);
 			match(T__7);
-			setState(499);
-			exp();
-			setState(500);
+			setState(524);
+			((CodfunContext)_localctx).exp = exp();
+			setState(525);
 			match(T__1);
-			  
-			setState(502);
+			 statements.add("return " + ((CodfunContext)_localctx).exp.value) ; 
+			setState(527);
 			match(T__2);
-			setState(503);
+			setState(528);
 			match(T__18);
-			setState(504);
+			setState(529);
 			((CodfunContext)_localctx).IDENT = match(IDENT);
-			 imt.saveFuncImplementation(true, (((CodfunContext)_localctx).IDENT!=null?((CodfunContext)_localctx).IDENT.getText():null)) ; 
+			 statements.add("}") ; 
 			}
 		}
 		catch (RecognitionException re) {
@@ -2816,6 +2923,7 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class ExpcondContext extends ParserRuleContext {
+		public String value;
 		public FactorcondContext factorcond() {
 			return getRuleContext(FactorcondContext.class,0);
 		}
@@ -2858,13 +2966,13 @@ public class FortranToCParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(508);
+			setState(533);
 			factorcond();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(516);
+			setState(541);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,27,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,30,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -2873,18 +2981,18 @@ public class FortranToCParser extends Parser {
 					{
 					_localctx = new ExpcondContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_expcond);
-					setState(510);
+					setState(535);
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-					setState(511);
+					setState(536);
 					oplog();
-					setState(512);
+					setState(537);
 					expcond(3);
 					}
 					} 
 				}
-				setState(518);
+				setState(543);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,27,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,30,_ctx);
 			}
 			}
 		}
@@ -2900,6 +3008,7 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class OplogContext extends ParserRuleContext {
+		public String value;
 		public OplogContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2917,20 +3026,44 @@ public class FortranToCParser extends Parser {
 	public final OplogContext oplog() throws RecognitionException {
 		OplogContext _localctx = new OplogContext(_ctx, getState());
 		enterRule(_localctx, 78, RULE_oplog);
-		int _la;
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(519);
-			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__35) | (1L << T__36) | (1L << T__37) | (1L << T__38))) != 0)) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+			setState(552);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case T__35:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(544);
+				match(T__35);
+				 ((OplogContext)_localctx).value =  " || " ; 
+				}
+				break;
+			case T__36:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(546);
+				match(T__36);
+				 ((OplogContext)_localctx).value =  " && " ; 
+				}
+				break;
+			case T__37:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(548);
+				match(T__37);
+				 ((OplogContext)_localctx).value =  " !^ " ; 
+				}
+				break;
+			case T__38:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(550);
+				match(T__38);
+				 ((OplogContext)_localctx).value =  " ^ " ; 
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2945,14 +3078,20 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class FactorcondContext extends ParserRuleContext {
+		public String value;
+		public ExpContext exp1;
+		public OpcompContext opcomp;
+		public ExpContext exp2;
+		public ExpcondContext expcond;
+		public FactorcondContext factaux;
+		public OpcompContext opcomp() {
+			return getRuleContext(OpcompContext.class,0);
+		}
 		public List<ExpContext> exp() {
 			return getRuleContexts(ExpContext.class);
 		}
 		public ExpContext exp(int i) {
 			return getRuleContext(ExpContext.class,i);
-		}
-		public OpcompContext opcomp() {
-			return getRuleContext(OpcompContext.class,0);
 		}
 		public ExpcondContext expcond() {
 			return getRuleContext(ExpcondContext.class,0);
@@ -2978,52 +3117,57 @@ public class FortranToCParser extends Parser {
 		FactorcondContext _localctx = new FactorcondContext(_ctx, getState());
 		enterRule(_localctx, 80, RULE_factorcond);
 		try {
-			setState(533);
+			setState(572);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,28,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,32,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(521);
-				exp();
-				setState(522);
-				opcomp();
-				setState(523);
-				exp();
+				setState(554);
+				((FactorcondContext)_localctx).exp1 = exp();
+				setState(555);
+				((FactorcondContext)_localctx).opcomp = opcomp();
+				setState(556);
+				((FactorcondContext)_localctx).exp2 = exp();
+				 ((FactorcondContext)_localctx).value =  ((FactorcondContext)_localctx).exp1.value + ((FactorcondContext)_localctx).opcomp.value + ((FactorcondContext)_localctx).exp2.value ; 
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(525);
+				setState(559);
 				match(T__11);
-				setState(526);
-				expcond(0);
-				setState(527);
+				setState(560);
+				((FactorcondContext)_localctx).expcond = expcond(0);
+				setState(561);
 				match(T__12);
+				 ((FactorcondContext)_localctx).value =  "(" + ((FactorcondContext)_localctx).expcond.value + ")" ; 
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(529);
+				setState(564);
 				match(T__39);
-				setState(530);
-				factorcond();
+				setState(565);
+				((FactorcondContext)_localctx).factaux = factorcond();
+				 ((FactorcondContext)_localctx).value =  "!" + ((FactorcondContext)_localctx).factaux.value ; 
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(531);
+				setState(568);
 				match(T__40);
+				 ((FactorcondContext)_localctx).value =  " true " ; 
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(532);
+				setState(570);
 				match(T__41);
+				 ((FactorcondContext)_localctx).value =  "false" ; 
 				}
 				break;
 			}
@@ -3040,6 +3184,7 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static class OpcompContext extends ParserRuleContext {
+		public String value;
 		public OpcompContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3057,20 +3202,60 @@ public class FortranToCParser extends Parser {
 	public final OpcompContext opcomp() throws RecognitionException {
 		OpcompContext _localctx = new OpcompContext(_ctx, getState());
 		enterRule(_localctx, 82, RULE_opcomp);
-		int _la;
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(535);
-			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__42) | (1L << T__43) | (1L << T__44) | (1L << T__45) | (1L << T__46) | (1L << T__47))) != 0)) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+			setState(586);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case T__42:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(574);
+				match(T__42);
+				 ((OpcompContext)_localctx).value =  " < " ; 
+				}
+				break;
+			case T__43:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(576);
+				match(T__43);
+				 ((OpcompContext)_localctx).value =  " > " ; 
+				}
+				break;
+			case T__44:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(578);
+				match(T__44);
+				 ((OpcompContext)_localctx).value =  " <= " ; 
+				}
+				break;
+			case T__45:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(580);
+				match(T__45);
+				 ((OpcompContext)_localctx).value =  " >= " ; 
+				}
+				break;
+			case T__46:
+				enterOuterAlt(_localctx, 5);
+				{
+				setState(582);
+				match(T__46);
+				 ((OpcompContext)_localctx).value =  " == " ; 
+				}
+				break;
+			case T__47:
+				enterOuterAlt(_localctx, 6);
+				{
+				setState(584);
+				match(T__47);
+				 ((OpcompContext)_localctx).value =  " != " ; 
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3100,192 +3285,213 @@ public class FortranToCParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3;\u021c\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3;\u024f\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
 		"\4\32\t\32\4\33\t\33\4\34\t\34\4\35\t\35\4\36\t\36\4\37\t\37\4 \t \4!"+
 		"\t!\4\"\t\"\4#\t#\4$\t$\4%\t%\4&\t&\4\'\t\'\4(\t(\4)\t)\4*\t*\4+\t+\3"+
-		"\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\3\3\3\3\3"+
+		"\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\3\3\3"+
 		"\3\3\3\3\5\3k\n\3\3\4\3\4\3\4\3\4\3\4\3\4\5\4s\n\4\3\5\3\5\3\5\3\5\3\5"+
 		"\3\5\5\5{\n\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\5\6\u0084\n\6\3\7\3\7\3\7\3"+
 		"\7\5\7\u008a\n\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3"+
-		"\b\3\b\3\b\3\b\3\b\3\b\5\b\u009f\n\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3"+
-		"\t\3\t\3\t\3\t\3\t\5\t\u00ae\n\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\5\n\u00b8"+
+		"\b\3\b\3\b\3\b\3\b\5\b\u009e\n\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3"+
+		"\t\3\t\3\t\3\t\5\t\u00ad\n\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\5\n\u00b7"+
 		"\n\n\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\5\13"+
-		"\u00c6\n\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\5\f\u00d0\n\f\3\r\3\r\3\r"+
-		"\3\r\3\r\3\r\3\r\3\r\5\r\u00da\n\r\3\16\3\16\3\16\3\16\3\16\5\16\u00e1"+
-		"\n\16\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\5\17\u00ed\n\17"+
-		"\3\20\3\20\3\20\3\20\3\20\5\20\u00f4\n\20\3\21\3\21\3\21\3\21\3\21\3\21"+
-		"\3\21\3\21\3\21\3\22\3\22\3\22\3\22\3\22\5\22\u0104\n\22\3\23\3\23\3\23"+
-		"\3\23\3\23\3\23\3\23\5\23\u010d\n\23\3\24\3\24\3\24\3\24\3\24\3\24\3\24"+
-		"\3\24\3\24\3\24\3\24\3\24\5\24\u011b\n\24\3\25\3\25\3\26\3\26\3\26\3\26"+
-		"\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\27\3\27"+
-		"\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\5\27\u013b\n\27\3\30"+
+		"\u00c5\n\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\5\f\u00ce\n\f\3\r\3\r\3\r\3\r"+
+		"\3\r\3\r\3\r\3\r\5\r\u00d8\n\r\3\16\3\16\3\16\3\16\3\16\5\16\u00df\n\16"+
+		"\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\5\17\u00eb\n\17\3\20"+
+		"\3\20\3\20\3\20\3\20\5\20\u00f2\n\20\3\21\3\21\3\21\3\21\3\21\3\21\3\21"+
+		"\3\21\3\21\3\22\3\22\3\22\3\22\3\22\5\22\u0102\n\22\3\23\3\23\3\23\3\23"+
+		"\5\23\u0108\n\23\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24"+
+		"\3\24\5\24\u0116\n\24\3\25\3\25\3\25\3\25\3\25\3\25\5\25\u011e\n\25\3"+
+		"\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3"+
+		"\26\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\5\27\u013b"+
+		"\n\27\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30"+
 		"\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30"+
 		"\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30"+
 		"\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30"+
-		"\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30"+
-		"\3\30\3\30\3\30\5\30\u0179\n\30\3\31\3\31\3\32\3\32\3\32\3\32\3\32\3\32"+
-		"\3\32\3\32\3\32\3\32\3\32\5\32\u0188\n\32\3\33\3\33\3\33\3\33\3\33\3\33"+
-		"\3\33\3\33\3\33\3\33\3\33\3\33\5\33\u0196\n\33\3\34\3\34\3\34\5\34\u019b"+
-		"\n\34\3\35\3\35\3\35\3\36\3\36\3\36\3\36\3\36\5\36\u01a5\n\36\3\37\3\37"+
-		"\3 \3 \3!\3!\3!\3!\3!\3!\3!\3!\3!\3!\3!\3!\3!\3!\5!\u01b9\n!\3\"\3\"\3"+
-		"\"\3\"\3\"\5\"\u01c0\n\"\3#\3#\3#\3#\3#\3$\3$\3$\3$\3$\3$\5$\u01cd\n$"+
-		"\3%\3%\3%\3%\3%\3%\3%\5%\u01d6\n%\3&\3&\3&\3&\3&\3&\3&\3&\3&\3&\3&\3&"+
-		"\3&\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3"+
-		"\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3(\3(\3(\3(\3(\3(\3(\7(\u0205\n(\f"+
-		"(\16(\u0208\13(\3)\3)\3*\3*\3*\3*\3*\3*\3*\3*\3*\3*\3*\3*\5*\u0218\n*"+
-		"\3+\3+\3+\2\3N,\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62"+
-		"\64\668:<>@BDFHJLNPRT\2\7\3\2\22\24\3\2\63\64\3\2!$\3\2&)\3\2-\62\2\u0223"+
-		"\2V\3\2\2\2\4j\3\2\2\2\6r\3\2\2\2\bz\3\2\2\2\n\u0083\3\2\2\2\f\u0089\3"+
-		"\2\2\2\16\u009e\3\2\2\2\20\u00ad\3\2\2\2\22\u00b7\3\2\2\2\24\u00c5\3\2"+
-		"\2\2\26\u00cf\3\2\2\2\30\u00d9\3\2\2\2\32\u00e0\3\2\2\2\34\u00ec\3\2\2"+
-		"\2\36\u00f3\3\2\2\2 \u00f5\3\2\2\2\"\u0103\3\2\2\2$\u010c\3\2\2\2&\u011a"+
-		"\3\2\2\2(\u011c\3\2\2\2*\u011e\3\2\2\2,\u013a\3\2\2\2.\u0178\3\2\2\2\60"+
-		"\u017a\3\2\2\2\62\u0187\3\2\2\2\64\u0195\3\2\2\2\66\u019a\3\2\2\28\u019c"+
-		"\3\2\2\2:\u01a4\3\2\2\2<\u01a6\3\2\2\2>\u01a8\3\2\2\2@\u01b8\3\2\2\2B"+
-		"\u01bf\3\2\2\2D\u01c1\3\2\2\2F\u01cc\3\2\2\2H\u01d5\3\2\2\2J\u01d7\3\2"+
-		"\2\2L\u01e4\3\2\2\2N\u01fd\3\2\2\2P\u0209\3\2\2\2R\u0217\3\2\2\2T\u0219"+
-		"\3\2\2\2VW\7\3\2\2WX\7\63\2\2XY\7\4\2\2YZ\5\4\3\2Z[\5\6\4\2[\\\b\2\1\2"+
-		"\\]\5.\30\2]^\5\f\7\2^_\b\2\1\2_`\7\5\2\2`a\7\3\2\2ab\7\63\2\2bc\5H%\2"+
-		"cd\b\2\1\2d\3\3\2\2\2ef\5\16\b\2fg\5\4\3\2gh\b\3\1\2hk\3\2\2\2ik\3\2\2"+
-		"\2je\3\2\2\2ji\3\2\2\2k\5\3\2\2\2lm\7\6\2\2mn\5\b\5\2no\7\5\2\2op\7\6"+
-		"\2\2ps\3\2\2\2qs\3\2\2\2rl\3\2\2\2rq\3\2\2\2s\7\3\2\2\2tu\5 \21\2uv\5"+
-		"\n\6\2v{\3\2\2\2wx\5*\26\2xy\5\n\6\2y{\3\2\2\2zt\3\2\2\2zw\3\2\2\2{\t"+
-		"\3\2\2\2|}\5 \21\2}~\5\n\6\2~\u0084\3\2\2\2\177\u0080\5*\26\2\u0080\u0081"+
-		"\5\n\6\2\u0081\u0084\3\2\2\2\u0082\u0084\3\2\2\2\u0083|\3\2\2\2\u0083"+
-		"\177\3\2\2\2\u0083\u0082\3\2\2\2\u0084\13\3\2\2\2\u0085\u0086\5.\30\2"+
-		"\u0086\u0087\5\f\7\2\u0087\u008a\3\2\2\2\u0088\u008a\3\2\2\2\u0089\u0085"+
-		"\3\2\2\2\u0089\u0088\3\2\2\2\u008a\r\3\2\2\2\u008b\u008c\5\30\r\2\u008c"+
-		"\u008d\7\7\2\2\u008d\u008e\7\b\2\2\u008e\u008f\7\t\2\2\u008f\u0090\7\63"+
-		"\2\2\u0090\u0091\7\n\2\2\u0091\u0092\5\24\13\2\u0092\u0093\b\b\1\2\u0093"+
-		"\u0094\5\22\n\2\u0094\u0095\7\4\2\2\u0095\u0096\5\20\t\2\u0096\u009f\3"+
-		"\2\2\2\u0097\u0098\5\30\r\2\u0098\u0099\7\t\2\2\u0099\u009a\5\34\17\2"+
-		"\u009a\u009b\7\4\2\2\u009b\u009c\5\26\f\2\u009c\u009d\b\b\1\2\u009d\u009f"+
-		"\3\2\2\2\u009e\u008b\3\2\2\2\u009e\u0097\3\2\2\2\u009f\17\3\2\2\2\u00a0"+
-		"\u00a1\5\30\r\2\u00a1\u00a2\7\7\2\2\u00a2\u00a3\7\b\2\2\u00a3\u00a4\7"+
-		"\t\2\2\u00a4\u00a5\7\63\2\2\u00a5\u00a6\7\n\2\2\u00a6\u00a7\5\24\13\2"+
-		"\u00a7\u00a8\b\t\1\2\u00a8\u00a9\5\22\n\2\u00a9\u00aa\7\4\2\2\u00aa\u00ab"+
-		"\5\20\t\2\u00ab\u00ae\3\2\2\2\u00ac\u00ae\3\2\2\2\u00ad\u00a0\3\2\2\2"+
-		"\u00ad\u00ac\3\2\2\2\u00ae\21\3\2\2\2\u00af\u00b0\7\7\2\2\u00b0\u00b1"+
-		"\7\63\2\2\u00b1\u00b2\7\n\2\2\u00b2\u00b3\5\24\13\2\u00b3\u00b4\b\n\1"+
-		"\2\u00b4\u00b5\5\22\n\2\u00b5\u00b8\3\2\2\2\u00b6\u00b8\3\2\2\2\u00b7"+
-		"\u00af\3\2\2\2\u00b7\u00b6\3\2\2\2\u00b8\23\3\2\2\2\u00b9\u00ba\7\64\2"+
-		"\2\u00ba\u00c6\b\13\1\2\u00bb\u00bc\7\65\2\2\u00bc\u00c6\b\13\1\2\u00bd"+
-		"\u00be\7\66\2\2\u00be\u00c6\b\13\1\2\u00bf\u00c0\79\2\2\u00c0\u00c6\b"+
-		"\13\1\2\u00c1\u00c2\7:\2\2\u00c2\u00c6\b\13\1\2\u00c3\u00c4\7;\2\2\u00c4"+
-		"\u00c6\b\13\1\2\u00c5\u00b9\3\2\2\2\u00c5\u00bb\3\2\2\2\u00c5\u00bd\3"+
-		"\2\2\2\u00c5\u00bf\3\2\2\2\u00c5\u00c1\3\2\2\2\u00c5\u00c3\3\2\2\2\u00c6"+
-		"\25\3\2\2\2\u00c7\u00c8\5\30\r\2\u00c8\u00c9\7\t\2\2\u00c9\u00ca\5\34"+
-		"\17\2\u00ca\u00cb\7\4\2\2\u00cb\u00cc\5\26\f\2\u00cc\u00cd\b\f\1\2\u00cd"+
-		"\u00d0\3\2\2\2\u00ce\u00d0\3\2\2\2\u00cf\u00c7\3\2\2\2\u00cf\u00ce\3\2"+
-		"\2\2\u00d0\27\3\2\2\2\u00d1\u00d2\7\13\2\2\u00d2\u00da\b\r\1\2\u00d3\u00d4"+
-		"\7\f\2\2\u00d4\u00da\b\r\1\2\u00d5\u00d6\7\r\2\2\u00d6\u00d7\5\32\16\2"+
-		"\u00d7\u00d8\b\r\1\2\u00d8\u00da\3\2\2\2\u00d9\u00d1\3\2\2\2\u00d9\u00d3"+
-		"\3\2\2\2\u00d9\u00d5\3\2\2\2\u00da\31\3\2\2\2\u00db\u00dc\7\16\2\2\u00dc"+
-		"\u00dd\7\64\2\2\u00dd\u00de\7\17\2\2\u00de\u00e1\b\16\1\2\u00df\u00e1"+
-		"\b\16\1\2\u00e0\u00db\3\2\2\2\u00e0\u00df\3\2\2\2\u00e1\33\3\2\2\2\u00e2"+
-		"\u00e3\7\63\2\2\u00e3\u00e4\5\36\20\2\u00e4\u00e5\b\17\1\2\u00e5\u00ed"+
-		"\3\2\2\2\u00e6\u00e7\7\63\2\2\u00e7\u00e8\5\36\20\2\u00e8\u00e9\7\7\2"+
-		"\2\u00e9\u00ea\5\34\17\2\u00ea\u00eb\b\17\1\2\u00eb\u00ed\3\2\2\2\u00ec"+
-		"\u00e2\3\2\2\2\u00ec\u00e6\3\2\2\2\u00ed\35\3\2\2\2\u00ee\u00ef\7\n\2"+
-		"\2\u00ef\u00f0\5\24\13\2\u00f0\u00f1\b\20\1\2\u00f1\u00f4\3\2\2\2\u00f2"+
-		"\u00f4\3\2\2\2\u00f3\u00ee\3\2\2\2\u00f3\u00f2\3\2\2\2\u00f4\37\3\2\2"+
-		"\2\u00f5\u00f6\7\20\2\2\u00f6\u00f7\7\63\2\2\u00f7\u00f8\5\"\22\2\u00f8"+
-		"\u00f9\5&\24\2\u00f9\u00fa\7\5\2\2\u00fa\u00fb\7\20\2\2\u00fb\u00fc\7"+
-		"\63\2\2\u00fc\u00fd\b\21\1\2\u00fd!\3\2\2\2\u00fe\u0104\3\2\2\2\u00ff"+
-		"\u0100\7\16\2\2\u0100\u0101\5$\23\2\u0101\u0102\7\17\2\2\u0102\u0104\3"+
-		"\2\2\2\u0103\u00fe\3\2\2\2\u0103\u00ff\3\2\2\2\u0104#\3\2\2\2\u0105\u0106"+
-		"\7\63\2\2\u0106\u010d\b\23\1\2\u0107\u0108\7\63\2\2\u0108\u0109\7\7\2"+
-		"\2\u0109\u010a\5$\23\2\u010a\u010b\b\23\1\2\u010b\u010d\3\2\2\2\u010c"+
-		"\u0105\3\2\2\2\u010c\u0107\3\2\2\2\u010d%\3\2\2\2\u010e\u010f\5\30\r\2"+
-		"\u010f\u0110\b\24\1\2\u0110\u0111\7\7\2\2\u0111\u0112\7\21\2\2\u0112\u0113"+
-		"\7\16\2\2\u0113\u0114\5(\25\2\u0114\u0115\7\17\2\2\u0115\u0116\7\63\2"+
-		"\2\u0116\u0117\7\4\2\2\u0117\u0118\5&\24\2\u0118\u011b\3\2\2\2\u0119\u011b"+
-		"\3\2\2\2\u011a\u010e\3\2\2\2\u011a\u0119\3\2\2\2\u011b\'\3\2\2\2\u011c"+
-		"\u011d\t\2\2\2\u011d)\3\2\2\2\u011e\u011f\7\25\2\2\u011f\u0120\7\63\2"+
-		"\2\u0120\u0121\7\16\2\2\u0121\u0122\5$\23\2\u0122\u0123\7\17\2\2\u0123"+
-		"\u0124\5\30\r\2\u0124\u0125\7\t\2\2\u0125\u0126\7\63\2\2\u0126\u0127\7"+
-		"\4\2\2\u0127\u0128\b\26\1\2\u0128\u0129\5,\27\2\u0129\u012a\7\5\2\2\u012a"+
-		"\u012b\7\25\2\2\u012b\u012c\7\63\2\2\u012c\u012d\b\26\1\2\u012d+\3\2\2"+
-		"\2\u012e\u012f\5\30\r\2\u012f\u0130\b\27\1\2\u0130\u0131\7\7\2\2\u0131"+
-		"\u0132\7\21\2\2\u0132\u0133\7\16\2\2\u0133\u0134\7\22\2\2\u0134\u0135"+
-		"\7\17\2\2\u0135\u0136\7\63\2\2\u0136\u0137\7\4\2\2\u0137\u0138\5,\27\2"+
-		"\u0138\u013b\3\2\2\2\u0139\u013b\3\2\2\2\u013a\u012e\3\2\2\2\u013a\u0139"+
-		"\3\2\2\2\u013b-\3\2\2\2\u013c\u013d\7\63\2\2\u013d\u013e\7\n\2\2\u013e"+
-		"\u013f\58\35\2\u013f\u0140\7\4\2\2\u0140\u0179\3\2\2\2\u0141\u0142\5D"+
-		"#\2\u0142\u0143\7\4\2\2\u0143\u0179\3\2\2\2\u0144\u0145\7\26\2\2\u0145"+
-		"\u0146\7\16\2\2\u0146\u0147\5N(\2\u0147\u0148\7\17\2\2\u0148\u0149\5."+
-		"\30\2\u0149\u0179\3\2\2\2\u014a\u014b\7\26\2\2\u014b\u014c\7\16\2\2\u014c"+
-		"\u014d\5N(\2\u014d\u014e\7\17\2\2\u014e\u014f\7\27\2\2\u014f\u0150\5\f"+
-		"\7\2\u0150\u0151\7\30\2\2\u0151\u0179\3\2\2\2\u0152\u0153\7\26\2\2\u0153"+
-		"\u0154\7\16\2\2\u0154\u0155\5N(\2\u0155\u0156\7\17\2\2\u0156\u0157\7\27"+
-		"\2\2\u0157\u0158\5\f\7\2\u0158\u0159\7\31\2\2\u0159\u015a\5\f\7\2\u015a"+
-		"\u015b\7\30\2\2\u015b\u0179\3\2\2\2\u015c\u015d\7\32\2\2\u015d\u015e\7"+
-		"\33\2\2\u015e\u015f\7\16\2\2\u015f\u0160\5N(\2\u0160\u0161\7\17\2\2\u0161"+
-		"\u0162\5\f\7\2\u0162\u0163\7\34\2\2\u0163\u0179\3\2\2\2\u0164\u0165\7"+
-		"\32\2\2\u0165\u0166\7\63\2\2\u0166\u0167\7\n\2\2\u0167\u0168\5\60\31\2"+
-		"\u0168\u0169\7\7\2\2\u0169\u016a\5\60\31\2\u016a\u016b\7\7\2\2\u016b\u016c"+
-		"\5\60\31\2\u016c\u016d\5\f\7\2\u016d\u016e\7\34\2\2\u016e\u0179\3\2\2"+
-		"\2\u016f\u0170\7\35\2\2\u0170\u0171\7\36\2\2\u0171\u0172\7\16\2\2\u0172"+
-		"\u0173\58\35\2\u0173\u0174\7\17\2\2\u0174\u0175\5\62\32\2\u0175\u0176"+
-		"\7\5\2\2\u0176\u0177\7\35\2\2\u0177\u0179\3\2\2\2\u0178\u013c\3\2\2\2"+
-		"\u0178\u0141\3\2\2\2\u0178\u0144\3\2\2\2\u0178\u014a\3\2\2\2\u0178\u0152"+
-		"\3\2\2\2\u0178\u015c\3\2\2\2\u0178\u0164\3\2\2\2\u0178\u016f\3\2\2\2\u0179"+
-		"/\3\2\2\2\u017a\u017b\t\3\2\2\u017b\61\3\2\2\2\u017c\u017d\7\36\2\2\u017d"+
-		"\u017e\7\16\2\2\u017e\u017f\5\64\33\2\u017f\u0180\7\17\2\2\u0180\u0181"+
-		"\5\f\7\2\u0181\u0182\5\62\32\2\u0182\u0188\3\2\2\2\u0183\u0184\7\36\2"+
-		"\2\u0184\u0185\7\37\2\2\u0185\u0188\5\f\7\2\u0186\u0188\3\2\2\2\u0187"+
-		"\u017c\3\2\2\2\u0187\u0183\3\2\2\2\u0187\u0186\3\2\2\2\u0188\63\3\2\2"+
-		"\2\u0189\u018a\5\24\13\2\u018a\u018b\5\66\34\2\u018b\u0196\3\2\2\2\u018c"+
-		"\u018d\5\24\13\2\u018d\u018e\7 \2\2\u018e\u018f\5\24\13\2\u018f\u0196"+
-		"\3\2\2\2\u0190\u0191\7 \2\2\u0191\u0196\5\24\13\2\u0192\u0193\5\24\13"+
-		"\2\u0193\u0194\7 \2\2\u0194\u0196\3\2\2\2\u0195\u0189\3\2\2\2\u0195\u018c"+
-		"\3\2\2\2\u0195\u0190\3\2\2\2\u0195\u0192\3\2\2\2\u0196\65\3\2\2\2\u0197"+
-		"\u0198\7\7\2\2\u0198\u019b\5\24\13\2\u0199\u019b\3\2\2\2\u019a\u0197\3"+
-		"\2\2\2\u019a\u0199\3\2\2\2\u019b\67\3\2\2\2\u019c\u019d\5@!\2\u019d\u019e"+
-		"\5:\36\2\u019e9\3\2\2\2\u019f\u01a0\5<\37\2\u01a0\u01a1\58\35\2\u01a1"+
-		"\u01a2\5:\36\2\u01a2\u01a5\3\2\2\2\u01a3\u01a5\3\2\2\2\u01a4\u019f\3\2"+
-		"\2\2\u01a4\u01a3\3\2\2\2\u01a5;\3\2\2\2\u01a6\u01a7\5> \2\u01a7=\3\2\2"+
-		"\2\u01a8\u01a9\t\4\2\2\u01a9?\3\2\2\2\u01aa\u01b9\5\24\13\2\u01ab\u01ac"+
-		"\7\16\2\2\u01ac\u01ad\58\35\2\u01ad\u01ae\7\17\2\2\u01ae\u01b9\3\2\2\2"+
-		"\u01af\u01b0\7\63\2\2\u01b0\u01b1\7\16\2\2\u01b1\u01b2\58\35\2\u01b2\u01b3"+
-		"\5B\"\2\u01b3\u01b4\7\17\2\2\u01b4\u01b5\b!\1\2\u01b5\u01b9\3\2\2\2\u01b6"+
-		"\u01b7\7\63\2\2\u01b7\u01b9\b!\1\2\u01b8\u01aa\3\2\2\2\u01b8\u01ab\3\2"+
-		"\2\2\u01b8\u01af\3\2\2\2\u01b8\u01b6\3\2\2\2\u01b9A\3\2\2\2\u01ba\u01bb"+
-		"\7\7\2\2\u01bb\u01bc\58\35\2\u01bc\u01bd\5B\"\2\u01bd\u01c0\3\2\2\2\u01be"+
-		"\u01c0\3\2\2\2\u01bf\u01ba\3\2\2\2\u01bf\u01be\3\2\2\2\u01c0C\3\2\2\2"+
-		"\u01c1\u01c2\7%\2\2\u01c2\u01c3\7\63\2\2\u01c3\u01c4\5F$\2\u01c4\u01c5"+
-		"\b#\1\2\u01c5E\3\2\2\2\u01c6\u01c7\7\16\2\2\u01c7\u01c8\58\35\2\u01c8"+
-		"\u01c9\5B\"\2\u01c9\u01ca\7\17\2\2\u01ca\u01cd\3\2\2\2\u01cb\u01cd\3\2"+
-		"\2\2\u01cc\u01c6\3\2\2\2\u01cc\u01cb\3\2\2\2\u01cdG\3\2\2\2\u01ce\u01cf"+
-		"\5J&\2\u01cf\u01d0\5H%\2\u01d0\u01d6\3\2\2\2\u01d1\u01d2\5L\'\2\u01d2"+
-		"\u01d3\5H%\2\u01d3\u01d6\3\2\2\2\u01d4\u01d6\3\2\2\2\u01d5\u01ce\3\2\2"+
-		"\2\u01d5\u01d1\3\2\2\2\u01d5\u01d4\3\2\2\2\u01d6I\3\2\2\2\u01d7\u01d8"+
-		"\7\20\2\2\u01d8\u01d9\7\63\2\2\u01d9\u01da\5\"\22\2\u01da\u01db\5&\24"+
-		"\2\u01db\u01dc\b&\1\2\u01dc\u01dd\5\4\3\2\u01dd\u01de\5.\30\2\u01de\u01df"+
-		"\5\f\7\2\u01df\u01e0\7\5\2\2\u01e0\u01e1\7\20\2\2\u01e1\u01e2\7\63\2\2"+
-		"\u01e2\u01e3\b&\1\2\u01e3K\3\2\2\2\u01e4\u01e5\7\25\2\2\u01e5\u01e6\7"+
-		"\63\2\2\u01e6\u01e7\7\16\2\2\u01e7\u01e8\5$\23\2\u01e8\u01e9\7\17\2\2"+
-		"\u01e9\u01ea\5\30\r\2\u01ea\u01eb\7\t\2\2\u01eb\u01ec\7\63\2\2\u01ec\u01ed"+
-		"\7\4\2\2\u01ed\u01ee\b\'\1\2\u01ee\u01ef\5,\27\2\u01ef\u01f0\b\'\1\2\u01f0"+
-		"\u01f1\5\4\3\2\u01f1\u01f2\5.\30\2\u01f2\u01f3\5\f\7\2\u01f3\u01f4\7\63"+
-		"\2\2\u01f4\u01f5\7\n\2\2\u01f5\u01f6\58\35\2\u01f6\u01f7\7\4\2\2\u01f7"+
-		"\u01f8\b\'\1\2\u01f8\u01f9\7\5\2\2\u01f9\u01fa\7\25\2\2\u01fa\u01fb\7"+
-		"\63\2\2\u01fb\u01fc\b\'\1\2\u01fcM\3\2\2\2\u01fd\u01fe\b(\1\2\u01fe\u01ff"+
-		"\5R*\2\u01ff\u0206\3\2\2\2\u0200\u0201\f\4\2\2\u0201\u0202\5P)\2\u0202"+
-		"\u0203\5N(\5\u0203\u0205\3\2\2\2\u0204\u0200\3\2\2\2\u0205\u0208\3\2\2"+
-		"\2\u0206\u0204\3\2\2\2\u0206\u0207\3\2\2\2\u0207O\3\2\2\2\u0208\u0206"+
-		"\3\2\2\2\u0209\u020a\t\5\2\2\u020aQ\3\2\2\2\u020b\u020c\58\35\2\u020c"+
-		"\u020d\5T+\2\u020d\u020e\58\35\2\u020e\u0218\3\2\2\2\u020f\u0210\7\16"+
-		"\2\2\u0210\u0211\5N(\2\u0211\u0212\7\17\2\2\u0212\u0218\3\2\2\2\u0213"+
-		"\u0214\7*\2\2\u0214\u0218\5R*\2\u0215\u0218\7+\2\2\u0216\u0218\7,\2\2"+
-		"\u0217\u020b\3\2\2\2\u0217\u020f\3\2\2\2\u0217\u0213\3\2\2\2\u0217\u0215"+
-		"\3\2\2\2\u0217\u0216\3\2\2\2\u0218S\3\2\2\2\u0219\u021a\t\6\2\2\u021a"+
-		"U\3\2\2\2\37jrz\u0083\u0089\u009e\u00ad\u00b7\u00c5\u00cf\u00d9\u00e0"+
-		"\u00ec\u00f3\u0103\u010c\u011a\u013a\u0178\u0187\u0195\u019a\u01a4\u01b8"+
-		"\u01bf\u01cc\u01d5\u0206\u0217";
+		"\3\30\3\30\3\30\3\30\3\30\3\30\3\30\5\30\u017b\n\30\3\31\3\31\3\31\3\31"+
+		"\5\31\u0181\n\31\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32"+
+		"\3\32\3\32\5\32\u0190\n\32\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33"+
+		"\3\33\3\33\3\33\5\33\u019e\n\33\3\34\3\34\3\34\5\34\u01a3\n\34\3\35\3"+
+		"\35\3\35\3\35\3\36\3\36\3\36\3\36\3\36\3\36\5\36\u01af\n\36\3\37\3\37"+
+		"\3\37\3 \3 \3 \3 \3 \3 \3 \3 \5 \u01bc\n \3!\3!\3!\3!\3!\3!\3!\3!\3!\3"+
+		"!\3!\3!\3!\3!\3!\3!\3!\5!\u01cf\n!\3\"\3\"\3\"\3\"\3\"\3\"\5\"\u01d7\n"+
+		"\"\3#\3#\3#\3#\3#\3$\3$\3$\3$\3$\3$\3$\5$\u01e5\n$\3%\3%\3%\3%\3%\3%\3"+
+		"%\5%\u01ee\n%\3&\3&\3&\3&\3&\3&\3&\3&\3&\3&\3&\3&\3&\3&\3\'\3\'\3\'\3"+
+		"\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3\'"+
+		"\3\'\3\'\3\'\3\'\3(\3(\3(\3(\3(\3(\3(\7(\u021e\n(\f(\16(\u0221\13(\3)"+
+		"\3)\3)\3)\3)\3)\3)\3)\5)\u022b\n)\3*\3*\3*\3*\3*\3*\3*\3*\3*\3*\3*\3*"+
+		"\3*\3*\3*\3*\3*\3*\5*\u023f\n*\3+\3+\3+\3+\3+\3+\3+\3+\3+\3+\3+\3+\5+"+
+		"\u024d\n+\3+\2\3N,\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60"+
+		"\62\64\668:<>@BDFHJLNPRT\2\2\2\u0264\2V\3\2\2\2\4j\3\2\2\2\6r\3\2\2\2"+
+		"\bz\3\2\2\2\n\u0083\3\2\2\2\f\u0089\3\2\2\2\16\u009d\3\2\2\2\20\u00ac"+
+		"\3\2\2\2\22\u00b6\3\2\2\2\24\u00c4\3\2\2\2\26\u00cd\3\2\2\2\30\u00d7\3"+
+		"\2\2\2\32\u00de\3\2\2\2\34\u00ea\3\2\2\2\36\u00f1\3\2\2\2 \u00f3\3\2\2"+
+		"\2\"\u0101\3\2\2\2$\u0107\3\2\2\2&\u0115\3\2\2\2(\u011d\3\2\2\2*\u011f"+
+		"\3\2\2\2,\u013a\3\2\2\2.\u017a\3\2\2\2\60\u0180\3\2\2\2\62\u018f\3\2\2"+
+		"\2\64\u019d\3\2\2\2\66\u01a2\3\2\2\28\u01a4\3\2\2\2:\u01ae\3\2\2\2<\u01b0"+
+		"\3\2\2\2>\u01bb\3\2\2\2@\u01ce\3\2\2\2B\u01d6\3\2\2\2D\u01d8\3\2\2\2F"+
+		"\u01e4\3\2\2\2H\u01ed\3\2\2\2J\u01ef\3\2\2\2L\u01fd\3\2\2\2N\u0216\3\2"+
+		"\2\2P\u022a\3\2\2\2R\u023e\3\2\2\2T\u024c\3\2\2\2VW\7\3\2\2WX\7\63\2\2"+
+		"XY\7\4\2\2YZ\5\4\3\2Z[\5\6\4\2[\\\b\2\1\2\\]\5.\30\2]^\5\f\7\2^_\b\2\1"+
+		"\2_`\7\5\2\2`a\7\3\2\2ab\b\2\1\2bc\7\63\2\2cd\5H%\2de\b\2\1\2e\3\3\2\2"+
+		"\2fg\5\16\b\2gh\5\4\3\2hk\3\2\2\2ik\3\2\2\2jf\3\2\2\2ji\3\2\2\2k\5\3\2"+
+		"\2\2lm\7\6\2\2mn\5\b\5\2no\7\5\2\2op\7\6\2\2ps\3\2\2\2qs\3\2\2\2rl\3\2"+
+		"\2\2rq\3\2\2\2s\7\3\2\2\2tu\5 \21\2uv\5\n\6\2v{\3\2\2\2wx\5*\26\2xy\5"+
+		"\n\6\2y{\3\2\2\2zt\3\2\2\2zw\3\2\2\2{\t\3\2\2\2|}\5 \21\2}~\5\n\6\2~\u0084"+
+		"\3\2\2\2\177\u0080\5*\26\2\u0080\u0081\5\n\6\2\u0081\u0084\3\2\2\2\u0082"+
+		"\u0084\3\2\2\2\u0083|\3\2\2\2\u0083\177\3\2\2\2\u0083\u0082\3\2\2\2\u0084"+
+		"\13\3\2\2\2\u0085\u0086\5.\30\2\u0086\u0087\5\f\7\2\u0087\u008a\3\2\2"+
+		"\2\u0088\u008a\3\2\2\2\u0089\u0085\3\2\2\2\u0089\u0088\3\2\2\2\u008a\r"+
+		"\3\2\2\2\u008b\u008c\5\30\r\2\u008c\u008d\7\7\2\2\u008d\u008e\7\b\2\2"+
+		"\u008e\u008f\7\t\2\2\u008f\u0090\7\63\2\2\u0090\u0091\7\n\2\2\u0091\u0092"+
+		"\5\24\13\2\u0092\u0093\b\b\1\2\u0093\u0094\5\22\n\2\u0094\u0095\7\4\2"+
+		"\2\u0095\u0096\5\20\t\2\u0096\u009e\3\2\2\2\u0097\u0098\5\30\r\2\u0098"+
+		"\u0099\7\t\2\2\u0099\u009a\5\34\17\2\u009a\u009b\7\4\2\2\u009b\u009c\5"+
+		"\26\f\2\u009c\u009e\3\2\2\2\u009d\u008b\3\2\2\2\u009d\u0097\3\2\2\2\u009e"+
+		"\17\3\2\2\2\u009f\u00a0\5\30\r\2\u00a0\u00a1\7\7\2\2\u00a1\u00a2\7\b\2"+
+		"\2\u00a2\u00a3\7\t\2\2\u00a3\u00a4\7\63\2\2\u00a4\u00a5\7\n\2\2\u00a5"+
+		"\u00a6\5\24\13\2\u00a6\u00a7\b\t\1\2\u00a7\u00a8\5\22\n\2\u00a8\u00a9"+
+		"\7\4\2\2\u00a9\u00aa\5\20\t\2\u00aa\u00ad\3\2\2\2\u00ab\u00ad\3\2\2\2"+
+		"\u00ac\u009f\3\2\2\2\u00ac\u00ab\3\2\2\2\u00ad\21\3\2\2\2\u00ae\u00af"+
+		"\7\7\2\2\u00af\u00b0\7\63\2\2\u00b0\u00b1\7\n\2\2\u00b1\u00b2\5\24\13"+
+		"\2\u00b2\u00b3\b\n\1\2\u00b3\u00b4\5\22\n\2\u00b4\u00b7\3\2\2\2\u00b5"+
+		"\u00b7\3\2\2\2\u00b6\u00ae\3\2\2\2\u00b6\u00b5\3\2\2\2\u00b7\23\3\2\2"+
+		"\2\u00b8\u00b9\7\64\2\2\u00b9\u00c5\b\13\1\2\u00ba\u00bb\7\65\2\2\u00bb"+
+		"\u00c5\b\13\1\2\u00bc\u00bd\7\66\2\2\u00bd\u00c5\b\13\1\2\u00be\u00bf"+
+		"\79\2\2\u00bf\u00c5\b\13\1\2\u00c0\u00c1\7:\2\2\u00c1\u00c5\b\13\1\2\u00c2"+
+		"\u00c3\7;\2\2\u00c3\u00c5\b\13\1\2\u00c4\u00b8\3\2\2\2\u00c4\u00ba\3\2"+
+		"\2\2\u00c4\u00bc\3\2\2\2\u00c4\u00be\3\2\2\2\u00c4\u00c0\3\2\2\2\u00c4"+
+		"\u00c2\3\2\2\2\u00c5\25\3\2\2\2\u00c6\u00c7\5\30\r\2\u00c7\u00c8\7\t\2"+
+		"\2\u00c8\u00c9\5\34\17\2\u00c9\u00ca\7\4\2\2\u00ca\u00cb\5\26\f\2\u00cb"+
+		"\u00ce\3\2\2\2\u00cc\u00ce\3\2\2\2\u00cd\u00c6\3\2\2\2\u00cd\u00cc\3\2"+
+		"\2\2\u00ce\27\3\2\2\2\u00cf\u00d0\7\13\2\2\u00d0\u00d8\b\r\1\2\u00d1\u00d2"+
+		"\7\f\2\2\u00d2\u00d8\b\r\1\2\u00d3\u00d4\7\r\2\2\u00d4\u00d5\5\32\16\2"+
+		"\u00d5\u00d6\b\r\1\2\u00d6\u00d8\3\2\2\2\u00d7\u00cf\3\2\2\2\u00d7\u00d1"+
+		"\3\2\2\2\u00d7\u00d3\3\2\2\2\u00d8\31\3\2\2\2\u00d9\u00da\7\16\2\2\u00da"+
+		"\u00db\7\64\2\2\u00db\u00dc\7\17\2\2\u00dc\u00df\b\16\1\2\u00dd\u00df"+
+		"\b\16\1\2\u00de\u00d9\3\2\2\2\u00de\u00dd\3\2\2\2\u00df\33\3\2\2\2\u00e0"+
+		"\u00e1\7\63\2\2\u00e1\u00e2\5\36\20\2\u00e2\u00e3\b\17\1\2\u00e3\u00eb"+
+		"\3\2\2\2\u00e4\u00e5\7\63\2\2\u00e5\u00e6\5\36\20\2\u00e6\u00e7\b\17\1"+
+		"\2\u00e7\u00e8\7\7\2\2\u00e8\u00e9\5\34\17\2\u00e9\u00eb\3\2\2\2\u00ea"+
+		"\u00e0\3\2\2\2\u00ea\u00e4\3\2\2\2\u00eb\35\3\2\2\2\u00ec\u00ed\7\n\2"+
+		"\2\u00ed\u00ee\5\24\13\2\u00ee\u00ef\b\20\1\2\u00ef\u00f2\3\2\2\2\u00f0"+
+		"\u00f2\b\20\1\2\u00f1\u00ec\3\2\2\2\u00f1\u00f0\3\2\2\2\u00f2\37\3\2\2"+
+		"\2\u00f3\u00f4\7\20\2\2\u00f4\u00f5\7\63\2\2\u00f5\u00f6\5\"\22\2\u00f6"+
+		"\u00f7\5&\24\2\u00f7\u00f8\7\5\2\2\u00f8\u00f9\7\20\2\2\u00f9\u00fa\7"+
+		"\63\2\2\u00fa\u00fb\b\21\1\2\u00fb!\3\2\2\2\u00fc\u0102\3\2\2\2\u00fd"+
+		"\u00fe\7\16\2\2\u00fe\u00ff\5$\23\2\u00ff\u0100\7\17\2\2\u0100\u0102\3"+
+		"\2\2\2\u0101\u00fc\3\2\2\2\u0101\u00fd\3\2\2\2\u0102#\3\2\2\2\u0103\u0108"+
+		"\7\63\2\2\u0104\u0105\7\63\2\2\u0105\u0106\7\7\2\2\u0106\u0108\5$\23\2"+
+		"\u0107\u0103\3\2\2\2\u0107\u0104\3\2\2\2\u0108%\3\2\2\2\u0109\u010a\5"+
+		"\30\r\2\u010a\u010b\7\7\2\2\u010b\u010c\7\21\2\2\u010c\u010d\7\16\2\2"+
+		"\u010d\u010e\5(\25\2\u010e\u010f\7\17\2\2\u010f\u0110\7\63\2\2\u0110\u0111"+
+		"\7\4\2\2\u0111\u0112\b\24\1\2\u0112\u0113\5&\24\2\u0113\u0116\3\2\2\2"+
+		"\u0114\u0116\3\2\2\2\u0115\u0109\3\2\2\2\u0115\u0114\3\2\2\2\u0116\'\3"+
+		"\2\2\2\u0117\u0118\7\22\2\2\u0118\u011e\b\25\1\2\u0119\u011a\7\23\2\2"+
+		"\u011a\u011e\b\25\1\2\u011b\u011c\7\24\2\2\u011c\u011e\b\25\1\2\u011d"+
+		"\u0117\3\2\2\2\u011d\u0119\3\2\2\2\u011d\u011b\3\2\2\2\u011e)\3\2\2\2"+
+		"\u011f\u0120\7\25\2\2\u0120\u0121\7\63\2\2\u0121\u0122\7\16\2\2\u0122"+
+		"\u0123\5$\23\2\u0123\u0124\7\17\2\2\u0124\u0125\5\30\r\2\u0125\u0126\7"+
+		"\t\2\2\u0126\u0127\7\63\2\2\u0127\u0128\7\4\2\2\u0128\u0129\5,\27\2\u0129"+
+		"\u012a\b\26\1\2\u012a\u012b\7\5\2\2\u012b\u012c\7\25\2\2\u012c\u012d\7"+
+		"\63\2\2\u012d+\3\2\2\2\u012e\u012f\5\30\r\2\u012f\u0130\7\7\2\2\u0130"+
+		"\u0131\7\21\2\2\u0131\u0132\7\16\2\2\u0132\u0133\7\22\2\2\u0133\u0134"+
+		"\7\17\2\2\u0134\u0135\7\63\2\2\u0135\u0136\7\4\2\2\u0136\u0137\b\27\1"+
+		"\2\u0137\u0138\5,\27\2\u0138\u013b\3\2\2\2\u0139\u013b\3\2\2\2\u013a\u012e"+
+		"\3\2\2\2\u013a\u0139\3\2\2\2\u013b-\3\2\2\2\u013c\u013d\7\63\2\2\u013d"+
+		"\u013e\7\n\2\2\u013e\u013f\58\35\2\u013f\u0140\7\4\2\2\u0140\u0141\b\30"+
+		"\1\2\u0141\u017b\3\2\2\2\u0142\u0143\5D#\2\u0143\u0144\7\4\2\2\u0144\u0145"+
+		"\b\30\1\2\u0145\u017b\3\2\2\2\u0146\u0147\7\26\2\2\u0147\u0148\7\16\2"+
+		"\2\u0148\u0149\5N(\2\u0149\u014a\7\17\2\2\u014a\u014b\5.\30\2\u014b\u017b"+
+		"\3\2\2\2\u014c\u014d\7\26\2\2\u014d\u014e\7\16\2\2\u014e\u014f\5N(\2\u014f"+
+		"\u0150\7\17\2\2\u0150\u0151\7\27\2\2\u0151\u0152\5\f\7\2\u0152\u0153\7"+
+		"\30\2\2\u0153\u017b\3\2\2\2\u0154\u0155\7\26\2\2\u0155\u0156\7\16\2\2"+
+		"\u0156\u0157\5N(\2\u0157\u0158\7\17\2\2\u0158\u0159\7\27\2\2\u0159\u015a"+
+		"\5\f\7\2\u015a\u015b\7\31\2\2\u015b\u015c\5\f\7\2\u015c\u015d\7\30\2\2"+
+		"\u015d\u017b\3\2\2\2\u015e\u015f\7\32\2\2\u015f\u0160\7\33\2\2\u0160\u0161"+
+		"\7\16\2\2\u0161\u0162\5N(\2\u0162\u0163\7\17\2\2\u0163\u0164\5\f\7\2\u0164"+
+		"\u0165\7\34\2\2\u0165\u017b\3\2\2\2\u0166\u0167\7\32\2\2\u0167\u0168\7"+
+		"\63\2\2\u0168\u0169\7\n\2\2\u0169\u016a\5\60\31\2\u016a\u016b\7\7\2\2"+
+		"\u016b\u016c\5\60\31\2\u016c\u016d\7\7\2\2\u016d\u016e\5\60\31\2\u016e"+
+		"\u016f\5\f\7\2\u016f\u0170\7\34\2\2\u0170\u017b\3\2\2\2\u0171\u0172\7"+
+		"\35\2\2\u0172\u0173\7\36\2\2\u0173\u0174\7\16\2\2\u0174\u0175\58\35\2"+
+		"\u0175\u0176\7\17\2\2\u0176\u0177\5\62\32\2\u0177\u0178\7\5\2\2\u0178"+
+		"\u0179\7\35\2\2\u0179\u017b\3\2\2\2\u017a\u013c\3\2\2\2\u017a\u0142\3"+
+		"\2\2\2\u017a\u0146\3\2\2\2\u017a\u014c\3\2\2\2\u017a\u0154\3\2\2\2\u017a"+
+		"\u015e\3\2\2\2\u017a\u0166\3\2\2\2\u017a\u0171\3\2\2\2\u017b/\3\2\2\2"+
+		"\u017c\u017d\7\64\2\2\u017d\u0181\b\31\1\2\u017e\u017f\7\63\2\2\u017f"+
+		"\u0181\b\31\1\2\u0180\u017c\3\2\2\2\u0180\u017e\3\2\2\2\u0181\61\3\2\2"+
+		"\2\u0182\u0183\7\36\2\2\u0183\u0184\7\16\2\2\u0184\u0185\5\64\33\2\u0185"+
+		"\u0186\7\17\2\2\u0186\u0187\5\f\7\2\u0187\u0188\b\32\1\2\u0188\u0189\5"+
+		"\62\32\2\u0189\u0190\3\2\2\2\u018a\u018b\7\36\2\2\u018b\u018c\7\37\2\2"+
+		"\u018c\u018d\b\32\1\2\u018d\u0190\5\f\7\2\u018e\u0190\3\2\2\2\u018f\u0182"+
+		"\3\2\2\2\u018f\u018a\3\2\2\2\u018f\u018e\3\2\2\2\u0190\63\3\2\2\2\u0191"+
+		"\u0192\5\24\13\2\u0192\u0193\5\66\34\2\u0193\u019e\3\2\2\2\u0194\u0195"+
+		"\5\24\13\2\u0195\u0196\7 \2\2\u0196\u0197\5\24\13\2\u0197\u019e\3\2\2"+
+		"\2\u0198\u0199\7 \2\2\u0199\u019e\5\24\13\2\u019a\u019b\5\24\13\2\u019b"+
+		"\u019c\7 \2\2\u019c\u019e\3\2\2\2\u019d\u0191\3\2\2\2\u019d\u0194\3\2"+
+		"\2\2\u019d\u0198\3\2\2\2\u019d\u019a\3\2\2\2\u019e\65\3\2\2\2\u019f\u01a0"+
+		"\7\7\2\2\u01a0\u01a3\5\24\13\2\u01a1\u01a3\3\2\2\2\u01a2\u019f\3\2\2\2"+
+		"\u01a2\u01a1\3\2\2\2\u01a3\67\3\2\2\2\u01a4\u01a5\5@!\2\u01a5\u01a6\5"+
+		":\36\2\u01a6\u01a7\b\35\1\2\u01a79\3\2\2\2\u01a8\u01a9\5<\37\2\u01a9\u01aa"+
+		"\58\35\2\u01aa\u01ab\5:\36\2\u01ab\u01ac\b\36\1\2\u01ac\u01af\3\2\2\2"+
+		"\u01ad\u01af\b\36\1\2\u01ae\u01a8\3\2\2\2\u01ae\u01ad\3\2\2\2\u01af;\3"+
+		"\2\2\2\u01b0\u01b1\5> \2\u01b1\u01b2\b\37\1\2\u01b2=\3\2\2\2\u01b3\u01b4"+
+		"\7!\2\2\u01b4\u01bc\b \1\2\u01b5\u01b6\7\"\2\2\u01b6\u01bc\b \1\2\u01b7"+
+		"\u01b8\7#\2\2\u01b8\u01bc\b \1\2\u01b9\u01ba\7$\2\2\u01ba\u01bc\b \1\2"+
+		"\u01bb\u01b3\3\2\2\2\u01bb\u01b5\3\2\2\2\u01bb\u01b7\3\2\2\2\u01bb\u01b9"+
+		"\3\2\2\2\u01bc?\3\2\2\2\u01bd\u01be\5\24\13\2\u01be\u01bf\b!\1\2\u01bf"+
+		"\u01cf\3\2\2\2\u01c0\u01c1\7\16\2\2\u01c1\u01c2\58\35\2\u01c2\u01c3\7"+
+		"\17\2\2\u01c3\u01c4\b!\1\2\u01c4\u01cf\3\2\2\2\u01c5\u01c6\7\63\2\2\u01c6"+
+		"\u01c7\7\16\2\2\u01c7\u01c8\58\35\2\u01c8\u01c9\5B\"\2\u01c9\u01ca\7\17"+
+		"\2\2\u01ca\u01cb\b!\1\2\u01cb\u01cf\3\2\2\2\u01cc\u01cd\7\63\2\2\u01cd"+
+		"\u01cf\b!\1\2\u01ce\u01bd\3\2\2\2\u01ce\u01c0\3\2\2\2\u01ce\u01c5\3\2"+
+		"\2\2\u01ce\u01cc\3\2\2\2\u01cfA\3\2\2\2\u01d0\u01d1\7\7\2\2\u01d1\u01d2"+
+		"\58\35\2\u01d2\u01d3\5B\"\2\u01d3\u01d4\b\"\1\2\u01d4\u01d7\3\2\2\2\u01d5"+
+		"\u01d7\b\"\1\2\u01d6\u01d0\3\2\2\2\u01d6\u01d5\3\2\2\2\u01d7C\3\2\2\2"+
+		"\u01d8\u01d9\7%\2\2\u01d9\u01da\7\63\2\2\u01da\u01db\5F$\2\u01db\u01dc"+
+		"\b#\1\2\u01dcE\3\2\2\2\u01dd\u01de\7\16\2\2\u01de\u01df\58\35\2\u01df"+
+		"\u01e0\5B\"\2\u01e0\u01e1\7\17\2\2\u01e1\u01e2\b$\1\2\u01e2\u01e5\3\2"+
+		"\2\2\u01e3\u01e5\b$\1\2\u01e4\u01dd\3\2\2\2\u01e4\u01e3\3\2\2\2\u01e5"+
+		"G\3\2\2\2\u01e6\u01e7\5J&\2\u01e7\u01e8\5H%\2\u01e8\u01ee\3\2\2\2\u01e9"+
+		"\u01ea\5L\'\2\u01ea\u01eb\5H%\2\u01eb\u01ee\3\2\2\2\u01ec\u01ee\3\2\2"+
+		"\2\u01ed\u01e6\3\2\2\2\u01ed\u01e9\3\2\2\2\u01ed\u01ec\3\2\2\2\u01eeI"+
+		"\3\2\2\2\u01ef\u01f0\7\20\2\2\u01f0\u01f1\7\63\2\2\u01f1\u01f2\b&\1\2"+
+		"\u01f2\u01f3\5\"\22\2\u01f3\u01f4\5&\24\2\u01f4\u01f5\b&\1\2\u01f5\u01f6"+
+		"\5\4\3\2\u01f6\u01f7\5.\30\2\u01f7\u01f8\5\f\7\2\u01f8\u01f9\7\5\2\2\u01f9"+
+		"\u01fa\7\20\2\2\u01fa\u01fb\7\63\2\2\u01fb\u01fc\b&\1\2\u01fcK\3\2\2\2"+
+		"\u01fd\u01fe\7\25\2\2\u01fe\u01ff\7\63\2\2\u01ff\u0200\7\16\2\2\u0200"+
+		"\u0201\5$\23\2\u0201\u0202\7\17\2\2\u0202\u0203\5\30\r\2\u0203\u0204\7"+
+		"\t\2\2\u0204\u0205\7\63\2\2\u0205\u0206\7\4\2\2\u0206\u0207\b\'\1\2\u0207"+
+		"\u0208\5,\27\2\u0208\u0209\b\'\1\2\u0209\u020a\5\4\3\2\u020a\u020b\5."+
+		"\30\2\u020b\u020c\5\f\7\2\u020c\u020d\7\63\2\2\u020d\u020e\7\n\2\2\u020e"+
+		"\u020f\58\35\2\u020f\u0210\7\4\2\2\u0210\u0211\b\'\1\2\u0211\u0212\7\5"+
+		"\2\2\u0212\u0213\7\25\2\2\u0213\u0214\7\63\2\2\u0214\u0215\b\'\1\2\u0215"+
+		"M\3\2\2\2\u0216\u0217\b(\1\2\u0217\u0218\5R*\2\u0218\u021f\3\2\2\2\u0219"+
+		"\u021a\f\4\2\2\u021a\u021b\5P)\2\u021b\u021c\5N(\5\u021c\u021e\3\2\2\2"+
+		"\u021d\u0219\3\2\2\2\u021e\u0221\3\2\2\2\u021f\u021d\3\2\2\2\u021f\u0220"+
+		"\3\2\2\2\u0220O\3\2\2\2\u0221\u021f\3\2\2\2\u0222\u0223\7&\2\2\u0223\u022b"+
+		"\b)\1\2\u0224\u0225\7\'\2\2\u0225\u022b\b)\1\2\u0226\u0227\7(\2\2\u0227"+
+		"\u022b\b)\1\2\u0228\u0229\7)\2\2\u0229\u022b\b)\1\2\u022a\u0222\3\2\2"+
+		"\2\u022a\u0224\3\2\2\2\u022a\u0226\3\2\2\2\u022a\u0228\3\2\2\2\u022bQ"+
+		"\3\2\2\2\u022c\u022d\58\35\2\u022d\u022e\5T+\2\u022e\u022f\58\35\2\u022f"+
+		"\u0230\b*\1\2\u0230\u023f\3\2\2\2\u0231\u0232\7\16\2\2\u0232\u0233\5N"+
+		"(\2\u0233\u0234\7\17\2\2\u0234\u0235\b*\1\2\u0235\u023f\3\2\2\2\u0236"+
+		"\u0237\7*\2\2\u0237\u0238\5R*\2\u0238\u0239\b*\1\2\u0239\u023f\3\2\2\2"+
+		"\u023a\u023b\7+\2\2\u023b\u023f\b*\1\2\u023c\u023d\7,\2\2\u023d\u023f"+
+		"\b*\1\2\u023e\u022c\3\2\2\2\u023e\u0231\3\2\2\2\u023e\u0236\3\2\2\2\u023e"+
+		"\u023a\3\2\2\2\u023e\u023c\3\2\2\2\u023fS\3\2\2\2\u0240\u0241\7-\2\2\u0241"+
+		"\u024d\b+\1\2\u0242\u0243\7.\2\2\u0243\u024d\b+\1\2\u0244\u0245\7/\2\2"+
+		"\u0245\u024d\b+\1\2\u0246\u0247\7\60\2\2\u0247\u024d\b+\1\2\u0248\u0249"+
+		"\7\61\2\2\u0249\u024d\b+\1\2\u024a\u024b\7\62\2\2\u024b\u024d\b+\1\2\u024c"+
+		"\u0240\3\2\2\2\u024c\u0242\3\2\2\2\u024c\u0244\3\2\2\2\u024c\u0246\3\2"+
+		"\2\2\u024c\u0248\3\2\2\2\u024c\u024a\3\2\2\2\u024dU\3\2\2\2$jrz\u0083"+
+		"\u0089\u009d\u00ac\u00b6\u00c4\u00cd\u00d7\u00de\u00ea\u00f1\u0101\u0107"+
+		"\u0115\u011d\u013a\u017a\u0180\u018f\u019d\u01a2\u01ae\u01bb\u01ce\u01d6"+
+		"\u01e4\u01ed\u021f\u022a\u023e\u024c";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
