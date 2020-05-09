@@ -6,7 +6,7 @@ public class Header {
     private String name;
     private List<Variable> parameters;
 
-    public Header(String type, String name, String checker) {
+    public Header(String type, String name) {
         this.returnType = type;
         this.name = name;
         this.parameters = new ArrayList<>();

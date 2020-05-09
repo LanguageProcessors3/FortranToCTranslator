@@ -1,6 +1,6 @@
 grammar FortranToC ;
 
-@members {
+@parser::members {
     ArrayList<Constant> constants = new ArrayList<>();
     ArrayList<Header> headers = new ArrayList<>();
     ArrayList<Variable> variables = new ArrayList<>();
@@ -55,7 +55,7 @@ grammar FortranToC ;
             }
 
             else if (s.startsWith("break")) {
-                tabs = identacion.substring(0, identacion.length() - 1);
+                tabs = tabs.substring(0, tabs.length() - 1);
                 System.out.println(tabs + s);
                 hasCase = false;
             }
@@ -176,13 +176,13 @@ init returns [String value]
 // Function Declaration area
 
 decproc
-    : 'SUBROUTINE' id1=IDENT formal_paramlist
+    : 'SUBROUTINE' IDENT formal_paramlist
     dec_s_paramlist
-    'END' 'SUBROUTINE' id2=IDENT { Header h = new Header("void", $id1.text, $id2.text);
-                                   h.setParameters(variables);
-                                   variables.clear();
-                                   headers.add(h);
-                                 }
+    'END' 'SUBROUTINE' IDENT { Header h = new Header("void", $IDENT.text);
+                               h.setParameters(variables);
+                               variables.clear();
+                               headers.add(h);
+                             }
     ;
 
 formal_paramlist
@@ -209,9 +209,9 @@ tipoparam returns [String value]
     ;
 
 decfun
-    : 'FUNCTION' id1=IDENT '(' nomparamlist ')'
-    tipo '::' id2=IDENT ';'
-    dec_f_paramlist { Header h = new Header($tipo.value, $id1.text, $id2.text);
+    : 'FUNCTION' IDENT '(' nomparamlist ')'
+    tipo '::' IDENT ';'
+    dec_f_paramlist { Header h = new Header($tipo.value, $IDENT.text);
                       h.setParameters(variables);
                       variables.clear();
                       headers.add(h);
@@ -252,14 +252,14 @@ casos
     ;
 
 etiquetas
-    : simpvalue listaetiqetas // Optional included
-    | simpvalue ':' simpvalue
-    | ':' simpvalue
-    | simpvalue ':'
+    : simpvalue listaetiqetas { statements.add("case " + $simpvalue.value + " :"); } // Optional included
+    | simp1=simpvalue ':' simp2=simpvalue { statements.add("case " + $simp1.value + " to " + $simp2.value + " :") ; }
+    | ':' simpvalue { statements.add("case < " + $simpvalue.value + " :") ; }
+    | simpvalue ':' { statements.add("case > " + $simpvalue.value + " :") ; }
     ;
 
 listaetiqetas
-    : ',' simpvalue
+    : ',' simpvalue { statements.add("case " + $simpvalue.value + " :") ; }
     |
     ; // Optional included
 
