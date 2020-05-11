@@ -1,0 +1,24 @@
+
+h
+java:S3776""RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(¢˜Á²
+7
+java:S1643/"Use a StringBuilder instead.(™šÉùÿÿÿÿ
+2
+java:S16434"Use a StringBuilder instead.(‚Œ«ø
+S	java:S106D"9Replace this use of System.out or System.err by a logger.(¶êˆ˜şÿÿÿÿ
+S	java:S106g"9Replace this use of System.out or System.err by a logger.(–®“Õıÿÿÿÿ
+S	java:S106W"9Replace this use of System.out or System.err by a logger.(¶êˆ˜şÿÿÿÿ
+2
+java:S16431"Use a StringBuilder instead.(şéùº
+7
+java:S16436"Use a StringBuilder instead.(ŒÅèÓşÿÿÿÿ
+0
+java:S1220""Move this file to a named package.
+Z	java:S106_"9Replace this use of System.out or System.err by a logger.(¶êˆ˜şÿÿÿÿ8ô™´ô.
+Z	java:S106O"9Replace this use of System.out or System.err by a logger.(¶êˆ˜şÿÿÿÿ8º¨Úó.
+\
+java:S3027-"FPut single-quotes around '[' to use the faster "indexOf(char)" method.(ÚÖÎä
+Q
+java:S1854I"5Remove this useless assignment to local variable "b".(ÒÃÁ,8íú¼¬Ÿ.
+B
+java:S1481I"&Remove this unused "b" local variable.(ÒÃÁ,8íú¼¬Ÿ.
