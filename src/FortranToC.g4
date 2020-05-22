@@ -5,87 +5,6 @@ grammar FortranToC ;
     ArrayList<Header> headers = new ArrayList<>();
     ArrayList<Variable> variables = new ArrayList<>();
     ArrayList<String> statements = new ArrayList<>();
-
-    public String variablesToString (ArrayList<Variable> v) {
-        String s = "";
-
-        for (int i = 0; i < v.size(); ++i) {
-            if (i != v.size() - 1) {
-                s += v.get(i).parameterFormat();
-                s = s.replace('*','&');
-                s += " , ";
-            }
-            else {
-                s += v.get(i).parameterFormat();
-                s = s.replace('*','&');
-            }
-        }
-
-        if (s.isEmpty()) s = "void";
-
-        return s;
-    }
-
-    public void printprg () {
-        for (Constant c : constants)
-            c.printConst();
-
-        System.out.println();
-
-        for (Header h : headers)
-            h.printHeader();
-
-        System.out.println();
-
-        System.out.println("void main(void) {");
-
-        printStatements();
-    }
-
-    public void printStatements () {
-        boolean hasCase = false;
-        String tabs = "\t";
-
-        for (String s: statements) {
-
-            if (s.startsWith("default") || s.startsWith("case")) {
-                if (!hasCase) {
-                    System.out.println(tabs + s);
-                    tabs += "\t";
-                    hasCase = true;
-                } else System.out.println(tabs + s);
-            }
-
-            else if (s.startsWith("break")) {
-                tabs = tabs.substring(0, tabs.length() - 1);
-                System.out.println(tabs + "\t" + s);
-                hasCase = false;
-            }
-
-            else if (s.contains("{") && s.contains("}")) {
-                tabs = tabs.substring(0, tabs.length() - 1);
-                System.out.println(tabs + s);
-                tabs += "\t";
-            }
-
-            else if (s.contains("{")) {
-                System.out.println(tabs + s);
-                tabs += "\t";
-            }
-
-            else if (s.contains("}")) {
-                if (hasCase) {
-                    tabs = tabs.substring(0, tabs.length() - 1);
-                    hasCase = false;
-                }
-                tabs = tabs.substring(0, tabs.length() - 1);
-                System.out.println(tabs + s);
-            }
-
-            else System.out.println(tabs + s);
-        }
-    }
-
 }
 
 // Token combination rules in parser
@@ -93,7 +12,7 @@ grammar FortranToC ;
 
 prg
     : 'PROGRAM' IDENT ';' dcllist cabecera sent sentlist 'END'
-    'PROGRAM' { statements.add("}\n") ; } IDENT subproglist { printprg() ; }
+    'PROGRAM' { statements.add("}\n") ; } IDENT subproglist { ProgramOrchestrator.printFullProgram(constants,headers,statements) ; }
     ;
 
 dcllist
@@ -323,14 +242,14 @@ subproglist
 
 codproc
     : 'SUBROUTINE' IDENT { variables = new ArrayList<>() ; } formal_paramlist
-    dec_s_paramlist { statements.add("void " + $IDENT.text + "(" + variablesToString(variables) + ") {") ; }
+    dec_s_paramlist { statements.add("void " + $IDENT.text + "(" + Variable.formParameters(variables) + ") {") ; }
     dcllist sent sentlist
     'END' 'SUBROUTINE' IDENT { statements.add("}\n") ; }
     ;
 
 codfun : 'FUNCTION' IDENT '(' nomparamlist ')'
     tipo '::' IDENT ';' { variables = new ArrayList<>() ; }
-    dec_f_paramlist { statements.add($tipo.value + " " + $IDENT.text + "(" + variablesToString(variables) + ") {") ; }
+    dec_f_paramlist { statements.add($tipo.value + " " + $IDENT.text + "(" + Variable.formParameters(variables) + ") {") ; }
     dcllist sent sentlist
     IDENT '=' exp ';' { statements.add("return " + $exp.value + ";") ; }
     'END' 'FUNCTION' IDENT { statements.add("}\n") ; }

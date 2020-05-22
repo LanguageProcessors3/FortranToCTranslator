@@ -123,87 +123,6 @@ public class FortranToCParser extends Parser {
 	    ArrayList<Variable> variables = new ArrayList<>();
 	    ArrayList<String> statements = new ArrayList<>();
 
-	    public String variablesToString (ArrayList<Variable> v) {
-	        String s = "";
-
-	        for (int i = 0; i < v.size(); ++i) {
-	            if (i != v.size() - 1) {
-	                s += v.get(i).parameterFormat();
-	                s = s.replace('*','&');
-	                s += " , ";
-	            }
-	            else {
-	                s += v.get(i).parameterFormat();
-	                s = s.replace('*','&');
-	            }
-	        }
-
-	        if (s.isEmpty()) s = "void";
-
-	        return s;
-	    }
-
-	    public void printprg () {
-	        for (Constant c : constants)
-	            c.printConst();
-
-	        System.out.println();
-
-	        for (Header h : headers)
-	            h.printHeader();
-
-	        System.out.println();
-
-	        System.out.println("void main(void) {");
-
-	        printStatements();
-	    }
-
-	    public void printStatements () {
-	        boolean hasCase = false;
-	        String tabs = "\t";
-
-	        for (String s: statements) {
-
-	            if (s.startsWith("default") || s.startsWith("case")) {
-	                if (!hasCase) {
-	                    System.out.println(tabs + s);
-	                    tabs += "\t";
-	                    hasCase = true;
-	                } else System.out.println(tabs + s);
-	            }
-
-	            else if (s.startsWith("break")) {
-	                tabs = tabs.substring(0, tabs.length() - 1);
-	                System.out.println(tabs + "\t" + s);
-	                hasCase = false;
-	            }
-
-	            else if (s.contains("{") && s.contains("}")) {
-	                tabs = tabs.substring(0, tabs.length() - 1);
-	                System.out.println(tabs + s);
-	                tabs += "\t";
-	            }
-
-	            else if (s.contains("{")) {
-	                System.out.println(tabs + s);
-	                tabs += "\t";
-	            }
-
-	            else if (s.contains("}")) {
-	                if (hasCase) {
-	                    tabs = tabs.substring(0, tabs.length() - 1);
-	                    hasCase = false;
-	                }
-	                tabs = tabs.substring(0, tabs.length() - 1);
-	                System.out.println(tabs + s);
-	            }
-
-	            else System.out.println(tabs + s);
-	        }
-	    }
-
-
 	public FortranToCParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
@@ -272,7 +191,7 @@ public class FortranToCParser extends Parser {
 			match(IDENT);
 			setState(95);
 			subproglist();
-			 printprg() ; 
+			 ProgramOrchestrator.printFullProgram(constants,headers,statements) ; 
 			}
 		}
 		catch (RecognitionException re) {
@@ -2876,7 +2795,7 @@ public class FortranToCParser extends Parser {
 			formal_paramlist();
 			setState(515);
 			dec_s_paramlist();
-			 statements.add("void " + (((CodprocContext)_localctx).IDENT!=null?((CodprocContext)_localctx).IDENT.getText():null) + "(" + variablesToString(variables) + ") {") ; 
+			 statements.add("void " + (((CodprocContext)_localctx).IDENT!=null?((CodprocContext)_localctx).IDENT.getText():null) + "(" + Variable.formParameters(variables) + ") {") ; 
 			setState(517);
 			dcllist();
 			setState(518);
@@ -2973,7 +2892,7 @@ public class FortranToCParser extends Parser {
 			 variables = new ArrayList<>() ; 
 			setState(535);
 			dec_f_paramlist();
-			 statements.add(((CodfunContext)_localctx).tipo.value + " " + (((CodfunContext)_localctx).IDENT!=null?((CodfunContext)_localctx).IDENT.getText():null) + "(" + variablesToString(variables) + ") {") ; 
+			 statements.add(((CodfunContext)_localctx).tipo.value + " " + (((CodfunContext)_localctx).IDENT!=null?((CodfunContext)_localctx).IDENT.getText():null) + "(" + Variable.formParameters(variables) + ") {") ; 
 			setState(537);
 			dcllist();
 			setState(538);
