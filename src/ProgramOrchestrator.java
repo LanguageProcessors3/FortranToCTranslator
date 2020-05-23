@@ -3,8 +3,8 @@ import java.util.ArrayList;
 public class ProgramOrchestrator {
 
     public static void printFullProgram(ArrayList<Constant> constants, ArrayList<Header> headers, ArrayList<String> statements) {
-        // Función que dados los arrays de constantes, cabeceras y declaraciones, los recorre y utiliza los
-        // métodos específicos de cada clase para mostrarlos por pantalla
+        // This is a function that with given constant, headers and statements arrays, iterates through them
+        // and prints them using their proper class printing methods
         for (Constant c : constants)
             c.printConst();
 
@@ -17,16 +17,17 @@ public class ProgramOrchestrator {
 
         System.out.println("void main(void) {");
 
-        printStatements(statements); // Función auxiliar para controlar la tabulación propia de las instrucciones
+        printStatements(statements); // Auxiliary function to control tabulations and checking the statements structure
     }
 
     private static void printStatements(ArrayList<String> statements) {
-        boolean __case__ = false; // Variable booleana que controla si estamos tabulando una estructura switch case o no
-        String tabs = "\t"; // Se inicializan las tabulaciones a 1
+
+        boolean __case__ = false; // Boolean variable that controls whereas we are tabulating a switch case or not
+        String tabs = "\t"; // Tabs are initialized to 1 in the beginning
 
         for (String s: statements) {
             if (s.startsWith("}") && s.endsWith("{")) {
-                tabs = tabs.substring(0, tabs.length() - 1); // Se quita la última tabulación del acarreo global
+                tabs = tabs.substring(0, tabs.length() - 1); // Last tabulation is removed from the global carry
                 System.out.println(tabs + s);
                 tabs += "\t";
             }
@@ -36,10 +37,10 @@ public class ProgramOrchestrator {
             }
             else if (s.startsWith("}")) {
                 if (__case__) {
-                    __case__ = false; // Si estabamos en un switch case se cierra y se quita una tabulación adicional
+                    __case__ = false; // If the checking is in a switch case, close it and remove a tabulation carry
                     tabs = tabs.substring(0, tabs.length() - 1);
                 }
-                tabs = tabs.substring(0, tabs.length() - 1); // Se quita la última tabulación del acarreo global
+                tabs = tabs.substring(0, tabs.length() - 1); // Last tabulation is removed from the global carry
                 System.out.println(tabs + s);
             }
             else if (s.startsWith("default") || s.startsWith("case")) {
@@ -48,7 +49,7 @@ public class ProgramOrchestrator {
                     __case__ = true;
                     System.out.println(tabs + s);
                     tabs += "\t";
-                } else { // Si hay otro case seguido se imprime sin la tabulación y luego se vuelve a añadir
+                } else { // If there are more than one consecutive cases, just prints them without the tabulation
                     tabs = tabs.substring(0, tabs.length() - 1);
                     System.out.println(tabs + s);
                     tabs += "\t";
@@ -59,11 +60,11 @@ public class ProgramOrchestrator {
                 tabs = tabs.substring(0, tabs.length() - 1);
                 __case__ = false;
             }
-            else if (s.contains("'") || s.contains("\"")) { // Caso para dar formato a los string en C y digitos opcionales
+            else if (s.contains("'") || s.contains("\"")) { // Condition to check if the statement contains a string
                 char checkString = s.charAt(s.indexOf("=") + 2);
                 boolean checkCase = s.contains("case");
 
-                if ((checkString != '"') && (checkString != '\'') && (!checkCase)) {
+                if ((checkString != '"') && (checkString != '\'') && (!checkCase) && !s.contains("(")) {
                     String lvalue = s.substring(0, s.indexOf("=") + 2);
                     String rvalue = s.substring(s.indexOf("=") + 2);
                     rvalue = rvalue.replace("'", "");
