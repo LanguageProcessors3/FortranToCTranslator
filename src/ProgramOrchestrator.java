@@ -24,9 +24,50 @@ public class ProgramOrchestrator {
 
         boolean __case__ = false; // Boolean variable that controls whereas we are tabulating a switch case or not
         String tabs = "\t"; // Tabs are initialized to 1 in the beginning
+        String savedType = "";
 
         for (String s: statements) {
-            if (s.startsWith("}") && s.endsWith("{")) {
+            if (!s.contains("(") && s.startsWith("int")) {
+                if (savedType.startsWith("int")) savedType += s.substring(4, s.length() - 1) + ", ";
+                else if (savedType.isEmpty()) savedType = "int " + s.substring(4, s.length() - 1) + ", ";
+                else {
+                    savedType = savedType.substring(0, savedType.length() - 2);
+                    savedType += ";";
+                    System.out.println(tabs + savedType);
+
+                    savedType = "int " + s.substring(4, s.length() - 1) + ", ";
+                }
+            }
+            else if (!s.contains("(") && s.startsWith("float")) {
+                if (savedType.startsWith("float")) savedType += s.substring(6, s.length() - 1) + ", ";
+                else if (savedType.isEmpty()) savedType = "float " + s.substring(6, s.length() - 1) + ", ";
+                else {
+                    savedType = savedType.substring(0, savedType.length() - 2);
+                    savedType += ";";
+                    System.out.println(tabs + savedType);
+
+                    savedType = "float " + s.substring(6, s.length() - 1) + ", ";
+                }
+            }
+            else if (!s.contains("(") && s.startsWith("char")) {
+                if (savedType.startsWith("char")) savedType += s.substring(5, s.length() - 1) + ", ";
+                else if (savedType.isEmpty()) savedType = "char " + s.substring(5, s.length() - 1) + ", ";
+                else {
+                    savedType = savedType.substring(0, savedType.length() - 2);
+                    savedType += ";";
+                    System.out.println(tabs + savedType);
+
+                    savedType = "char " + s.substring(5, s.length() - 1) + ", ";
+                }
+            }
+            else if (!savedType.isEmpty()) {
+                savedType = savedType.substring(0, savedType.length() - 2);
+                savedType += ";";
+                System.out.println(tabs + savedType);
+
+                savedType = "";
+            }
+            else if (s.startsWith("}") && s.endsWith("{")) {
                 tabs = tabs.substring(0, tabs.length() - 1); // Last tabulation is removed from the global carry
                 System.out.println(tabs + s);
                 tabs += "\t";
