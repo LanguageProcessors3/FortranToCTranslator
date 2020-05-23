@@ -23,11 +23,13 @@ public class ProgramOrchestrator {
     private static void printStatements(ArrayList<String> statements) {
 
         boolean __case__ = false; // Boolean variable that controls whereas we are tabulating a switch case or not
+        boolean groupedParams = false;
         String tabs = "\t"; // Tabs are initialized to 1 in the beginning
         String savedType = "";
 
         for (String s: statements) {
             if (!s.contains("(") && s.startsWith("int")) {
+                groupedParams = true;
                 if (savedType.startsWith("int")) savedType += s.substring(4, s.length() - 1) + ", ";
                 else if (savedType.isEmpty()) savedType = "int " + s.substring(4, s.length() - 1) + ", ";
                 else {
@@ -39,6 +41,7 @@ public class ProgramOrchestrator {
                 }
             }
             else if (!s.contains("(") && s.startsWith("float")) {
+                groupedParams = true;
                 if (savedType.startsWith("float")) savedType += s.substring(6, s.length() - 1) + ", ";
                 else if (savedType.isEmpty()) savedType = "float " + s.substring(6, s.length() - 1) + ", ";
                 else {
@@ -50,6 +53,7 @@ public class ProgramOrchestrator {
                 }
             }
             else if (!s.contains("(") && s.startsWith("char")) {
+                groupedParams = true;
                 if (savedType.startsWith("char")) savedType += s.substring(5, s.length() - 1) + ", ";
                 else if (savedType.isEmpty()) savedType = "char " + s.substring(5, s.length() - 1) + ", ";
                 else {
@@ -65,9 +69,10 @@ public class ProgramOrchestrator {
                 savedType += ";";
                 System.out.println(tabs + savedType);
 
+                groupedParams = false;
                 savedType = "";
             }
-            else if (s.startsWith("}") && s.endsWith("{")) {
+            if (s.startsWith("}") && s.endsWith("{")) {
                 tabs = tabs.substring(0, tabs.length() - 1); // Last tabulation is removed from the global carry
                 System.out.println(tabs + s);
                 tabs += "\t";
@@ -100,6 +105,9 @@ public class ProgramOrchestrator {
                 System.out.println(tabs + s);
                 tabs = tabs.substring(0, tabs.length() - 1);
                 __case__ = false;
+            }
+            else if (savedType.startsWith("char")) {
+                savedType = savedType.replace("'", "\"");
             }
             else if (s.contains("'") || s.contains("\"")) { // Condition to check if the statement contains a string
                 char checkString = s.charAt(s.indexOf("=") + 2);
@@ -152,7 +160,7 @@ public class ProgramOrchestrator {
                     System.out.println(tabs + sfinal);
                 }
             }
-            else System.out.println(tabs + s);
+            else if (!groupedParams) System.out.println(tabs + s);
         }
     }
 }
