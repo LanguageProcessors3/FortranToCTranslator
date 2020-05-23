@@ -98,13 +98,14 @@ init returns [String value]
 // Function Declaration area
 
 decproc
-    : 'SUBROUTINE' IDENT formal_paramlist
+    : 'SUBROUTINE' ident1=IDENT formal_paramlist
     dec_s_paramlist
-    'END' 'SUBROUTINE' IDENT { Header h = new Header("void", $IDENT.text);
-                               h.setParameters(variables);
-                               variables = new ArrayList<>();
-                               headers.add(h);
-                             }
+    'END' 'SUBROUTINE' ident2=IDENT { ProgramOrchestrator.checkMethodIdentifiers($ident1.text, $ident2.text, false) ;
+                                      Header h = new Header("void", $ident1.text) ;
+                                      h.setParameters(variables) ;
+                                      variables = new ArrayList<>() ;
+                                      headers.add(h) ;
+                                    }
     ;
 
 formal_paramlist
@@ -125,25 +126,25 @@ dec_s_paramlist
     ;
 
 tipoparam returns [String value]
-    : 'IN' { $value = ""; }
-    | 'OUT' { $value = "* "; }
-    | 'INOUT' { $value = "* "; }
+    : 'IN' { $value = "" ; }
+    | 'OUT' { $value = "* " ; }
+    | 'INOUT' { $value = "* " ; }
     ;
 
 decfun
-    : 'FUNCTION' IDENT '(' nomparamlist ')'
+    : 'FUNCTION' ident1=IDENT '(' nomparamlist ')'
     tipo '::' IDENT ';'
-    dec_f_paramlist { Header h = new Header($tipo.value, $IDENT.text);
-                      h.setParameters(variables);
-                      variables = new ArrayList<>();
-                      headers.add(h);
+    dec_f_paramlist { Header h = new Header($tipo.value, $ident1.text) ;
+                      h.setParameters(variables) ;
+                      variables = new ArrayList<>() ;
+                      headers.add(h) ;
                     }
-    'END' 'FUNCTION' IDENT
+    'END' 'FUNCTION' ident2=IDENT { ProgramOrchestrator.checkMethodIdentifiers($ident1.text, $ident2.text, true) ; }
     ;
 
 dec_f_paramlist
     : tipo ',' 'INTENT' '(' 'IN' ')' IDENT ';'
-    { variables.add(new Variable($tipo.value, $IDENT.text, $tipo.size));}
+    { variables.add(new Variable($tipo.value, $IDENT.text, $tipo.size)) ; }
     dec_f_paramlist
     |
     ;
@@ -177,7 +178,7 @@ casos
     ;
 
 etiquetas
-    : simpvalue listaetiqetas { statements.add("case " + $simpvalue.value + ":"); } // Optional included
+    : simpvalue listaetiqetas { statements.add("case " + $simpvalue.value + ":") ; } // Optional included
     | simp1=simpvalue ':' simp2=simpvalue { statements.add("case " + $simp1.value + " to " + $simp2.value + ":") ; }
     | ':' simpvalue { statements.add("case < " + $simpvalue.value + ":") ; }
     | simpvalue ':' { statements.add("case > " + $simpvalue.value + ":") ; }
@@ -241,18 +242,18 @@ subproglist
     ;
 
 codproc
-    : 'SUBROUTINE' IDENT { variables = new ArrayList<>() ; } formal_paramlist
-    dec_s_paramlist { statements.add("void " + $IDENT.text + "(" + Variable.formParameters(variables) + ") {") ; }
+    : 'SUBROUTINE' ident1=IDENT { variables = new ArrayList<>() ; } formal_paramlist
+    dec_s_paramlist { statements.add("void " + $ident1.text + "(" + Variable.formParameters(variables) + ") {") ; }
     dcllist sent sentlist
-    'END' 'SUBROUTINE' IDENT { statements.add("}\n") ; }
+    'END' 'SUBROUTINE' ident2=IDENT { statements.add("}\n") ; ProgramOrchestrator.checkMethodIdentifiers($ident1.text, $ident2.text, false) ; }
     ;
 
-codfun : 'FUNCTION' IDENT '(' nomparamlist ')'
+codfun : 'FUNCTION' ident1=IDENT '(' nomparamlist ')'
     tipo '::' IDENT ';' { variables = new ArrayList<>() ; }
-    dec_f_paramlist { statements.add($tipo.value + " " + $IDENT.text + "(" + Variable.formParameters(variables) + ") {") ; }
+    dec_f_paramlist { statements.add($tipo.value + " " + $ident1.text + "(" + Variable.formParameters(variables) + ") {") ; }
     dcllist sent sentlist
     IDENT '=' exp ';' { statements.add("return " + $exp.value + ";") ; }
-    'END' 'FUNCTION' IDENT { statements.add("}\n") ; }
+    'END' 'FUNCTION' ident2=IDENT { statements.add("}\n") ; ProgramOrchestrator.checkMethodIdentifiers($ident1.text, $ident2.text, true) ; }
     ;
 
 // Optional parser implementation

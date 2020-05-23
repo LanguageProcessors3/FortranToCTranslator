@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.IllegalFormatException;
 
 public class ProgramOrchestrator {
 
@@ -161,6 +162,20 @@ public class ProgramOrchestrator {
                 }
             }
             else if (!groupedParams) System.out.println(tabs + s);
+        }
+    }
+
+    public static void checkMethodIdentifiers(String firstIdent, String secondIdent, boolean function) {
+        if (function) {
+            if (!firstIdent.equals(secondIdent)) {
+                System.err.println("El identificador de apertura de la funcion: " + firstIdent + " no coincide con su identificador de cierre: " + secondIdent);
+                throw new IllegalStateException();
+            }
+        } else {
+            if (!firstIdent.equals(secondIdent)) {
+                System.err.println("El identificador de apertura de la subrutina: " + firstIdent + " no coincide con su identificador de cierre: " + secondIdent);
+                throw new IllegalStateException();
+            }
         }
     }
 }
