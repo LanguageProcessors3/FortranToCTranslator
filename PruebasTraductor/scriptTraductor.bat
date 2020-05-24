@@ -8,3 +8,5 @@ call set output=%input:for=c%
 java -jar FortranToC.jar %input% > %output%
 
 :end
+
+pause

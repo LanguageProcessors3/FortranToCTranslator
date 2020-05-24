@@ -26,21 +26,12 @@
   <component name="ChangeListManager">
     <list default="true" id="bb67bd18-c32f-425e-9451-da12846f1e92" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ejemplos código fuente/Ejemplo1_de_decisión_de_estrategia.for" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ejemplos código fuente/Ejemplo2_elemento_intruso.for" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ejemplos código fuente/Ejemplo3_detección_múltiple_y_recuperación.for" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ejemplos código fuente/Ejemplo4_detección_múltiple_y_recpueración.for" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ejemplos código fuente/EjemploAprobado.for" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ejemplos código fuente/EjemploBasico.for" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ejemplos código fuente/EjemploNotable.for" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ejemplos código fuente/EjemploSobresaliente.for" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Memoria.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Memoria.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TEST/EjemploAprobado.for" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TEST/EjemploBasico.for" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TEST/EjemploNotable.for" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TEST/EjemploSobresaliente.for" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TEST/FortranToC.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TEST/scriptTraductor.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ejemplos código memoria/Ejemplo1_de_decisión_de_estrategia.for" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ejemplos código memoria/Ejemplo2_elemento_intruso.for" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ejemplos código memoria/Ejemplo3_detección_múltiple_y_recuperación.for" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ejemplos código memoria/Ejemplo4_detección_múltiple_y_recpueración.for" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ejemplos código memoria/EjemploNotable.for" beforeDir="false" afterPath="$PROJECT_DIR$/Ejemplos código memoria/EjemploNotable.for" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Memoria Procesadores de Lenguajes I.pdf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/input.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/input.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -144,7 +135,7 @@
       <workItem from="1590240310589" duration="7948000" />
       <workItem from="1590259413515" duration="102000" />
       <workItem from="1590315430909" duration="3953000" />
-      <workItem from="1590319450324" duration="692000" />
+      <workItem from="1590319450324" duration="4502000" />
     </task>
     <servers />
   </component>
@@ -190,26 +181,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="503" y="260" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1590163432331" />
-    <state width="1877" height="652" key="GridCell.Tab.0.bottom" timestamp="1590320135575">
+    <state width="1877" height="342" key="GridCell.Tab.0.bottom" timestamp="1590324834854">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1588103249769" />
-    <state width="1877" height="652" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1590320135575" />
-    <state width="1877" height="652" key="GridCell.Tab.0.center" timestamp="1590320135575">
+    <state width="1877" height="342" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1590324834854" />
+    <state width="1877" height="342" key="GridCell.Tab.0.center" timestamp="1590324834854">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1588103249767" />
-    <state width="1877" height="652" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1590320135575" />
-    <state width="1877" height="652" key="GridCell.Tab.0.left" timestamp="1590320135575">
+    <state width="1877" height="342" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1590324834854" />
+    <state width="1877" height="342" key="GridCell.Tab.0.left" timestamp="1590324834854">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1588103249767" />
-    <state width="1877" height="652" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1590320135575" />
-    <state width="1877" height="652" key="GridCell.Tab.0.right" timestamp="1590320135575">
+    <state width="1877" height="342" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1590324834854" />
+    <state width="1877" height="342" key="GridCell.Tab.0.right" timestamp="1590324834854">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1588103249768" />
-    <state width="1877" height="652" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1590320135575" />
+    <state width="1877" height="342" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1590324834854" />
     <state width="1877" height="340" key="GridCell.Tab.1.bottom" timestamp="1590259366417">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

@@ -1,7 +1,7 @@
 !------------------------------------
 ! Ejemplo de programa para nivel de calificacion aprobado
 !------------------------------------
-PROGRAM Programa ;;
+PROGRAM Programa ;
 
 ! Declaracion de variables
 INTEGER :: i1, i2, i3 ;
@@ -57,7 +57,7 @@ SUBROUTINE Subrutina0Param ! Subrutina sin parametros de llamada
 END SUBROUTINE Subrutina0Param
 
 SUBROUTINE Subrutina1Param ( Sub1Param1 ) ! Subrutina con 1 parametro de llamada
-	INTEGER , INTENT ( IN ) Sub1Param1 ;
+	INTEGER , INTENT ( IN ) Sub1Param1 
 	
 	! Declaracion de variables
 	REAL :: r1, r2=0.2, r3 ;
@@ -69,7 +69,7 @@ END SUBROUTINE Subrutina1Param
 
 SUBROUTINE Subrutina3Param ( Sub3Param1, Sub3Param2, Sub3Param3 ) ! Subrutina con 3 parametros de llamada
 	INTEGER , INTENT ( IN ) Sub3Param1 ;
-	REAL , INTENT ( OUT ) Sub3Param2 ;
+	REAL , INTENT  OUT ) Sub3Param2 ;
 	CHARACTER , INTENT ( INOUT ) Sub3Param3 ;
 	
 	! Declaracion de variables
@@ -100,7 +100,7 @@ FUNCTION Funcion2Param ( Fun2Param1, Fun2Param2 ) ! Funcion con 2 parametros de 
 	REAL :: r1, r2=0.2, r3 ;
 	
 	! Sentencias
-	CALL Subrutina0Param;
+	 Subrutina0Param;
 	Funcion2Param = Sub1Param1;
 END FUNCTION Funcion2Param
 

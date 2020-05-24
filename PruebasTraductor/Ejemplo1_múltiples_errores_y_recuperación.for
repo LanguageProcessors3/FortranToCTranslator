@@ -53,7 +53,7 @@ SUBROUTINE Subrutina0Param ! Subrutina sin parametros de llamada
 	! Declaración de variables
 	INTEGER :: i1, i2=0, i3 ;
 	! Sentencias
-	CALL Subrutina1Param ( Funcion1Param(i1)+i2*i3 );
+	 Subrutina1Param ( Funcion1Param(i1)+i2*i3 );
 END SUBROUTINE Subrutina0Param
 
 SUBROUTINE Subrutina1Param ( Sub1Param1 ) ! Subrutina con 1 parametro de llamada
@@ -76,7 +76,7 @@ SUBROUTINE Subrutina3Param ( Sub3Param1, Sub3Param2, Sub3Param3 ) ! Subrutina co
 	INTEGER :: i1, i2=0, i3 ;
 
 	! Sentencias
-	CALL Subrutina1Param ( Funcion1Param(i1)+i2*i3 );
+	 Subrutina1Param ( Funcion1Param(i1)+i2*i3 );
 
 END SUBROUTINE Subrutina3Param
 
@@ -93,11 +93,11 @@ FUNCTION Funcion1Param ( Fun1Param1 ) ! Funcion con 1 parametro de llamada
 END FUNCTION Funcion1Param
 
 FUNCTION Funcion2Param ( Fun2Param1, Fun2Param2 ) ! Funcion con 2 parametros de llamada
-	REAL :: Funcion2ParamMAL ;
+	REAL  Funcion2Param ;
 	INTEGER , INTENT ( IN ) Fun2Param1 ;
 	CHARACTER (25) , INTENT ( IN ) Fun2Param2 ;
 	! Declaración de variables
-	REAL :: r1, r2=0.2, r3 ;
+	REAL  r1, r2=0.2, r3 ;
 
 	! Sentencias
 	CALL Subrutina0Param;

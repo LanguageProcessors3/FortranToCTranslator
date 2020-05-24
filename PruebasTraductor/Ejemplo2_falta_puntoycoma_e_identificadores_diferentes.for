@@ -39,7 +39,7 @@ INTERFACE
 END INTERFACE
 
 CALL Subrutina0Param ;
-CALL Subrutina1Param (34);
+CALL Subrutina1Param (34)
 CALL Subrutina3Param (sd, 87.4, 'hola que "tal" estas');
 concatenacionStrings = 'comilla doble " dentro' + "comilla simple ' dentro" + 'comilla simple '' dentro'
 	+ "comilla doble "" dentro" + 'comilla doble " y simple '' dentro' + "comilla simple ' y doble "" dentro";
@@ -54,7 +54,7 @@ SUBROUTINE Subrutina0Param ! Subrutina sin parametros de llamada
 	INTEGER :: i1, i2=0, i3 ;
 	! Sentencias
 	CALL Subrutina1Param ( Funcion1Param(i1)+i2*i3 );
-END SUBROUTINE Subrutina0Param
+END SUBROUTINE Subrutina0ParamMAL
 
 SUBROUTINE Subrutina1Param ( Sub1Param1 ) ! Subrutina con 1 parametro de llamada
 	INTEGER , INTENT ( IN ) Sub1Param1 ;
@@ -93,7 +93,7 @@ FUNCTION Funcion1Param ( Fun1Param1 ) ! Funcion con 1 parametro de llamada
 END FUNCTION Funcion1Param
 
 FUNCTION Funcion2Param ( Fun2Param1, Fun2Param2 ) ! Funcion con 2 parametros de llamada
-	REAL :: Funcion2ParamMAL ;
+	REAL :: Funcion2Param ;
 	INTEGER , INTENT ( IN ) Fun2Param1 ;
 	CHARACTER (25) , INTENT ( IN ) Fun2Param2 ;
 	! Declaración de variables
