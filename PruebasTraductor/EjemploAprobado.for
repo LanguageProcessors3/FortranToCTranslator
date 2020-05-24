@@ -29,13 +29,13 @@ INTERFACE
 	FUNCTION Funcion1Param ( Fun1Param1 ) ! Funcion con 1 parametro de llamada
 		INTEGER :: Funcion1Param ;
 		REAL , INTENT ( IN ) Fun1Param1 ; 
-	END FUNCTION IDENT
+	END FUNCTION Funcion1Param
 
 	FUNCTION Funcion2Param ( Fun2Param1, Fun2Param2 ) ! Funcion con 2 parametros de llamada
 		REAL :: Funcion2Param ;
 		INTEGER , INTENT ( IN ) Fun2Param1 ; 
 		CHARACTER (25) , INTENT ( IN ) Fun2Param2 ; 
-	END FUNCTION IDENT
+	END FUNCTION Funcion2Param
 END INTERFACE
 
 CALL Subrutina0Param ;
