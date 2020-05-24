@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.IllegalFormatException;
 
 public class ProgramOrchestrator {
+    public static ArrayList<String> paramChecker = new ArrayList<>();
 
     public static void printFullProgram(ArrayList<Constant> constants, ArrayList<Header> headers, ArrayList<String> statements) {
         // This is a function that with given constant, headers and statements arrays, iterates through them
@@ -178,4 +179,43 @@ public class ProgramOrchestrator {
             }
         }
     }
+
+    public static ArrayList<String> getParamChecker() {
+        return paramChecker;
+    }
+
+    public static void checkParam(String param) {
+        String aux = paramChecker.remove(0);
+        if (!aux.equals(param)) {
+            System.err.println("El parametro: " + aux + " no coincide con su declaración: " + param);
+            throw new IllegalStateException();
+        }
+    }
+
+    public static void updateParamContext() {
+        if (!paramChecker.isEmpty()) {
+            paramChecker.clear();
+            System.err.println("El numero de parametros no coincide");
+            throw new IllegalStateException();
+        }
+    }
+
+    public static void checkFunctionReturnIdent(String functionName, String returnIdent, String returnValueIdent, boolean isHeader) {
+        if (isHeader) {
+            if (!functionName.equals(returnIdent)) {
+                System.err.println("El nombre de la funcion: " + functionName + " no coincide con su identificador de retorno: " + returnIdent);
+                throw new IllegalStateException();
+            }
+        } else {
+            if (!functionName.equals(returnIdent)) {
+                System.err.println("El nombre de la funcion: " + functionName + " no coincide con su identificador de retorno: " + returnIdent);
+                throw new IllegalStateException();
+            }
+            else if (!functionName.equals(returnValueIdent)) {
+                System.err.println("El nombre de la funcion: " + functionName + " no coincide con con la asignacion de retorno: " + returnValueIdent);
+                throw new IllegalStateException();
+            }
+        }
+    }
+
 }

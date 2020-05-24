@@ -105,6 +105,7 @@ decproc
                                       h.setParameters(variables) ;
                                       variables = new ArrayList<>() ;
                                       headers.add(h) ;
+                                      ProgramOrchestrator.updateParamContext() ;
                                     }
     ;
 
@@ -114,13 +115,15 @@ formal_paramlist
     ;
 
 nomparamlist
-    : IDENT
-    | IDENT ',' nomparamlist
+    : IDENT { ProgramOrchestrator.getParamChecker().add($IDENT.text) ; }
+    | IDENT { ProgramOrchestrator.getParamChecker().add($IDENT.text) ; } ',' nomparamlist
     ; // LL1
 
 dec_s_paramlist
     : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';'
-    { variables.add(new Variable($tipo.value, $tipoparam.value + $IDENT.text, $tipo.size)); }
+    { variables.add(new Variable($tipo.value, $tipoparam.value + $IDENT.text, $tipo.size)) ;
+      ProgramOrchestrator.checkParam($IDENT.text) ;
+    }
     dec_s_paramlist
     |
     ;
@@ -133,18 +136,22 @@ tipoparam returns [String value]
 
 decfun
     : 'FUNCTION' ident1=IDENT '(' nomparamlist ')'
-    tipo '::' IDENT ';'
+    tipo '::' identReturn=IDENT ';'
     dec_f_paramlist { Header h = new Header($tipo.value, $ident1.text) ;
                       h.setParameters(variables) ;
                       variables = new ArrayList<>() ;
                       headers.add(h) ;
+                      ProgramOrchestrator.updateParamContext() ;
+                      ProgramOrchestrator.checkFunctionReturnIdent($ident1.text, $identReturn.text, null, true) ;
                     }
     'END' 'FUNCTION' ident2=IDENT { ProgramOrchestrator.checkMethodIdentifiers($ident1.text, $ident2.text, true) ; }
     ;
 
 dec_f_paramlist
     : tipo ',' 'INTENT' '(' 'IN' ')' IDENT ';'
-    { variables.add(new Variable($tipo.value, $IDENT.text, $tipo.size)) ; }
+    { variables.add(new Variable($tipo.value, $IDENT.text, $tipo.size)) ;
+      ProgramOrchestrator.checkParam($IDENT.text) ;
+    }
     dec_f_paramlist
     |
     ;
@@ -245,15 +252,22 @@ codproc
     : 'SUBROUTINE' ident1=IDENT { variables = new ArrayList<>() ; } formal_paramlist
     dec_s_paramlist { statements.add("void " + $ident1.text + "(" + Variable.formParameters(variables) + ") {") ; }
     dcllist sent sentlist
-    'END' 'SUBROUTINE' ident2=IDENT { statements.add("}\n") ; ProgramOrchestrator.checkMethodIdentifiers($ident1.text, $ident2.text, false) ; }
+    'END' 'SUBROUTINE' ident2=IDENT { statements.add("}\n") ;
+                                      ProgramOrchestrator.checkMethodIdentifiers($ident1.text, $ident2.text, false) ;
+                                      ProgramOrchestrator.updateParamContext() ;
+                                    }
     ;
 
 codfun : 'FUNCTION' ident1=IDENT '(' nomparamlist ')'
-    tipo '::' IDENT ';' { variables = new ArrayList<>() ; }
+    tipo '::' identReturn=IDENT ';' { variables = new ArrayList<>() ; }
     dec_f_paramlist { statements.add($tipo.value + " " + $ident1.text + "(" + Variable.formParameters(variables) + ") {") ; }
     dcllist sent sentlist
-    IDENT '=' exp ';' { statements.add("return " + $exp.value + ";") ; }
-    'END' 'FUNCTION' ident2=IDENT { statements.add("}\n") ; ProgramOrchestrator.checkMethodIdentifiers($ident1.text, $ident2.text, true) ; }
+    identValue=IDENT '=' exp ';' { statements.add("return " + $exp.value + ";") ; }
+    'END' 'FUNCTION' ident2=IDENT { statements.add("}\n") ;
+                                    ProgramOrchestrator.checkMethodIdentifiers($ident1.text, $ident2.text, true) ;
+                                    ProgramOrchestrator.updateParamContext() ;
+                                    ProgramOrchestrator.checkFunctionReturnIdent($ident1.text, $identReturn.text, $identValue.text, false) ;
+                                  }
     ;
 
 // Optional parser implementation
